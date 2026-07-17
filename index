@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tower Sentral Graha — Construction Progress Dashboard</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Tailwind & Chart.js -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  :root{
+    --bg:#0a0c0f;
+    --surface:#11151b;
+    --surface-2:#171c24;
+    --surface-3:#1e242e;
+    --border:#262d38;
+    --border-bright:#38414f;
+    --fg:#ecebe6;
+    --fg-dim:#a8aebb;
+    --muted:#6b7382;
+    --accent:#ff6b1a;
+    --accent-glow:rgba(255,107,26,0.35);
+    --hi-vis:#ffd400;
+    --steel:#7c8ba1;
+    --success:#5fd07e;
+    --warning:#ffb547;
+    --danger:#ff5252;
+    --info:#5ab4e0;
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .display{font-family:'Archivo';font-weight:900;letter-spacing:-0.04em}
+
+  /* Backdrop with subtle blueprint grid + noise */
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 1200px 600px at 80% -10%, rgba(255,107,26,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at -10% 110%, rgba(122,139,161,0.08), transparent 60%),
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px,
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px;
+  }
+  body::after{
+    content:"";
+    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .layer{position:relative;z-index:1}
+
+  /* Card */
+  .card{
+    background:linear-gradient(180deg, rgba(23,28,36,0.92), rgba(17,21,27,0.92));
+    border:1px solid var(--border);
+    border-radius:14px;
+    backdrop-filter:blur(8px);
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
+  }
+
+  /* Pill / tag */
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:4px 10px;border-radius:999px;
+    font-size:11px;font-weight:600;letter-spacing:0.04em;
+    border:1px solid var(--border-bright);
+    background:rgba(255,255,255,0.02);
+    color:var(--fg-dim);
+    text-transform:uppercase;
+  }
+  .pill-accent{color:var(--accent);border-color:rgba(255,107,26,0.35);background:rgba(255,107,26,0.08)}
+  .pill-success{color:var(--success);border-color:rgba(95,208,126,0.3);background:rgba(95,208,126,0.07)}
+  .pill-warning{color:var(--warning);border-color:rgba(255,181,71,0.3);background:rgba(255,181,71,0.07)}
+  .pill-danger{color:var(--danger);border-color:rgba(255,82,82,0.3);background:rgba(255,82,82,0.07)}
+
+  /* Live dot */
+  .live-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--success);
+    box-shadow:0 0 0 0 rgba(95,208,126,0.7);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(95,208,126,0.7)}
+    70%{box-shadow:0 0 0 8px rgba(95,208,126,0)}
+    100%{box-shadow:0 0 0 0 rgba(95,208,126,0)}
+  }
+
+  /* Progress bar */
+  .bar-track{background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;height:8px;position:relative}
+  .bar-fill{height:100%;border-radius:6px;position:relative;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+  .bar-fill::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+    animation:shimmer 2.5s infinite;
+  }
+  @keyframes shimmer{
+    0%{transform:translateX(-100%)}
+    100%{transform:translateX(100%)}
+  }
+
+  /* Big progress ring */
+  .ring-wrap{position:relative;width:220px;height:220px}
+  .ring-bg{stroke:rgba(255,255,255,0.06)}
+  .ring-fg{
+    stroke:url(#ringGrad);
+    filter:drop-shadow(0 0 14px var(--accent-glow));
+    transition:stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1);
+  }
+
+  /* Milestone timeline */
+  .ms-track{position:relative;height:8px;background:rgba(255,255,255,0.05);border-radius:6px}
+  .ms-progress{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--hi-vis));border-radius:6px}
+  .ms-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid var(--border-bright);z-index:2}
+  .ms-dot.done{border-color:var(--success);background:var(--success)}
+  .ms-dot.active{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 6px rgba(255,107,26,0.18)}
+  .ms-dot.upcoming{border-color:var(--steel);background:var(--surface-3)}
+
+  /* Photo gallery */
+  .photo-card{
+    position:relative;border-radius:12px;overflow:hidden;
+    border:1px solid var(--border);
+    background:#000;
+    aspect-ratio:4/3;
+  }
+  .photo-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease, filter .4s ease}
+  .photo-card:hover img{transform:scale(1.06);filter:saturate(1.1)}
+  .photo-card .overlay{
+    position:absolute;inset:0;
+    background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85));
+    padding:12px;display:flex;flex-direction:column;justify-content:flex-end;
+  }
+  .photo-card .badge{
+    position:absolute;top:10px;left:10px;
+    background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+    border:1px solid var(--border-bright);
+    border-radius:6px;padding:4px 8px;
+    font-size:10px;font-weight:600;letter-spacing:0.04em;
+    color:var(--hi-vis);text-transform:uppercase;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:var(--surface)}
+  ::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--steel)}
+
+  /* Header */
+  .header-glow{
+    background:linear-gradient(180deg,rgba(17,21,27,0.95),rgba(10,12,15,0.85));
+    border-bottom:1px solid var(--border);
+    backdrop-filter:blur(20px);
+  }
+
+  /* Reveal animation */
+  .reveal{opacity:0;transform:translateY(16px);animation:reveal .8s ease forwards}
+  .reveal:nth-child(1){animation-delay:.05s}
+  .reveal:nth-child(2){animation-delay:.1s}
+  .reveal:nth-child(3){animation-delay:.15s}
+  .reveal:nth-child(4){animation-delay:.2s}
+  @keyframes reveal{to{opacity:1;transform:translateY(0)}}
+
+  /* Section title */
+  .section-title{
+    display:flex;align-items:center;gap:10px;
+    font-size:11px;text-transform:uppercase;letter-spacing:0.12em;
+    color:var(--muted);font-weight:700;
+  }
+  .section-title::before{
+    content:"";width:14px;height:2px;background:var(--accent);
+  }
+
+  /* Warning stripe */
+  .stripe{
+    background:repeating-linear-gradient(
+      45deg,
+      var(--hi-vis),
+      var(--hi-vis) 10px,
+      #1a1300 10px,
+      #1a1300 20px
+    );
+    height:6px;
+  }
+
+  /* Responsive */
+  @media (max-width:768px){
+    .display-xl{font-size:48px !important}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header-glow sticky top-0 z-50 layer">
+  <div class="max-w-[1600px] mx-auto px-6 py-3 flex items-center justify-between gap-6">
+    <div class="flex items-center gap-4">
+      <div class="w-10 h-10 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,var(--accent),#cc4d0a);box-shadow:0 0 20px var(--accent-glow)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1a1300" stroke-width="2.5"><path d="M3 21h18M5 21V7l8-4 8 4v14M9 21v-6h6v6M9 11h6"/></svg>
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[13px] font-bold tracking-wide">PROBUILD DASH</span>
+        </div>
+        <div class="text-[10px] text-[var(--muted)] mono uppercase tracking-widest">Construction Control Center</div>
+      </div>
+    </div>
+
+    <div class="hidden lg:flex items-center gap-3 px-4 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
+      <div class="w-2 h-2 rounded-full" style="background:var(--accent)"></div>
+      <div>
+        <div class="text-[13px] font-semibold">Tower Sentral Graha</div>
+        <div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: TSG-2026-018</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--muted)]"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
+        <span class="live-dot"></span>
+        <span class="text-[11px] mono text-[var(--fg-dim)]">LIVE</span>
+        <span class="text-[11px] mono text-[var(--muted)]">·</span>
+        <span class="text-[11px] mono" id="liveClock">--:--:--</span>
+      </div>
+      <button class="w-9 h-9 rounded-lg flex items-center justify-center relative" style="background:var(--surface-2);border:1px solid var(--border)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 004 0"/></svg>
+        <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center" style="background:var(--accent);color:#1a1300">3</span>
+      </button>
+      <div class="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">AR</div>
+    </div>
+  </div>
+  <div class="stripe"></div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main class="max-w-[1600px] mx-auto px-6 py-8 layer">
+
+  <!-- Project Title -->
+  <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8 reveal">
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="pill pill-success"><span class="live-dot"></span> On Track</span>
+        <span class="pill" id="contractProgress">Bulan Ke-6 / 10</span>
+        <span class="pill">Kontrak: 10 Bulan</span>
+      </div>
+      <h1 class="display display-xl" style="font-size:64px;line-height:0.95">Tower Sentral<br>Graha<span style="color:var(--accent)">.</span></h1>
+      <p class="text-[var(--fg-dim)] mt-3 text-[14px] max-w-xl">Pembangunan gedung perkantoran 24 lantai dengan luas total 42,800 m². Lokasi: SCBD Lot 14, Jakarta Selatan.</p>
+    </div>
+    <div class="grid grid-cols-3 gap-3 min-w-[440px]">
+      <div class="card p-4 flex flex-col justify-center">
+        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Nilai Kontrak</div>
+        <div class="mono text-[18px] font-bold">Rp 285<span style="color:var(--accent)">M</span></div>
+      </div>
+      <div class="card p-4 flex flex-col justify-center">
+        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Mulai</div>
+        <div class="mono text-[18px] font-bold">17 Jun</div>
+        <div class="text-[10px] text-[var(--muted)] mt-1">2026</div>
+      </div>
+      <div class="card p-4 flex flex-col justify-center">
+        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Target Selesai</div>
+        <div class="mono text-[18px] font-bold">17 Apr</div>
+        <div class="text-[10px] text-[var(--warning)] mt-1" id="endInfo">2027 · 0 hari lagi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== HERO: Progress Ring + S-Curve ===== -->
+  <section class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5 reveal">
+    
+    <!-- Big Progress Ring -->
+    <div class="card p-6 flex flex-col">
+      <div class="section-title mb-4">Progress Keseluruhan</div>
+      <div class="flex-1 flex items-center justify-center">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 220 220" width="220" height="220">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff6b1a"/>
+                <stop offset="100%" stop-color="#ffd400"/>
+              </linearGradient>
+            </defs>
+            <circle cx="110" cy="110" r="92" class="ring-bg" stroke-width="14" fill="none"/>
+            <circle id="progressRing" cx="110" cy="110" r="92" class="ring-fg" stroke-width="14" fill="none"
+              stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 110 110)"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="text-[11px] uppercase tracking-widest text-[var(--muted)]">Terselesaikan</div>
+            <div class="display mono" style="font-size:56px;line-height:1" id="progressNum">0.0<span style="color:var(--accent);font-size:32px">%</span></div>
+            <div class="text-[11px] text-[var(--fg-dim)] mt-1">dari 100% target</div>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2 pt-4 border-t" style="border-color:var(--border)">
+        <div class="text-center">
+          <div class="text-[10px] uppercase text-[var(--muted)]">Planned</div>
+          <div class="mono font-bold text-[15px]" id="plannedPercent">52.4%</div>
+        </div>
+        <div class="text-center">
+          <div class="text-[10px] uppercase text-[var(--muted)]">Variance</div>
+          <div class="mono font-bold text-[15px] text-[var(--danger)]" id="variancePercent">-5.1%</div>
+        </div>
+        <div class="text-center">
+          <div class="text-[10px] uppercase text-[var(--muted)]">SPI</div>
+          <div class="mono font-bold text-[15px] text-[var(--warning)]">0.90</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S-Curve Chart -->
+    <div class="card p-6 xl:col-span-2">
+      <div class="flex items-center justify-between mb-4">
+        <div class="section-title">Kurva S — Progress Kumulatif</div>
+        <span class="text-[11px] text-[var(--muted)] mono">Periode: Bulanan</span>
+      </div>
+      <div style="height:280px;position:relative">
+        <canvas id="sCurveChart"></canvas>
+      </div>
+      <div class="flex flex-wrap items-center gap-4 mt-4 pt-4 border-t" style="border-color:var(--border)">
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:#7c8ba1"></span><span class="text-[11px] text-[var(--fg-dim)]">Planned (Baseline)</span></div>
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:var(--accent)"></span><span class="text-[11px] text-[var(--fg-dim)]">Actual Progress</span></div>
+        <div class="ml-auto text-[11px] text-[var(--muted)] mono" id="sCurveUpdate">Last update: --</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DISCIPLINE BREAKDOWN + MILESTONES ===== -->
+  <section class="grid grid-cols-1 xl:grid-cols-5 gap-5 mb-5 reveal">
+    
+    <!-- Discipline Breakdown -->
+    <div class="card p-6 xl:col-span-3">
+      <div class="flex items-center justify-between mb-5">
+        <div class="section-title">Progress per Disiplin</div>
+        <div class="text-[11px] text-[var(--muted)] mono">Bobot dalam %</div>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="text-[13px] font-semibold">Pondasi & Struktur Bawah</span>
+              <span class="pill pill-success" style="padding:2px 8px;font-size:9px">SELESAI</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-[11px] text-[var(--muted)] mono">Bobot 18%</span>
+              <span class="mono font-bold text-[14px] w-12 text-right">100%</span>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#5fd07e,#3da55c)"></div></div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="text-[13px] font-semibold">Struktur Atas (Beton & Baja)</span>
+              <span class="pill pill-accent" style="padding:2px 8px;font-size:9px">ON-GOING</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-[11px] text-[var(--muted)] mono">Bobot 32%</span>
+              <span class="mono font-bold text-[14px] w-12 text-right">68%</span>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:68%"></div></div>
+          <div class="text-[11px] text-[var(--fg-dim)] mt-1.5">Lantai 16 dari 24 · Top-off dijadwalkan Feb 2027</div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="text-[13px] font-semibold">Pekerjaan Arsitektur</span>
+              <span class="pill pill-accent" style="padding:2px 8px;font-size:9px">ON-GOING</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-[11px] text-[var(--muted)] mono">Bobot 20%</span>
+              <span class="mono font-bold text-[14px] w-12 text-right">23%</span>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:23%;background:linear-gradient(90deg,#ffb547,#ff8a1a)"></div></div>
+          <div class="text-[11px] text-[var(--fg-dim)] mt-1.5">Dinding partisi L1-L8 · plesteran L3-L6</div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="text-[13px] font-semibold">Mechanical, Electrical, Plumbing</span>
+              <span class="pill pill-accent" style="padding:2px 8px;font-size:9px">ON-GOING</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-[11px] text-[var(--muted)] mono">Bobot 22%</span>
+              <span class="mono font-bold text-[14px] w-12 text-right">31%</span>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:31%;background:linear-gradient(90deg,#5ab4e0,#3a7ea8)"></div></div>
+          <div class="text-[11px] text-[var(--fg-dim)] mt-1.5">Rough-in plumbing L5-L10 · cable tray L7-L12</div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="text-[13px] font-semibold">Finishing Interior</span>
+              <span class="pill" style="padding:2px 8px;font-size:9px">UPCOMING</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-[11px] text-[var(--muted)] mono">Bobot 6%</span>
+              <span class="mono font-bold text-[14px] w-12 text-right">8%</span>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:8%;background:linear-gradient(90deg,#7c8ba1,#5a6678)"></div></div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center gap-3">
+              <span class="text-[13px] font-semibold">Fasad & Lanskap</span>
+              <span class="pill" style="padding:2px 8px;font-size:9px">UPCOMING</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="text-[11px] text-[var(--muted)] mono">Bobot 2%</span>
+              <span class="mono font-bold text-[14px] w-12 text-right">0%</span>
+            </div>
+          </div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,#7c8ba1,#5a6678)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="card p-6 xl:col-span-2">
+      <div class="flex items-center justify-between mb-5">
+        <div class="section-title">Milestone Timeline</div>
+        <span class="text-[11px] text-[var(--muted)] mono">6 dari 9</span>
+      </div>
+
+      <div class="relative mb-8 mt-8">
+        <div class="ms-track">
+          <div class="ms-progress" id="msProgressBar" style="width:52%"></div>
+          <div class="ms-dot done" style="left:5%" title="Mobilisasi"></div>
+          <div class="ms-dot done" style="left:15%" title="Pondasi Selesai"></div>
+          <div class="ms-dot done" style="left:28%" title="Basement"></div>
+          <div class="ms-dot done" style="left:40%" title="Struktur L10"></div>
+          <div class="ms-dot active" style="left:52%" title="Struktur L16"></div>
+          <div class="ms-dot upcoming" style="left:68%" title="Top-Off"></div>
+          <div class="ms-dot upcoming" style="left:82%" title="MEP Testing"></div>
+          <div class="ms-dot upcoming" style="left:92%" title="Finishing"></div>
+          <div class="ms-dot upcoming" style="left:98%" title="Handover"></div>
+        </div>
+        <div class="flex justify-between mt-3 text-[9px] text-[var(--muted)] mono uppercase">
+          <span id="tl1">-</span><span id="tl2">-</span><span id="tl3">-</span><span id="tl4">-</span><span id="tl5">-</span><span id="tl6">-</span><span id="tl7">-</span>
+        </div>
+      </div>
+
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg" style="background:rgba(255,107,26,0.06);border:1px solid rgba(255,107,26,0.2)">
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full" style="background:var(--accent);box-shadow:0 0 8px var(--accent-glow)"></div>
+            <div>
+              <div class="text-[12px] font-semibold">Struktur Lantai 16</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msL16">Target: -</div>
+            </div>
+          </div>
+          <span class="pill pill-warning" style="padding:2px 8px;font-size:9px">AKTIF</span>
+        </div>
+
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full" style="background:var(--steel)"></div>
+            <div>
+              <div class="text-[12px] font-semibold">Struktur Top-Off (L24)</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msTopOff">Target: -</div>
+            </div>
+          </div>
+          <span class="text-[10px] mono text-[var(--muted)]" id="msTopOffDays">- hari</span>
+        </div>
+
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full" style="background:var(--steel)"></div>
+            <div>
+              <div class="text-[12px] font-semibold">MEP Testing & Commissioning</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msMEP">Target: -</div>
+            </div>
+          </div>
+          <span class="text-[10px] mono text-[var(--muted)]" id="msMEPDays">- hari</span>
+        </div>
+
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
+          <div class="flex items-center gap-3">
+            <div class="w-2 h-2 rounded-full" style="background:var(--success)"></div>
+            <div>
+              <div class="text-[12px] font-semibold text-[var(--fg-dim)] line-through">Struktur Lantai 10</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msL10">Selesai: -</div>
+            </div>
+          </div>
+          <span class="pill pill-success" style="padding:2px 8px;font-size:9px">DONE</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PHOTO LOG ===== -->
+  <section class="card p-6 mb-5 reveal">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <div class="section-title mb-1">Dokumentasi Lapangan</div>
+        <div class="text-[12px] text-[var(--fg-dim)]" id="photoUpdate">Pembaruan terakhir: -</div>
+      </div>
+      <button class="px-4 py-2 rounded-lg text-[12px] font-semibold flex items-center gap-2" style="background:var(--accent);color:#1a1300">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+        Upload Dokumentasi
+      </button>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div class="photo-card">
+        <img src="https://picsum.photos/seed/construction-tower-1/400/300.jpg" alt="">
+        <div class="badge">Lantai 16</div>
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Pengecoran Kolom</div>
+          <div class="text-[9px] text-[var(--muted)] mono">07:30 · FC-04</div>
+        </div>
+      </div>
+      <div class="photo-card">
+        <img src="https://picsum.photos/seed/construction-tower-2/400/300.jpg" alt="">
+        <div class="badge">Lantai 14</div>
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Baja WF Lantai 14</div>
+          <div class="text-[9px] text-[var(--muted)] mono">06:50 · TC-02</div>
+        </div>
+      </div>
+      <div class="photo-card">
+        <img src="https://picsum.photos/seed/construction-tower-3/400/300.jpg" alt="">
+        <div class="badge">MEP</div>
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Plumbing Rough-in</div>
+          <div class="text-[9px] text-[var(--muted)] mono">Lantai 9 · 06:30</div>
+        </div>
+      </div>
+      <div class="photo-card">
+        <img src="https://picsum.photos/seed/construction-tower-4/400/300.jpg" alt="">
+        <div class="badge">Safety</div>
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Toolbox Meeting</div>
+          <div class="text-[9px] text-[var(--muted)] mono">07:00 · Lobi</div>
+        </div>
+      </div>
+      <div class="photo-card">
+        <img src="https://picsum.photos/seed/construction-tower-5/400/300.jpg" alt="">
+        <div class="badge">Lantai 8</div>
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Plesteran Dinding</div>
+          <div class="text-[9px] text-[var(--muted)] mono">Lantai 6 · 06:45</div>
+        </div>
+      </div>
+      <div class="photo-card">
+        <img src="https://picsum.photos/seed/construction-tower-6/400/300.jpg" alt="">
+        <div class="badge">Drone</div>
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">View dari Atas</div>
+          <div class="text-[9px] text-[var(--muted)] mono">06:00 · Site-wide</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="mt-8 pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-4" style="border-color:var(--border)">
+    <div class="flex items-center gap-3 text-[11px] text-[var(--muted)]">
+      <span class="mono">PROBUILD DASH · v2.4.1</span>
+      <span>·</span>
+      <span>Powered by PT. Wijaya Konstruksi</span>
+    </div>
+    <div class="flex items-center gap-4 text-[11px] text-[var(--muted)]">
+      <span>Last sync: <span class="mono text-[var(--fg-dim)]" id="footerSync">-</span></span>
+      <span class="flex items-center gap-1.5"><span class="live-dot"></span> All systems operational</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  // ===== HELPERS FOR REAL-TIME DATES =====
+  const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  const monthNamesLong = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+  function pad(n) { return n < 10 ? '0' + n : n; }
+  
+  function formatDateShort(d) {
+    return `${d.getDate()} ${monthNamesShort[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  function formatDateLong(d) {
+    return `${d.getDate()} ${monthNamesLong[d.getMonth()]} ${d.getFullYear()}`;
+  }
+  function addMonths(date, val) { const d = new Date(date); d.setMonth(d.getMonth() + val); return d; }
+  function addDays(date, val) { const d = new Date(date); d.setDate(d.getDate() + val); return d; }
+  function diffDays(d1, d2) { return Math.round((d1 - d2) / (1000 * 60 * 60 * 24)); }
+  
+  function getTimeStr(d) {
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  }
+
+  // ===== PROJECT DATES DYNAMIC CALC (10 Months Contract) =====
+  const today = new Date();
+  const projectStart = new Date(2026, 5, 17); // 17 Juni 2026 (Month is 0-indexed: 5 = June)
+  const projectEnd = new Date(2027, 3, 17);   // 17 April 2027 (10 months later)
+  
+  // Calculate months passed
+  let monthsPassed = (today.getFullYear() - projectStart.getFullYear()) * 12 + (today.getMonth() - projectStart.getMonth());
+  let reportDate = today;
+  
+  // For dashboard preview purposes, if viewed before project starts, simulate month 6 (Nov 2026)
+  if (monthsPassed < 0) {
+    monthsPassed = 6; 
+    reportDate = addMonths(projectStart, monthsPassed); // Simulate current date is in Nov 2026
+  } else if (monthsPassed > 10) {
+    monthsPassed = 10;
+    reportDate = projectEnd;
+  }
+  
+  const daysLeft = diffDays(projectEnd, reportDate);
+  
+  // Calculate simulated progress percentage based on S-Curve
+  const progressVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / 10) - 0.5))) * 100 * 0.92).toFixed(1);
+  const plannedVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / 10) - 0.5))) * 100).toFixed(1);
+  const varianceVal = (progressVal - plannedVal).toFixed(1);
+
+  // Update Project Info UI
+  document.getElementById('contractProgress').textContent = `Bulan Ke-${monthsPassed + 1} / 10`;
+  document.getElementById('endInfo').textContent = `2027 · ${daysLeft > 0 ? daysLeft + ' hari lagi' : 'Selesai'}`;
+  
+  // Update Progress Ring Stats
+  document.getElementById('plannedPercent').textContent = plannedVal + '%';
+  document.getElementById('variancePercent').textContent = (varianceVal > 0 ? '+' : '') + varianceVal + '%';
+  document.getElementById('variancePercent').style.color = varianceVal < 0 ? 'var(--danger)' : 'var(--success)';
+
+  // ===== LIVE CLOCK (Uses Actual Real-Time for Clock, Simulated Date for Timestamps) =====
+  function updateClock() {
+    const now = new Date();
+    const el = document.getElementById('liveClock');
+    if(el) el.textContent = getTimeStr(now);
+
+    const fs = document.getElementById('footerSync');
+    if(fs) fs.textContent = `${formatDateShort(reportDate)}, ${getTimeStr(now)} WIB`;
+
+    const sc = document.getElementById('sCurveUpdate');
+    if(sc) sc.textContent = `Last update: ${formatDateShort(reportDate)} · ${getTimeStr(now)} WIB`;
+    
+    const photoUpdate = document.getElementById('photoUpdate');
+    if(photoUpdate) photoUpdate.textContent = `Pembaruan terakhir: ${formatDateLong(reportDate)} · 06:45 WIB`;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // ===== MILESTONE DATES DYNAMIC CALC =====
+  const l10Done = addMonths(projectStart, 4);  // Month 4 (Oct 2026)
+  const l16Active = addDays(reportDate, 6);    // 6 days from report date
+  const topOff = addMonths(projectStart, 6);   // Month 6 (Dec 2026)
+  const mepTesting = addMonths(projectStart, 8); // Month 8 (Feb 2027)
+
+  document.getElementById('msL10').textContent = `Selesai: ${formatDateShort(l10Done)} · 2 hari lebih cepat`;
+  document.getElementById('msL16').textContent = `Target: ${formatDateShort(l16Active)}`;
+  document.getElementById('msTopOff').textContent = `Target: ${formatDateShort(topOff)}`;
+  document.getElementById('msMEP').textContent = `Target: ${formatDateShort(mepTesting)}`;
+  document.getElementById('msTopOffDays').textContent = `+${diffDays(topOff, reportDate)} hari`;
+  document.getElementById('msMEPDays').textContent = `+${diffDays(mepTesting, reportDate)} hari`;
+
+  // Update timeline track labels
+  const tlDates = [
+    projectStart, 
+    addMonths(projectStart, 2), 
+    addMonths(projectStart, 4), 
+    addMonths(projectStart, 6), 
+    addMonths(projectStart, 8), 
+    projectEnd
+  ];
+  tlDates.forEach((d, i) => {
+    const el = document.getElementById(`tl${i+1}`);
+    if(el) el.textContent = `${monthNamesShort[d.getMonth()]} ${String(d.getFullYear()).substring(2)}`;
+  });
+
+  // Update Milestone Bar Progress (based on monthsPassed)
+  const msProgress = (monthsPassed / 10) * 100;
+  document.getElementById('msProgressBar').style.width = msProgress + '%';
+
+  // ===== PROGRESS RING ANIMATION =====
+  function animateRing() {
+    const ring = document.getElementById('progressRing');
+    const num = document.getElementById('progressNum');
+    const target = progressVal;
+    const circumference = 578;
+    
+    const duration = 1800;
+    const start = performance.now();
+    
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const val = target * eased;
+      
+      ring.style.strokeDashoffset = circumference - (val / 100) * circumference;
+      num.innerHTML = val.toFixed(1) + '<span style="color:var(--accent);font-size:32px">%</span>';
+      
+      if(progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  setTimeout(animateRing, 300);
+
+  // ===== S-CURVE CHART (BULANAN DINAMIS 10 BULAN) =====
+  const ctx = document.getElementById('sCurveChart').getContext('2d');
+  
+  // Generate S-curve data (10 months span: Jun 26 to Apr 27 -> 11 points)
+  const monthLabels = [];
+  for(let i = 0; i <= 10; i++) {
+    let d = addMonths(projectStart, i);
+    monthLabels.push(`${monthNamesShort[d.getMonth()]} ${String(d.getFullYear()).substring(2)}`);
+  }
+  const totalMonths = monthLabels.length; // 11
+
+  // Planned (baseline)
+  const planned = monthLabels.map((_, i) => {
+    const x = i / (totalMonths - 1);
+    return +(1 / (1 + Math.exp(-7 * (x - 0.5))) * 100).toFixed(1);
+  });
+
+  // Actual (filled up to current month)
+  const actual = monthLabels.map((_, i) => {
+    if(i > monthsPassed) return null;
+    const x = i / (totalMonths - 1);
+    const base = 1 / (1 + Math.exp(-7 * (x - 0.5))) * 100;
+    return +(base * 0.92 + (Math.random() - 0.5) * 1.5).toFixed(1);
+  });
+  
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: monthLabels,
+      datasets: [
+        { label: 'Planned', data: planned, borderColor: '#7c8ba1', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, tension: 0.4, fill: false },
+        { label: 'Actual', data: actual, borderColor: '#ff6b1a', backgroundColor: 'rgba(255,107,26,0.15)', borderWidth: 3, pointRadius: 0, pointHoverRadius: 6, tension: 0.4, fill: true }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(10,12,15,0.95)', borderColor: 'rgba(255,107,26,0.3)', borderWidth: 1, padding: 12,
+          titleColor: '#ecebe6', bodyColor: '#a8aebb',
+          callbacks: { label: (c) => c.parsed.y === null ? '' : `${c.dataset.label}: ${c.parsed.y}%` }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 12 } },
+        y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' } }
+      }
+    }
+  });
+</script>
+
+</body>
+</html>
