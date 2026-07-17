@@ -587,7 +587,7 @@ Jawa Barat 16152.</p>
   const daysLeft = diffDays(projectEnd, reportDate);
   
   // Kalkulasi persentase progres simulasi berdasarkan kurva S logistik
-  const progressVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / 10) - 0.5))) * 100 * 0.95).toFixed(1);
+  const progressVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / 10) - 0.5))) * 100 * 1).toFixed(1);
   const plannedVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / 10) - 0.5))) * 100).toFixed(1);
   const varianceVal = (progressVal - plannedVal).toFixed(1);
 
