@@ -3,20 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>INDEPENDENCE Co-Living Space — Construction Progress Dashboard</title>
+<title>Tower Sentral Graha — Construction Progress Dashboard</title>
 
-<!-- Fonts -->
+<!-- =====================================================================
+     1. BAGIAN HEAD & SETINGAN DASAR
+     (Memuat font, Tailwind CSS, Chart.js, dan Lucide Icons)
+     ===================================================================== -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- Tailwind & Chart.js -->
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-<!-- Lucide Icons -->
 <script src="https://unpkg.com/lucide@latest"></script>
 
+<!-- =====================================================================
+     2. CSS KUSTOM (WARNA, FONT, EFEK VISUAL)
+     (Ubah palet warna di variabel :root, atau sesuaikan efek kartu/disini)
+     ===================================================================== -->
 <style>
   :root{
     --bg:#0a0c0f;
@@ -28,9 +32,9 @@
     --fg:#ecebe6;
     --fg-dim:#a8aebb;
     --muted:#6b7382;
-    --accent:#ff6b1a;
+    --accent:#ff6b1a; /* Warna oranye utama */
     --accent-glow:rgba(255,107,26,0.35);
-    --hi-vis:#ffd400;
+    --hi-vis:#ffd400; /* Warna kuning safety */
     --steel:#7c8ba1;
     --success:#5fd07e;
     --warning:#ffb547;
@@ -42,10 +46,8 @@
   .mono{font-family:'JetBrains Mono',monospace}
   .display{font-family:'Archivo';font-weight:900;letter-spacing:-0.04em}
 
-  /* Backdrop with subtle blueprint grid + noise */
   body::before{
-    content:"";
-    position:fixed;inset:0;z-index:0;pointer-events:none;
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     background:
       radial-gradient(ellipse 1200px 600px at 80% -10%, rgba(255,107,26,0.10), transparent 60%),
       radial-gradient(ellipse 900px 500px at -10% 110%, rgba(122,139,161,0.08), transparent 60%),
@@ -53,46 +55,34 @@
       linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px;
   }
   body::after{
-    content:"";
-    position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   }
   .layer{position:relative;z-index:1}
 
-  /* Card */
   .card{
     background:linear-gradient(180deg, rgba(23,28,36,0.92), rgba(17,21,27,0.92));
-    border:1px solid var(--border);
-    border-radius:14px;
-    backdrop-filter:blur(8px);
-    position:relative;
-    overflow:hidden;
+    border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(8px);
+    position:relative;overflow:hidden;
   }
   .card::before{
     content:"";position:absolute;left:0;top:0;right:0;height:1px;
     background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
   }
 
-  /* Pill / tag */
   .pill{
-    display:inline-flex;align-items:center;gap:6px;
-    padding:4px 10px;border-radius:999px;
-    font-size:11px;font-weight:600;letter-spacing:0.04em;
-    border:1px solid var(--border-bright);
-    background:rgba(255,255,255,0.02);
-    color:var(--fg-dim);
-    text-transform:uppercase;
+    display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
+    font-size:11px;font-weight:600;letter-spacing:0.04em;border:1px solid var(--border-bright);
+    background:rgba(255,255,255,0.02);color:var(--fg-dim);text-transform:uppercase;
   }
   .pill-accent{color:var(--accent);border-color:rgba(255,107,26,0.35);background:rgba(255,107,26,0.08)}
   .pill-success{color:var(--success);border-color:rgba(95,208,126,0.3);background:rgba(95,208,126,0.07)}
   .pill-warning{color:var(--warning);border-color:rgba(255,181,71,0.3);background:rgba(255,181,71,0.07)}
   .pill-danger{color:var(--danger);border-color:rgba(255,82,82,0.3);background:rgba(255,82,82,0.07)}
 
-  /* Live dot */
   .live-dot{
     width:8px;height:8px;border-radius:50%;background:var(--success);
-    box-shadow:0 0 0 0 rgba(95,208,126,0.7);
-    animation:pulse 2s infinite;
+    box-shadow:0 0 0 0 rgba(95,208,126,0.7);animation:pulse 2s infinite;
   }
   @keyframes pulse{
     0%{box-shadow:0 0 0 0 rgba(95,208,126,0.7)}
@@ -100,7 +90,6 @@
     100%{box-shadow:0 0 0 0 rgba(95,208,126,0)}
   }
 
-  /* Progress bar */
   .bar-track{background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;height:8px;position:relative}
   .bar-fill{height:100%;border-radius:6px;position:relative;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
   .bar-fill::after{
@@ -108,21 +97,15 @@
     background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
     animation:shimmer 2.5s infinite;
   }
-  @keyframes shimmer{
-    0%{transform:translateX(-100%)}
-    100%{transform:translateX(100%)}
-  }
+  @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 
-  /* Big progress ring */
   .ring-wrap{position:relative;width:220px;height:220px}
   .ring-bg{stroke:rgba(255,255,255,0.06)}
   .ring-fg{
-    stroke:url(#ringGrad);
-    filter:drop-shadow(0 0 14px var(--accent-glow));
+    stroke:url(#ringGrad);filter:drop-shadow(0 0 14px var(--accent-glow));
     transition:stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1);
   }
 
-  /* Milestone timeline */
   .ms-track{position:relative;height:8px;background:rgba(255,255,255,0.05);border-radius:6px}
   .ms-progress{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--hi-vis));border-radius:6px}
   .ms-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid var(--border-bright);z-index:2}
@@ -130,43 +113,32 @@
   .ms-dot.active{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 6px rgba(255,107,26,0.18)}
   .ms-dot.upcoming{border-color:var(--steel);background:var(--surface-3)}
 
-  /* Photo gallery */
   .photo-card{
-    position:relative;border-radius:12px;overflow:hidden;
-    border:1px solid var(--border);
-    background:#000;
-    aspect-ratio:4/3;
+    position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border);
+    background:#000;aspect-ratio:4/3;
   }
   .photo-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease, filter .4s ease}
   .photo-card:hover img{transform:scale(1.06);filter:saturate(1.1)}
   .photo-card .overlay{
-    position:absolute;inset:0;
-    background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85));
+    position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85));
     padding:12px;display:flex;flex-direction:column;justify-content:flex-end;
   }
   .photo-card .badge{
-    position:absolute;top:10px;left:10px;
-    background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
-    border:1px solid var(--border-bright);
-    border-radius:6px;padding:4px 8px;
-    font-size:10px;font-weight:600;letter-spacing:0.04em;
-    color:var(--hi-vis);text-transform:uppercase;
+    position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+    border:1px solid var(--border-bright);border-radius:6px;padding:4px 8px;
+    font-size:10px;font-weight:600;letter-spacing:0.04em;color:var(--hi-vis);text-transform:uppercase;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar{width:8px;height:8px}
   ::-webkit-scrollbar-track{background:var(--surface)}
   ::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:4px}
   ::-webkit-scrollbar-thumb:hover{background:var(--steel)}
 
-  /* Header */
   .header-glow{
     background:linear-gradient(180deg,rgba(17,21,27,0.95),rgba(10,12,15,0.85));
-    border-bottom:1px solid var(--border);
-    backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);backdrop-filter:blur(20px);
   }
 
-  /* Reveal animation */
   .reveal{opacity:0;transform:translateY(16px);animation:reveal .8s ease forwards}
   .reveal:nth-child(1){animation-delay:.05s}
   .reveal:nth-child(2){animation-delay:.1s}
@@ -174,37 +146,27 @@
   .reveal:nth-child(4){animation-delay:.2s}
   @keyframes reveal{to{opacity:1;transform:translateY(0)}}
 
-  /* Section title */
   .section-title{
-    display:flex;align-items:center;gap:10px;
-    font-size:11px;text-transform:uppercase;letter-spacing:0.12em;
-    color:var(--muted);font-weight:700;
+    display:flex;align-items:center;gap:10px;font-size:11px;text-transform:uppercase;
+    letter-spacing:0.12em;color:var(--muted);font-weight:700;
   }
-  .section-title::before{
-    content:"";width:14px;height:2px;background:var(--accent);
-  }
+  .section-title::before{content:"";width:14px;height:2px;background:var(--accent)}
 
-  /* Warning stripe */
   .stripe{
-    background:repeating-linear-gradient(
-      45deg,
-      var(--hi-vis),
-      var(--hi-vis) 10px,
-      #1a1300 10px,
-      #1a1300 20px
-    );
+    background:repeating-linear-gradient(45deg, var(--hi-vis), var(--hi-vis) 10px, #1a1300 10px, #1a1300 20px);
     height:6px;
   }
 
-  /* Responsive */
-  @media (max-width:768px){
-    .display-xl{font-size:48px !important}
-  }
+  @media (max-width:768px){.display-xl{font-size:48px !important}}
 </style>
 </head>
+
 <body>
 
-<!-- ===== HEADER ===== -->
+<!-- =====================================================================
+     3. HEADER (NAVIGASI ATAS)
+     (Berisi Logo, Pemilih Proyek, Jam Real-time, Notifikasi, Profil)
+     ===================================================================== -->
 <header class="header-glow sticky top-0 z-50 layer">
   <div class="max-w-[1600px] mx-auto px-6 py-3 flex items-center justify-between gap-6">
     <div class="flex items-center gap-4">
@@ -213,7 +175,7 @@
       </div>
       <div>
         <div class="flex items-center gap-2">
-          <span class="text-[13px] font-bold tracking-wide">ABDI Construction</span>
+          <span class="text-[13px] font-bold tracking-wide">PROBUILD DASH</span>
         </div>
         <div class="text-[10px] text-[var(--muted)] mono uppercase tracking-widest">Construction Control Center</div>
       </div>
@@ -222,8 +184,9 @@
     <div class="hidden lg:flex items-center gap-3 px-4 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
       <div class="w-2 h-2 rounded-full" style="background:var(--accent)"></div>
       <div>
-        <div class="text-[13px] font-semibold">INDEPENDENCE Co-Living Space</div>
-        <div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: 077/SPK-BLD/VI/2026 </div>
+        <!-- UBAH NAMA PROYEK & ID DI SINI -->
+        <div class="text-[13px] font-semibold">Tower Sentral Graha</div>
+        <div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: TSG-2026-018</div>
       </div>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--muted)]"><path d="M6 9l6 6 6-6"/></svg>
     </div>
@@ -235,20 +198,18 @@
         <span class="text-[11px] mono text-[var(--muted)]">·</span>
         <span class="text-[11px] mono" id="liveClock">--:--:--</span>
       </div>
-      <button class="w-9 h-9 rounded-lg flex items-center justify-center relative" style="background:var(--surface-2);border:1px solid var(--border)">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0112 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 004 0"/></svg>
-        <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center" style="background:var(--accent);color:#1a1300">3</span>
-      </button>
-      <div class="w-9 h-9 rounded-lg flex items-center justify-center font-bold text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">AR</div>
+      <div class="px-3 py-2 rounded-lg flex items-center justify-center font-bold text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">Excel File</div>
     </div>
   </div>
   <div class="stripe"></div>
 </header>
 
-<!-- ===== MAIN ===== -->
+<!-- =====================================================================
+     4. KONTEN UTAMA (INFORMASI PROYEK)
+     (Berisi Judul Proyek, Status, Durasi Kontrak, Tanggal Mulai-Selesai)
+     ===================================================================== -->
 <main class="max-w-[1600px] mx-auto px-6 py-8 layer">
 
-  <!-- Project Title -->
   <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-8 reveal">
     <div>
       <div class="flex items-center gap-2 mb-3">
@@ -256,32 +217,39 @@
         <span class="pill" id="contractProgress">Bulan Ke-6 / 10</span>
         <span class="pill">Kontrak: 10 Bulan</span>
       </div>
-      <h1 class="display display-xl" style="font-size:64px;line-height:0.95">INDEPENDENCE<br>Co-Living <span style="color:var(--accent)">Space.</span></h1>
-      <p class="text-[var(--fg-dim)] mt-3 text-[14px] max-w-xl">Pembangunan rumah KOS 2 lantai dengan. Lokasi: Jl. Lincar II No.17, RT 004/010, Tegal Gundil, Kec. Bogor Utara, Kota Bogor,
-Jawa Barat 16152.</p>
+      <!-- UBAH JUDUL PROYEK DI SINI -->
+      <h1 class="display display-xl" style="font-size:64px;line-height:0.95">Tower Sentral<br>Graha<span style="color:var(--accent)">.</span></h1>
+      <!-- UBAH DESKRIPSI LOKASI & LUAS DI SINI -->
+      <p class="text-[var(--fg-dim)] mt-3 text-[14px] max-w-xl">Pembangunan gedung perkantoran 24 lantai dengan luas total 42,800 m². Lokasi: SCBD Lot 14, Jakarta Selatan.</p>
     </div>
     <div class="grid grid-cols-3 gap-3 min-w-[440px]">
       <div class="card p-4 flex flex-col justify-center">
         <div class="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Nilai Kontrak</div>
-        <div class="mono text-[18px] font-bold">Rp 1.591<span style="color:var(--accent)">M</span></div>
+        <!-- UBAH NILAI KONTRAK DI SINI -->
+        <div class="mono text-[18px] font-bold">Rp 285<span style="color:var(--accent)">M</span></div>
       </div>
       <div class="card p-4 flex flex-col justify-center">
         <div class="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Mulai</div>
+        <!-- TANGGAL MULAI (Diubah otomatis oleh JS jika perlu) -->
         <div class="mono text-[18px] font-bold">17 Jun</div>
         <div class="text-[10px] text-[var(--muted)] mt-1">2026</div>
       </div>
       <div class="card p-4 flex flex-col justify-center">
         <div class="text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Target Selesai</div>
+        <!-- TANGGAL SELESAI (Diubah otomatis oleh JS) -->
         <div class="mono text-[18px] font-bold">17 Apr</div>
         <div class="text-[10px] text-[var(--warning)] mt-1" id="endInfo">2027 · 0 hari lagi</div>
       </div>
     </div>
   </div>
 
-  <!-- ===== HERO: Progress Ring + S-Curve ===== -->
+  <!-- =====================================================================
+       5. RING PROGRES & KURVA S
+       (Lingkaran Persentase Progres dan Grafik Kurva S)
+       ===================================================================== -->
   <section class="grid grid-cols-1 xl:grid-cols-3 gap-5 mb-5 reveal">
     
-    <!-- Big Progress Ring -->
+    <!-- KARTU RING PROGRES -->
     <div class="card p-6 flex flex-col">
       <div class="section-title mb-4">Progress Keseluruhan</div>
       <div class="flex-1 flex items-center justify-center">
@@ -307,20 +275,20 @@ Jawa Barat 16152.</p>
       <div class="grid grid-cols-3 gap-2 pt-4 border-t" style="border-color:var(--border)">
         <div class="text-center">
           <div class="text-[10px] uppercase text-[var(--muted)]">Planned</div>
-          <div class="mono font-bold text-[15px]" id="plannedPercent">12.5</div>
+          <div class="mono font-bold text-[15px]" id="plannedPercent">52.4%</div>
         </div>
         <div class="text-center">
           <div class="text-[10px] uppercase text-[var(--muted)]">Variance</div>
-          <div class="mono font-bold text-[15px] text-[var(--danger)]" id="variancePercent">-3.45</div>
+          <div class="mono font-bold text-[15px] text-[var(--danger)]" id="variancePercent">-5.1%</div>
         </div>
         <div class="text-center">
-          <div class="text-[10px] uppercase text-[var(--muted)]">KPI</div>
+          <div class="text-[10px] uppercase text-[var(--muted)]">SPI</div>
           <div class="mono font-bold text-[15px] text-[var(--warning)]">0.90</div>
         </div>
       </div>
     </div>
 
-    <!-- S-Curve Chart -->
+    <!-- KARTU KURVA S -->
     <div class="card p-6 xl:col-span-2">
       <div class="flex items-center justify-between mb-4">
         <div class="section-title">Kurva S — Progress Kumulatif</div>
@@ -337,10 +305,13 @@ Jawa Barat 16152.</p>
     </div>
   </section>
 
-  <!-- ===== DISCIPLINE BREAKDOWN + MILESTONES ===== -->
+  <!-- =====================================================================
+       6. PROGRES PEKERJAAN PER DISIPLIN & TIMELINE MILESTONE
+       (Daftar progres per pengerjaan & Timeline proyek)
+       ===================================================================== -->
   <section class="grid grid-cols-1 xl:grid-cols-5 gap-5 mb-5 reveal">
     
-    <!-- Discipline Breakdown -->
+    <!-- PROGRES PER DISIPLIN (UBAH PERSENTASE & STATUS DI SINI) -->
     <div class="card p-6 xl:col-span-3">
       <div class="flex items-center justify-between mb-5">
         <div class="section-title">Progress per Disiplin</div>
@@ -348,20 +319,22 @@ Jawa Barat 16152.</p>
       </div>
 
       <div class="space-y-4">
+        <!-- Disiplin 1: Pondasi -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-3">
               <span class="text-[13px] font-semibold">Pondasi & Struktur Bawah</span>
-              <span class="pill pill-accent" style="padding:2px 8px;font-size:9px">ON-GOING</span>
+              <span class="pill pill-success" style="padding:2px 8px;font-size:9px">SELESAI</span>
             </div>
             <div class="flex items-center gap-4">
               <span class="text-[11px] text-[var(--muted)] mono">Bobot 18%</span>
-              <span class="mono font-bold text-[14px] w-12 text-right">24.46%</span>
+              <span class="mono font-bold text-[14px] w-12 text-right">100%</span>
             </div>
           </div>
-          <div class="bar-track"><div class="bar-fill" style="width:25%;background:linear-gradient(90deg,#5fd07e,#3da55c)"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#5fd07e,#3da55c)"></div></div>
         </div>
 
+        <!-- Disiplin 2: Struktur Atas -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-3">
@@ -377,6 +350,7 @@ Jawa Barat 16152.</p>
           <div class="text-[11px] text-[var(--fg-dim)] mt-1.5">Lantai 16 dari 24 · Top-off dijadwalkan Feb 2027</div>
         </div>
 
+        <!-- Disiplin 3: Arsitektur -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-3">
@@ -392,6 +366,7 @@ Jawa Barat 16152.</p>
           <div class="text-[11px] text-[var(--fg-dim)] mt-1.5">Dinding partisi L1-L8 · plesteran L3-L6</div>
         </div>
 
+        <!-- Disiplin 4: MEP -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-3">
@@ -407,6 +382,7 @@ Jawa Barat 16152.</p>
           <div class="text-[11px] text-[var(--fg-dim)] mt-1.5">Rough-in plumbing L5-L10 · cable tray L7-L12</div>
         </div>
 
+        <!-- Disiplin 5: Finishing -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-3">
@@ -421,6 +397,7 @@ Jawa Barat 16152.</p>
           <div class="bar-track"><div class="bar-fill" style="width:8%;background:linear-gradient(90deg,#7c8ba1,#5a6678)"></div></div>
         </div>
 
+        <!-- Disiplin 6: Fasad -->
         <div>
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center gap-3">
@@ -437,7 +414,7 @@ Jawa Barat 16152.</p>
       </div>
     </div>
 
-    <!-- Milestones -->
+    <!-- TIMELINE & MILESTONE (Diubah otomatis oleh JS) -->
     <div class="card p-6 xl:col-span-2">
       <div class="flex items-center justify-between mb-5">
         <div class="section-title">Milestone Timeline</div>
@@ -510,7 +487,10 @@ Jawa Barat 16152.</p>
     </div>
   </section>
 
-  <!-- ===== PHOTO LOG ===== -->
+  <!-- =====================================================================
+       7. DOKUMENTASI LAPANGAN (GALERI FOTO)
+       (Ubah URL Gambar dan Keterangan di dalam .photo-card)
+       ===================================================================== -->
   <section class="card p-6 mb-5 reveal">
     <div class="flex items-center justify-between mb-5">
       <div>
@@ -524,6 +504,7 @@ Jawa Barat 16152.</p>
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <!-- CONTOH FOTO 1 -->
       <div class="photo-card">
         <img src="https://picsum.photos/seed/construction-tower-1/400/300.jpg" alt="">
         <div class="badge">Lantai 16</div>
@@ -532,6 +513,7 @@ Jawa Barat 16152.</p>
           <div class="text-[9px] text-[var(--muted)] mono">07:30 · FC-04</div>
         </div>
       </div>
+      <!-- CONTOH FOTO 2 -->
       <div class="photo-card">
         <img src="https://picsum.photos/seed/construction-tower-2/400/300.jpg" alt="">
         <div class="badge">Lantai 14</div>
@@ -540,6 +522,7 @@ Jawa Barat 16152.</p>
           <div class="text-[9px] text-[var(--muted)] mono">06:50 · TC-02</div>
         </div>
       </div>
+      <!-- CONTOH FOTO 3 -->
       <div class="photo-card">
         <img src="https://picsum.photos/seed/construction-tower-3/400/300.jpg" alt="">
         <div class="badge">MEP</div>
@@ -548,6 +531,7 @@ Jawa Barat 16152.</p>
           <div class="text-[9px] text-[var(--muted)] mono">Lantai 9 · 06:30</div>
         </div>
       </div>
+      <!-- CONTOH FOTO 4 -->
       <div class="photo-card">
         <img src="https://picsum.photos/seed/construction-tower-4/400/300.jpg" alt="">
         <div class="badge">Safety</div>
@@ -556,6 +540,7 @@ Jawa Barat 16152.</p>
           <div class="text-[9px] text-[var(--muted)] mono">07:00 · Lobi</div>
         </div>
       </div>
+      <!-- CONTOH FOTO 5 -->
       <div class="photo-card">
         <img src="https://picsum.photos/seed/construction-tower-5/400/300.jpg" alt="">
         <div class="badge">Lantai 8</div>
@@ -564,6 +549,7 @@ Jawa Barat 16152.</p>
           <div class="text-[9px] text-[var(--muted)] mono">Lantai 6 · 06:45</div>
         </div>
       </div>
+      <!-- CONTOH FOTO 6 -->
       <div class="photo-card">
         <img src="https://picsum.photos/seed/construction-tower-6/400/300.jpg" alt="">
         <div class="badge">Drone</div>
@@ -575,12 +561,14 @@ Jawa Barat 16152.</p>
     </div>
   </section>
 
-  <!-- ===== FOOTER ===== -->
+  <!-- =====================================================================
+       8. FOOTER (KREDIT & STATUS)
+       ===================================================================== -->
   <footer class="mt-8 pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-4" style="border-color:var(--border)">
     <div class="flex items-center gap-3 text-[11px] text-[var(--muted)]">
       <span class="mono">PROBUILD DASH · v2.4.1</span>
       <span>·</span>
-      <span>Powered by ABDI CONSTRUCTION</span>
+      <span>Powered by PT. Wijaya Konstruksi</span>
     </div>
     <div class="flex items-center gap-4 text-[11px] text-[var(--muted)]">
       <span>Last sync: <span class="mono text-[var(--fg-dim)]" id="footerSync">-</span></span>
@@ -590,40 +578,35 @@ Jawa Barat 16152.</p>
 
 </main>
 
+<!-- =====================================================================
+     9. JAVASCRIPT (LOGIKA DASBOR)
+     ===================================================================== -->
 <script>
-  // ===== HELPERS FOR REAL-TIME DATES =====
+  // ===== 9.1 FUNGSI BANTU TANGGAL & WAKTU =====
   const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
   const monthNamesLong = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
   function pad(n) { return n < 10 ? '0' + n : n; }
-  
-  function formatDateShort(d) {
-    return `${d.getDate()} ${monthNamesShort[d.getMonth()]} ${d.getFullYear()}`;
-  }
-  function formatDateLong(d) {
-    return `${d.getDate()} ${monthNamesLong[d.getMonth()]} ${d.getFullYear()}`;
-  }
+  function formatDateShort(d) { return `${d.getDate()} ${monthNamesShort[d.getMonth()]} ${d.getFullYear()}`; }
+  function formatDateLong(d) { return `${d.getDate()} ${monthNamesLong[d.getMonth()]} ${d.getFullYear()}`; }
   function addMonths(date, val) { const d = new Date(date); d.setMonth(d.getMonth() + val); return d; }
   function addDays(date, val) { const d = new Date(date); d.setDate(d.getDate() + val); return d; }
   function diffDays(d1, d2) { return Math.round((d1 - d2) / (1000 * 60 * 60 * 24)); }
-  
-  function getTimeStr(d) {
-    return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-  }
+  function getTimeStr(d) { return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
 
-  // ===== PROJECT DATES DYNAMIC CALC (10 Months Contract) =====
+  // ===== 9.2 SETINGAN TANGGAL KONTRAK & SIMULASI =====
+  // Ubah tanggal mulai dan durasi kontrak di sini jika diperlukan
   const today = new Date();
-  const projectStart = new Date(2026, 5, 17); // 17 Juni 2026 (Month is 0-indexed: 5 = June)
-  const projectEnd = new Date(2027, 3, 17);   // 17 April 2027 (10 months later)
+  const projectStart = new Date(2026, 5, 17); // 17 Juni 2026 (Bulan 0-index: 5=Juni)
+  const projectEnd = new Date(2027, 3, 17);   // 17 April 2027 (Durasi: 10 Bulan)
   
-  // Calculate months passed
   let monthsPassed = (today.getFullYear() - projectStart.getFullYear()) * 12 + (today.getMonth() - projectStart.getMonth());
   let reportDate = today;
   
-  // For dashboard preview purposes, if viewed before project starts, simulate month 6 (Nov 2026)
+  // Mensimulasikan tampilan report di Bulan ke-6 jika halaman dibuka sebelum proyek dimulai
   if (monthsPassed < 0) {
     monthsPassed = 6; 
-    reportDate = addMonths(projectStart, monthsPassed); // Simulate current date is in Nov 2026
+    reportDate = addMonths(projectStart, monthsPassed); 
   } else if (monthsPassed > 10) {
     monthsPassed = 10;
     reportDate = projectEnd;
@@ -631,43 +614,34 @@ Jawa Barat 16152.</p>
   
   const daysLeft = diffDays(projectEnd, reportDate);
   
-  // Calculate simulated progress percentage based on S-Curve
+  // Kalkulasi persentase progres simulasi berdasarkan kurva S logistik
   const progressVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / 10) - 0.5))) * 100 * 0.92).toFixed(1);
   const plannedVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / 10) - 0.5))) * 100).toFixed(1);
   const varianceVal = (progressVal - plannedVal).toFixed(1);
 
-  // Update Project Info UI
+  // Update Teks di HTML
   document.getElementById('contractProgress').textContent = `Bulan Ke-${monthsPassed + 1} / 10`;
   document.getElementById('endInfo').textContent = `2027 · ${daysLeft > 0 ? daysLeft + ' hari lagi' : 'Selesai'}`;
-  
-  // Update Progress Ring Stats
   document.getElementById('plannedPercent').textContent = plannedVal + '%';
   document.getElementById('variancePercent').textContent = (varianceVal > 0 ? '+' : '') + varianceVal + '%';
   document.getElementById('variancePercent').style.color = varianceVal < 0 ? 'var(--danger)' : 'var(--success)';
 
-  // ===== LIVE CLOCK (Uses Actual Real-Time for Clock, Simulated Date for Timestamps) =====
+  // ===== 9.3 JAM REAL-TIME =====
   function updateClock() {
     const now = new Date();
-    const el = document.getElementById('liveClock');
-    if(el) el.textContent = getTimeStr(now);
-
-    const fs = document.getElementById('footerSync');
-    if(fs) fs.textContent = `${formatDateShort(reportDate)}, ${getTimeStr(now)} WIB`;
-
-    const sc = document.getElementById('sCurveUpdate');
-    if(sc) sc.textContent = `Last update: ${formatDateShort(reportDate)} · ${getTimeStr(now)} WIB`;
-    
-    const photoUpdate = document.getElementById('photoUpdate');
-    if(photoUpdate) photoUpdate.textContent = `Pembaruan terakhir: ${formatDateLong(reportDate)} · 06:45 WIB`;
+    document.getElementById('liveClock').textContent = getTimeStr(now);
+    document.getElementById('footerSync').textContent = `${formatDateShort(reportDate)}, ${getTimeStr(now)} WIB`;
+    document.getElementById('sCurveUpdate').textContent = `Last update: ${formatDateShort(reportDate)} · ${getTimeStr(now)} WIB`;
+    document.getElementById('photoUpdate').textContent = `Pembaruan terakhir: ${formatDateLong(reportDate)} · 06:45 WIB`;
   }
   updateClock();
   setInterval(updateClock, 1000);
 
-  // ===== MILESTONE DATES DYNAMIC CALC =====
-  const l10Done = addMonths(projectStart, 4);  // Month 4 (Oct 2026)
-  const l16Active = addDays(reportDate, 6);    // 6 days from report date
-  const topOff = addMonths(projectStart, 6);   // Month 6 (Dec 2026)
-  const mepTesting = addMonths(projectStart, 8); // Month 8 (Feb 2027)
+  // ===== 9.4 KALKULASI & UPDATE MILESTONE DINAMIS =====
+  const l10Done = addMonths(projectStart, 4);  
+  const l16Active = addDays(reportDate, 6);    
+  const topOff = addMonths(projectStart, 6);   
+  const mepTesting = addMonths(projectStart, 8); 
 
   document.getElementById('msL10').textContent = `Selesai: ${formatDateShort(l10Done)} · 2 hari lebih cepat`;
   document.getElementById('msL16').textContent = `Target: ${formatDateShort(l16Active)}`;
@@ -676,31 +650,23 @@ Jawa Barat 16152.</p>
   document.getElementById('msTopOffDays').textContent = `+${diffDays(topOff, reportDate)} hari`;
   document.getElementById('msMEPDays').textContent = `+${diffDays(mepTesting, reportDate)} hari`;
 
-  // Update timeline track labels
-  const tlDates = [
-    projectStart, 
-    addMonths(projectStart, 2), 
-    addMonths(projectStart, 4), 
-    addMonths(projectStart, 6), 
-    addMonths(projectStart, 8), 
-    projectEnd
-  ];
+  // Update label bawah timeline
+  const tlDates = [projectStart, addMonths(projectStart, 2), addMonths(projectStart, 4), addMonths(projectStart, 6), addMonths(projectStart, 8), projectEnd];
   tlDates.forEach((d, i) => {
     const el = document.getElementById(`tl${i+1}`);
     if(el) el.textContent = `${monthNamesShort[d.getMonth()]} ${String(d.getFullYear()).substring(2)}`;
   });
 
-  // Update Milestone Bar Progress (based on monthsPassed)
+  // Update bar progress milestone
   const msProgress = (monthsPassed / 10) * 100;
   document.getElementById('msProgressBar').style.width = msProgress + '%';
 
-  // ===== PROGRESS RING ANIMATION =====
+  // ===== 9.5 ANIMASI RING PROGRES =====
   function animateRing() {
     const ring = document.getElementById('progressRing');
     const num = document.getElementById('progressNum');
     const target = progressVal;
     const circumference = 578;
-    
     const duration = 1800;
     const start = performance.now();
     
@@ -709,34 +675,30 @@ Jawa Barat 16152.</p>
       const progress = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
       const val = target * eased;
-      
       ring.style.strokeDashoffset = circumference - (val / 100) * circumference;
       num.innerHTML = val.toFixed(1) + '<span style="color:var(--accent);font-size:32px">%</span>';
-      
       if(progress < 1) requestAnimationFrame(step);
     }
     requestAnimationFrame(step);
   }
   setTimeout(animateRing, 300);
 
-  // ===== S-CURVE CHART (BULANAN DINAMIS 10 BULAN) =====
+  // ===== 9.6 GRAFIK KURVA S (PLANNED VS ACTUAL) =====
   const ctx = document.getElementById('sCurveChart').getContext('2d');
-  
-  // Generate S-curve data (10 months span: Jun 26 to Apr 27 -> 11 points)
   const monthLabels = [];
   for(let i = 0; i <= 10; i++) {
     let d = addMonths(projectStart, i);
     monthLabels.push(`${monthNamesShort[d.getMonth()]} ${String(d.getFullYear()).substring(2)}`);
   }
-  const totalMonths = monthLabels.length; // 11
+  const totalMonths = monthLabels.length; 
 
-  // Planned (baseline)
+  // Data Planned (Rencana)
   const planned = monthLabels.map((_, i) => {
     const x = i / (totalMonths - 1);
     return +(1 / (1 + Math.exp(-7 * (x - 0.5))) * 100).toFixed(1);
   });
 
-  // Actual (filled up to current month)
+  // Data Actual (Realisasi)
   const actual = monthLabels.map((_, i) => {
     if(i > monthsPassed) return null;
     const x = i / (totalMonths - 1);
@@ -744,6 +706,7 @@ Jawa Barat 16152.</p>
     return +(base * 0.92 + (Math.random() - 0.5) * 1.5).toFixed(1);
   });
   
+  // Konfigurasi Chart.js
   new Chart(ctx, {
     type: 'line',
     data: {
