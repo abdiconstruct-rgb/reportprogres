@@ -218,7 +218,7 @@
         <span class="pill">Kontrak: 10 Bulan</span>
       </div>
       <!-- UBAH JUDUL PROYEK DI SINI -->
-      <h1 class="display display-xl" style="font-size:64px;line-height:0.95">INDEPENDENCE<br>Co-Living<span style="color:var(--accent)">Space.</span></h1>
+      <h1 class="display display-xl" style="font-size:64px;line-height:0.95">INDEPENDENCE<br>Co-Living <span style="color:var(--accent)">Space.</span></h1>
       <!-- UBAH DESKRIPSI LOKASI & LUAS DI SINI -->
       <p class="text-[var(--fg-dim)] mt-3 text-[14px] max-w-xl">Pembangunan rumah KOS 2 lantai. Lokasi: Jl. Lincar II No.17, Kota Bogor,
 Jawa Barat 16152.</p>
@@ -610,7 +610,7 @@ Jawa Barat 16152.</p>
   setInterval(updateClock, 1000);
 
   // ===== 9.4 KALKULASI & UPDATE MILESTONE DINAMIS =====
-  const l10Done = addMonths(projectStart, 4);  
+  const l10Done = addMonths(projectStart, 0.8);  
   const l16Active = addDays(reportDate, 6);    
   const topOff = addMonths(projectStart, 2);   
   const mepTesting = addMonths(projectStart, 8); 
@@ -667,7 +667,7 @@ Jawa Barat 16152.</p>
   // Data Planned (Rencana)
   const planned = monthLabels.map((_, i) => {
     const x = i / (totalMonths - 1);
-    return +(1 / (1 + Math.exp(-7 * (x - 0.5))) * 100).toFixed(1);
+    return +(1 / (1 + Math.exp(-7 * (x - 1))) * 100).toFixed(1);
   });
 
   // Data Actual (Realisasi)
