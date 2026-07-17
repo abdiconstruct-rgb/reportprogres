@@ -379,10 +379,12 @@ Jawa Barat 16152.</p>
               <span class="mono font-bold text-[14px] w-12 text-right">0%</span>
             </div>
           </div>
-          <div class="bar-track"><div class="bar-fill" style="width:31%;background:linear-gradient(90deg,#5ab4e0,#3a7ea8)"></div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,#5ab4e0,#3a7ea8)"></div></div>
           <div class="text-[11px] text-[var(--fg-dim)] mt-1.5"></div>
         </div>
+           
       </div>
+         </div>
 
     <!-- TIMELINE & MILESTONE (Diubah otomatis oleh JS) -->
     <div class="card p-6 xl:col-span-2">
@@ -414,7 +416,7 @@ Jawa Barat 16152.</p>
           <div class="flex items-center gap-3">
             <div class="w-2 h-2 rounded-full" style="background:var(--accent);box-shadow:0 0 8px var(--accent-glow)"></div>
             <div>
-              <div class="text-[12px] font-semibold">Struktur Lantai 16</div>
+              <div class="text-[12px] font-semibold">Struktur Lantai Dasar/Bawah</div>
               <div class="text-[10px] text-[var(--muted)] mono" id="msL16">Target: -</div>
             </div>
           </div>
@@ -425,7 +427,7 @@ Jawa Barat 16152.</p>
           <div class="flex items-center gap-3">
             <div class="w-2 h-2 rounded-full" style="background:var(--steel)"></div>
             <div>
-              <div class="text-[12px] font-semibold">Struktur Top-Off (L24)</div>
+              <div class="text-[12px] font-semibold">Struktur Top-Off (L2)</div>
               <div class="text-[10px] text-[var(--muted)] mono" id="msTopOff">Target: -</div>
             </div>
           </div>
@@ -447,7 +449,7 @@ Jawa Barat 16152.</p>
           <div class="flex items-center gap-3">
             <div class="w-2 h-2 rounded-full" style="background:var(--success)"></div>
             <div>
-              <div class="text-[12px] font-semibold text-[var(--fg-dim)] line-through">Struktur Lantai 10</div>
+              <div class="text-[12px] font-semibold text-[var(--fg-dim)] line-through">Pek. Persiapan</div>
               <div class="text-[10px] text-[var(--muted)] mono" id="msL10">Selesai: -</div>
             </div>
           </div>
@@ -610,7 +612,7 @@ Jawa Barat 16152.</p>
   // ===== 9.4 KALKULASI & UPDATE MILESTONE DINAMIS =====
   const l10Done = addMonths(projectStart, 4);  
   const l16Active = addDays(reportDate, 6);    
-  const topOff = addMonths(projectStart, 6);   
+  const topOff = addMonths(projectStart, 2);   
   const mepTesting = addMonths(projectStart, 8); 
 
   document.getElementById('msL10').textContent = `Selesai: ${formatDateShort(l10Done)} · 2 hari lebih cepat`;
