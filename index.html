@@ -206,7 +206,8 @@
         <span class="text-[11px] mono text-[var(--muted)]">·</span>
         <span class="text-[11px] mono" id="liveClock">--:--:--</span>
       </div>
-      <div class="px-3 md:px-4 py-2 rounded-lg flex items-center justify-center font-bold text-[11px] md:text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">Excel File</div>
+         <a href="https://docs.google.com/spreadsheets/d/119fpSfex4x3vyISvYN-HCs45KvnJz334/edit?usp=sharing&ouid=115632378833006552819&rtpof=true&sd=true">
+      <div class="px-3 md:px-4 py-2 rounded-lg flex items-center justify-center font-bold text-[11px] md:text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">Excel File</div></a>
     </div>
   </div>
   <div class="stripe"></div>
@@ -377,7 +378,8 @@
           <div class="flex items-center gap-3 min-w-0">
             <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--success)"></div>
             <div class="min-w-0">
-              <div class="text-[12px] font-semibold text-[var(--fg-dim)] line-through truncate">Persiapan, Bongkaran, Galian & Urug</div>
+              <!-- <div class="text-[12px] font-semibold text-[var(--fg-dim)] line-through truncate"> --> 
+                   <div class="text-[12px] font-semibold truncate">Persiapan, Bongkaran, Galian & Urug</div>
               <div class="text-[10px] text-[var(--muted)] mono" id="msL10">Target: -</div>
             </div>
           </div>
@@ -610,10 +612,10 @@
   setInterval(updateClock, 1000);
 
   // ===== 8.7 KALKULASI MILESTONE DINAMIS =====
-  const l10Done = addMonths(projectStart, 4);  
-  const l16Active = addDays(reportDate, 6);    
-  const topOff = addMonths(projectStart, 3);   
-  const mepTesting = addMonths(projectStart, 8); 
+  const l10Done = addMonths(projectStart, 1);  
+  const l16Active = addMonths(reportDate, 1);    
+  const topOff = addMonths(projectStart, 1);   
+  const mepTesting = addMonths(projectStart, 7); 
 
   document.getElementById('msL10').textContent = `Target: ${formatDateShort(l10Done)}`;
   document.getElementById('msL16').textContent = `Target: ${formatDateShort(l16Active)}`;
