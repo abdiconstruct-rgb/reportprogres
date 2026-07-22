@@ -160,147 +160,160 @@
   }
   .info-wrap:hover .info-box, .info-wrap:focus-within .info-box { opacity: 1; visibility: visible; bottom: 135%; }
 
-  /* =====================================================================
-     CSS POPUP TAGIHAN TERMIN
-     ===================================================================== */
-  .popup-overlay{
-    position:fixed;inset:0;z-index:9999;
-    background:rgba(0,0,0,0.75);backdrop-filter:blur(12px);
-    display:flex;align-items:center;justify-content:center;
-    opacity:0;visibility:hidden;
-    transition:opacity 0.4s ease, visibility 0.4s ease;
+  /* ===== CSS POPUP TAGIHAN TERMIN ===== */
+  .termin-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease;
+    padding: 16px;
   }
-  .popup-overlay.active{opacity:1;visibility:visible}
+  .termin-overlay.show { opacity: 1; visibility: visible; }
 
-  .popup-modal{
-    width:94%;max-width:680px;max-height:90vh;
-    background:linear-gradient(180deg,rgba(30,36,46,0.98),rgba(17,21,27,0.98));
-    border:1px solid var(--border-bright);border-radius:18px;
-    backdrop-filter:blur(20px);
-    position:relative;overflow:hidden;
-    transform:translateY(30px) scale(0.96);opacity:0;
-    transition:transform 0.45s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;
-    box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,107,26,0.08);
+  .termin-modal {
+    background: linear-gradient(180deg, #151a22, #0e1218);
+    border: 1px solid var(--border-bright); border-radius: 16px;
+    width: 100%; max-width: 680px; max-height: 90vh;
+    display: flex; flex-direction: column;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,107,26,0.08);
+    transform: translateY(24px) scale(0.97); transition: transform 0.35s cubic-bezier(.2,.8,.2,1);
+    overflow: hidden;
   }
-  .popup-overlay.active .popup-modal{
-    transform:translateY(0) scale(1);opacity:1;
-  }
+  .termin-overlay.show .termin-modal { transform: translateY(0) scale(1); }
 
-  .popup-modal::before{
-    content:"";position:absolute;left:0;top:0;right:0;height:1px;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+  .termin-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 22px; border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(255,107,26,0.06), transparent);
+    flex-shrink: 0; flex-wrap: wrap; gap: 12px;
   }
-
-  .popup-stripe{
-    height:5px;
-    background:repeating-linear-gradient(45deg, var(--accent), var(--accent) 8px, #1a1300 8px, #1a1300 16px);
+  .termin-header-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 800; letter-spacing: -0.01em; color: var(--fg);
   }
-
-  .popup-close{
-    position:absolute;top:14px;right:14px;z-index:10;
-    width:34px;height:34px;border-radius:10px;border:1px solid var(--border-bright);
-    background:var(--surface-2);color:var(--fg-dim);
-    display:flex;align-items:center;justify-content:center;cursor:pointer;
-    transition:all 0.25s ease;font-size:18px;line-height:1;
-  }
-  .popup-close:hover{background:var(--danger);color:#fff;border-color:var(--danger);transform:scale(1.08)}
-  .popup-close:focus{outline:2px solid var(--accent);outline-offset:2px}
-
-  .popup-body{padding:24px 28px 28px;overflow-y:auto;max-height:calc(90vh - 5px)}
-
-  .termin-table{width:100%;border-collapse:separate;border-spacing:0;font-size:12px}
-  .termin-table thead th{
-    text-align:left;padding:10px 8px;font-size:9px;font-weight:700;
-    text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);
-    border-bottom:1px solid var(--border-bright);background:var(--surface-2);
-    position:sticky;top:0;z-index:2;
-  }
-  .termin-table thead th:first-child{border-radius:8px 0 0 0}
-  .termin-table thead th:last-child{border-radius:0 8px 0 0;text-align:center}
-  .termin-table tbody td{
-    padding:9px 8px;border-bottom:1px solid var(--border);
-    color:var(--fg-dim);vertical-align:middle;
-  }
-  .termin-table tbody tr{transition:background 0.2s ease}
-  .termin-table tbody tr:hover{background:rgba(255,255,255,0.02) !important}
-  .termin-table tbody tr:last-child td{border-bottom:none}
-  .termin-table .col-nominal{text-align:right;font-family:'JetBrains Mono',monospace;font-weight:500;white-space:nowrap}
-  .termin-table .col-pct{text-align:center;font-family:'JetBrains Mono',monospace;font-weight:600}
-
-  .termin-badge{
-    display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:3px 9px;border-radius:6px;
-    font-size:8px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;white-space:nowrap;
-  }
-  .termin-badge.lunas{background:rgba(95,208,126,0.12);color:var(--success);border:1px solid rgba(95,208,126,0.25)}
-  .termin-badge.jatuh-tempo{background:rgba(255,181,71,0.12);color:var(--warning);border:1px solid rgba(255,181,71,0.25);animation: pulse-badge 2s infinite}
-  .termin-badge.belum{background:rgba(107,115,130,0.1);color:var(--muted);border:1px solid var(--border)}
-  
-  @keyframes pulse-badge {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255,181,71,0.3); }
-    50% { box-shadow: 0 0 0 4px rgba(255,181,71,0); }
-  }
-
-  .termin-progress-track{
-    height:7px;border-radius:4px;background:rgba(255,255,255,0.06);overflow:hidden;margin-top:5px;
-  }
-  .termin-progress-fill{
-    height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--hi-vis));
-    transition:width 0.5s cubic-bezier(.2,.8,.2,1);
-  }
-
-  .popup-footer{
-    margin-top:22px;padding-top:16px;border-top:1px solid var(--border);
-    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  .termin-header-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #cc4d0a);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    box-shadow: 0 0 16px var(--accent-glow);
   }
   
-  .current-progress-marker {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 10px;
-    font-weight: 700;
-    background: rgba(255, 107, 26, 0.1);
-    border: 1px solid rgba(255, 107, 26, 0.3);
-    color: var(--accent);
-    font-family: 'JetBrains Mono', monospace;
+  /* CSS Progress Aktual di Header Popup */
+  .termin-header-progress {
+    display: flex; align-items: center; gap: 10px; 
+    margin-left: auto; /* Dorong ke tengah/tengah kanan */
+    padding: 6px 14px; border-radius: 8px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  }
+  .termin-header-prog-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; 
+    color: var(--fg-dim); font-weight: 600;
+  }
+  .termin-header-prog-bar {
+    width: 80px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;
+  }
+  .termin-header-prog-fill {
+    height: 100%; background: linear-gradient(90deg, var(--accent), var(--hi-vis)); border-radius: 3px;
+    transition: width 0.8s ease; box-shadow: 0 0 8px var(--accent-glow);
+  }
+  .termin-header-prog-val {
+    font-size: 14px; font-weight: 800; color: var(--hi-vis); letter-spacing: -0.02em;
   }
 
-  /* Edit Mode UI */
-  .popup-edit-btn {
-    padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border-bright);
-    background: var(--surface-2); color: var(--fg-dim); font-size: 11px; font-weight: 600;
-    cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+  .termin-close-x {
+    width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-bright);
+    background: var(--surface-3); color: var(--muted); font-size: 18px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: all 0.2s; line-height: 1; flex-shrink: 0;
   }
-  .popup-edit-btn:hover { border-color: var(--accent); color: var(--accent); }
-  .popup-edit-btn.save-btn { background: var(--success); color: #0a0c0f; border-color: var(--success); font-weight: 700; }
-  .popup-edit-btn.save-btn:hover { filter: brightness(1.1); }
-  .popup-edit-btn.cancel-btn { border-color: var(--danger); color: var(--danger); }
-  .popup-edit-btn.reset-btn { margin-left: auto; border-color: var(--muted); color: var(--muted); font-size: 10px; padding: 5px 10px; }
-  .popup-edit-btn.reset-btn:hover { border-color: var(--danger); color: var(--danger); }
+  .termin-close-x:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-  .termin-input, .termin-select {
-    background: var(--surface-3); border: 1px solid var(--border-bright); color: var(--fg);
-    padding: 5px 8px; border-radius: 6px; font-size: 11px; width: 100%;
-    font-family: 'JetBrains Mono', monospace; transition: border-color 0.2s;
+  .termin-body {
+    padding: 18px 22px; overflow-y: auto; flex: 1;
   }
-  .termin-input:focus, .termin-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px rgba(255,107,26,0.2); }
-  .termin-select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml;utf8,<svg fill='%236b7382' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>"); background-repeat: no-repeat; background-position: right 4px center; background-size: 16px; padding-right: 24px; cursor: pointer; }
-  .col-pct-input { width: 60px; text-align: center; }
+  .termin-body::-webkit-scrollbar { width: 5px; }
+  .termin-body::-webkit-scrollbar-track { background: transparent; }
+  .termin-body::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
 
-  @media(max-width:600px){
-    .popup-body{padding:18px 14px 22px}
-    .termin-table{font-size:10px}
-    .termin-table thead th{padding:8px 4px;font-size:7px;letter-spacing:0.05em}
-    .termin-table tbody td{padding:8px 4px}
-    .col-nominal{font-size:9px !important}
-    .popup-modal{border-radius:14px}
-    .termin-input, .termin-select { font-size: 10px; padding: 4px 6px; }
+  .termin-row {
+    display: flex; gap: 14px; padding: 14px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .termin-row:last-child { border-bottom: none; }
+
+  .termin-num {
+    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 800; letter-spacing: -0.02em;
+    border: 1px solid var(--border-bright); background: var(--surface-3); color: var(--fg-dim);
+  }
+  .termin-num.dp { background: linear-gradient(135deg, var(--accent), #cc4d0a); color: #1a1300; border-color: var(--accent); }
+  .termin-num.done { background: linear-gradient(135deg, #5fd07e, #3da55c); color: #0a2e16; border-color: var(--success); }
+
+  .termin-info { flex: 1; min-width: 0; }
+  .termin-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--accent); margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .termin-desc {
+    font-size: 12px; line-height: 1.65; color: var(--fg-dim);
+  }
+  .termin-desc strong { color: var(--fg); font-weight: 700; }
+  .termin-amount {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
+    color: var(--hi-vis); margin-top: 6px; display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,212,0,0.06); padding: 4px 10px; border-radius: 6px;
+    border: 1px solid rgba(255,212,0,0.15);
+  }
+  .termin-amount.done { color: var(--success); background: rgba(95,208,126,0.06); border-color: rgba(95,208,126,0.15); }
+
+  .termin-status {
+    margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 11px; line-height: 1.5;
+    border: 1px solid var(--border); background: rgba(255,255,255,0.02);
   }
 
-  @media (max-width:768px){
+  .pill-lunas {
+    display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.04em;
+    background: rgba(95,208,126,0.1); color: var(--success); border: 1px solid rgba(95,208,126,0.3);
+    text-transform: uppercase;
+  }
+
+  .termin-footer {
+    padding: 16px 22px; border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: rgba(0,0,0,0.25); flex-shrink: 0;
+  }
+  .termin-total {
+    font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
+  }
+  .termin-total-val {
+    font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--fg);
+    margin-top: 2px;
+  }
+  .termin-close-btn {
+    padding: 10px 32px; border-radius: 10px; border: none; cursor: pointer;
+    font-family: 'Archivo', system-ui, sans-serif; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.02em; transition: all 0.2s;
+    background: linear-gradient(135deg, var(--accent), #cc4d0a); color: #1a1300;
+    box-shadow: 0 0 20px var(--accent-glow);
+  }
+  .termin-close-btn:hover { transform: translateY(-1px); box-shadow: 0 0 30px var(--accent-glow); filter: brightness(1.1); }
+
+  @media (max-width:640px){
+    .display-xl{font-size:40px !important;line-height:1 !important}
+    .ring-wrap{width:180px;height:180px}
+    .ring-wrap svg{width:180px;height:180px}
+    #progressNum{font-size:42px !important}
+    .termin-modal { max-width: 100%; }
+    .termin-row { gap: 10px; }
+    .termin-desc { font-size: 11px; }
+    .termin-amount { font-size: 11px; }
+    /* Responsive header popup */
+    .termin-header-progress { width: 100%; order: 3; margin-left: 0; justify-content: space-between; }
+  }
+  @media (min-width:641px) and (max-width:768px){
     .display-xl{font-size:40px !important;line-height:1 !important}
     .ring-wrap{width:180px;height:180px}
     .ring-wrap svg{width:180px;height:180px}
@@ -312,98 +325,165 @@
 <body>
 
 <!-- =====================================================================
-     POPUP TAGIHAN TERMIN
+     POPUP TAGIHAN TERMIN — ★ RUBAH VALUE DI SINI
      ===================================================================== -->
-<div class="popup-overlay" id="terminPopup" role="dialog" aria-modal="true" aria-label="Tagihan Termin Proyek">
+<div class="termin-overlay" id="terminOverlay">
 
-  <div class="popup-modal">
-    <div class="popup-stripe"></div>
-    <button class="popup-close" id="popupCloseBtn" aria-label="Tutup popup">&times;</button>
+  <div class="termin-modal">
 
-    <div class="popup-body">
-      <!-- Header Popup -->
-      <div style="margin-bottom:20px">
-        <div class="flex items-center gap-2 mb-1">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-          <span class="text-[10px] uppercase tracking-widest font-bold" style="color:var(--accent)">Invoice Schedule</span>
+    <!-- HEADER dengan Progress Aktual & tombol X -->
+    <div class="termin-header">
+      <div class="termin-header-title">
+        <div class="termin-header-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
         </div>
-        <h2 class="display text-[22px] sm:text-[26px]" style="line-height:1.1">Tagihan <span style="color:var(--accent)">Termin</span></h2>
-        <p class="text-[12px] mt-1" style="color:var(--fg-dim)">INDEPENDENCE Co-Living Space — PROJ-077/SPK-BLD/VI/2026</p>
-        
-        <!-- Edit Controls -->
-        <div class="flex flex-wrap items-center gap-2 mt-3" id="editControls">
-          <button class="popup-edit-btn" id="editTerminBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            Edit Data
-          </button>
-          <button class="popup-edit-btn save-btn hidden" id="saveTerminBtn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            Simpan
-          </button>
-          <button class="popup-edit-btn cancel-btn hidden" id="cancelTerminBtn">Batal</button>
-          <button class="popup-edit-btn reset-btn hidden" id="resetTerminBtn">Reset Default</button>
+        <span>Tagihan Termin Pembayaran</span>
+      </div>
+      
+      <!-- PROGRESS AKTUAL DI HEADER -->
+      <div class="termin-header-progress">
+        <span class="termin-header-prog-label">Progress Aktual</span>
+        <div class="termin-header-prog-bar">
+          <div class="termin-header-prog-fill" id="terminHeaderProgFill" style="width: 0%"></div>
         </div>
+        <span class="termin-header-prog-val mono" id="terminHeaderProgVal">0%</span>
       </div>
 
-      <!-- Ringkasan Keuangan -->
-      <div class="grid grid-cols-3 gap-3 mb-5">
-        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
-          <div class="text-[8px] sm:text-[9px] uppercase tracking-widest font-bold" style="color:var(--muted)">Nilai Kontrak</div>
-          <div class="mono text-[13px] sm:text-[15px] font-bold mt-1" style="color:var(--hi-vis)" id="nilaiKontrakDisplay">0</div>
-        </div>
-        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
-          <div class="text-[8px] sm:text-[9px] uppercase tracking-widest font-bold" style="color:var(--muted)">Termin Dibayar</div>
-          <div class="mono text-[13px] sm:text-[15px] font-bold mt-1" style="color:var(--success)" id="totalDibayar">Rp 0</div>
-        </div>
-        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
-          <div class="text-[8px] sm:text-[9px] uppercase tracking-widest font-bold" style="color:var(--muted)">Sisa Tagihan</div>
-          <div class="mono text-[13px] sm:text-[15px] font-bold mt-1" style="color:var(--danger)" id="sisaTagihan">Rp 0</div>
-        </div>
-      </div>
-
-      <!-- Progress Pembayaran Keseluruhan -->
-      <div class="mb-5">
-        <div class="flex items-center justify-between mb-1">
-          <div class="flex items-center gap-2">
-            <span class="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold" style="color:var(--muted)">Progress Pembayaran</span>
-            <span class="current-progress-marker" id="currentProgressMarker">0% Actual</span>
-          </div>
-          <span class="mono text-[12px] font-bold" style="color:var(--accent)" id="terminPctText">0%</span>
-        </div>
-        <div class="termin-progress-track">
-          <div class="termin-progress-fill" id="terminProgressFill" style="width:0%"></div>
-        </div>
-      </div>
-
-      <!-- Tabel Termin -->
-      <div style="border:1px solid var(--border);border-radius:10px;overflow:hidden">
-        <table class="termin-table">
-          <thead>
-            <tr>
-              <th style="width:40px">Tahap</th>
-              <th>Keterangan</th>
-              <th class="col-pct" style="width:50px">%</th>
-              <th style="width:140px;text-align:right">Nominal (Rp)</th>
-              <th style="width:105px;text-align:center">Status</th>
-            </tr>
-          </thead>
-          <tbody id="terminTableBody">
-            <!-- Diisi oleh JavaScript -->
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Footer Popup -->
-      <div class="popup-footer">
-        <div class="text-[9px] sm:text-[10px]" style="color:var(--muted)">
-          <span class="mono">Ref: <span id="terminRefDate">-</span></span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="live-dot" style="width:6px;height:6px"></span>
-          <span class="text-[9px] sm:text-[10px] mono" style="color:var(--fg-dim)">Synced</span>
-        </div>
-      </div>
+      <button class="termin-close-x" id="terminCloseX" aria-label="Tutup">&times;</button>
     </div>
+
+    <!-- BODY daftar termin -->
+    <div class="termin-body">
+
+      <div style="margin-bottom:14px;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.02);border:1px solid var(--border)">
+        <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);font-weight:700;margin-bottom:3px">Nilai Kontrak</div>
+        <!-- ★ RUBAH VALUE DI SINI: Total nilai kontrak -->
+        <div style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800;color:var(--fg)">Rp. 1.591.000.000</div>
+      </div>
+
+      <!-- ===== TERMIN 1 (Down Payment) - LUNAS ===== -->
+      <div class="termin-row">
+        <div class="termin-num done">1</div>
+        <div class="termin-info">
+          <div class="termin-label">
+            Down Payment (Tahap 1)
+            <span class="pill-lunas">✓ Lunas</span>
+          </div>
+          <div class="termin-desc">
+            Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>0%</strong> (nol persen) dan akan dilaksanakan sampai dengan <strong>25%</strong> (dua puluh lima persen).
+          </div>
+          <div class="termin-amount done">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
+            Rp. 397.750.000
+          </div>
+          <div style="font-size:10px;color:var(--success);margin-top:3px;font-style:italic">Tiga ratus sembilan puluh tujuh juta tujuh ratus lima puluh ribu rupiah</div>
+          <div class="termin-status" id="statusTermin1">Memuat progress...</div>
+        </div>
+      </div>
+
+      <!-- ===== TERMIN 2 ===== -->
+      <div class="termin-row">
+        <div class="termin-num">2</div>
+        <div class="termin-info">
+          <div class="termin-label">Tahap 2</div>
+          <div class="termin-desc">
+            Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>25%</strong> (dua puluh lima persen) dan akan dilaksanakan sampai dengan <strong>50%</strong> (lima puluh persen).
+          </div>
+          <div class="termin-amount">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
+            Rp. 397.750.000
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Tiga ratus sembilan puluh tujuh juta tujuh ratus lima puluh ribu rupiah</div>
+          <div class="termin-status" id="statusTermin2">Memuat progress...</div>
+        </div>
+      </div>
+
+      <!-- ===== TERMIN 3 ===== -->
+      <div class="termin-row">
+        <div class="termin-num">3</div>
+        <div class="termin-info">
+          <div class="termin-label">Tahap 3</div>
+          <div class="termin-desc">
+            Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>50%</strong> (lima puluh persen) dan akan dilaksanakan sampai dengan <strong>75%</strong> (tujuh puluh lima persen).
+          </div>
+          <div class="termin-amount">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
+            Rp. 397.750.000
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Tiga ratus sembilan puluh tujuh juta tujuh ratus lima puluh ribu rupiah</div>
+          <div class="termin-status" id="statusTermin3">Memuat progress...</div>
+        </div>
+      </div>
+
+      <!-- ===== TERMIN 4 ===== -->
+      <div class="termin-row">
+        <div class="termin-num">4</div>
+        <div class="termin-info">
+          <div class="termin-label">Tahap 4</div>
+          <div class="termin-desc">
+            Pembayaran sebesar <strong>10%</strong> (sepuluh persen), pembayaran dilakukan saat progress pekerjaan <strong>75%</strong> (tujuh puluh lima persen) dan akan dilaksanakan sampai dengan <strong>85%</strong> (delapan puluh lima persen).
+          </div>
+          <div class="termin-amount">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
+            Rp. 159.100.000
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Seratus lima puluh sembilan juta seratus ribu rupiah</div>
+          <div class="termin-status" id="statusTermin4">Memuat progress...</div>
+        </div>
+      </div>
+
+      <!-- ===== TERMIN 5 ===== -->
+      <div class="termin-row">
+        <div class="termin-num">5</div>
+        <div class="termin-info">
+          <div class="termin-label">Tahap 5</div>
+          <div class="termin-desc">
+            Pembayaran sebesar <strong>10%</strong> (sepuluh persen), pembayaran dilakukan saat progress pekerjaan <strong>85%</strong> (delapan puluh lima persen) dan akan dilaksanakan sampai dengan <strong>100%</strong> (seratus persen).
+          </div>
+          <div class="termin-amount">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
+            Rp. 159.100.000
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Seratus lima puluh sembilan juta seratus ribu rupiah</div>
+          <div class="termin-status" id="statusTermin5">Memuat progress...</div>
+        </div>
+      </div>
+
+      <!-- ===== TERMIN 6 ===== -->
+      <div class="termin-row">
+        <div class="termin-num">6</div>
+        <div class="termin-info">
+          <div class="termin-label">Tahap 6 (Retensi)</div>
+          <div class="termin-desc">
+            Pembayaran sebesar <strong>5%</strong> (lima persen), pembayaran dilakukan setelah berakhirnya masa garansi bangunan.
+          </div>
+          <div class="termin-amount">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
+            Rp. 79.550.000
+          </div>
+          <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Tujuh puluh sembilan juta lima ratus lima puluh ribu rupiah</div>
+          <div class="termin-status" id="statusTermin6">Memuat progress...</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FOOTER dengan tombol Close -->
+    <div class="termin-footer">
+      <div>
+        <div class="termin-total">Total 6 Tahap Pembayaran</div>
+        <!-- ★ RUBAH VALUE DI SINI: Total keseluruhan -->
+        <div class="termin-total-val">Rp. 1.591.000.000</div>
+      </div>
+      <button class="termin-close-btn" id="terminCloseBtn">CLOSE</button>
+    </div>
+
   </div>
 </div>
 
@@ -448,11 +528,8 @@
   <div class="stripe"></div>
 </header>
 
-<!-- =====================================================================
-     BAGIAN 3: INFO PROYEK
-     ===================================================================== -->
+<!-- BAGIAN 3 s/d 7 tetap sama persis seperti sebelumnya -->
 <main class="max-w-[1600px] mx-auto px-4 md:px-6 py-6 md:py-8 layer">
-
   <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-6 mb-8 reveal">
     <div>
       <div class="flex flex-wrap items-center gap-2 mb-3">
@@ -488,15 +565,9 @@
       <div class="flex-1 flex items-center justify-center py-4">
         <div class="ring-wrap">
           <svg viewBox="0 0 220 220" width="100%" height="100%">
-            <defs>
-              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ff6b1a"/>
-                <stop offset="100%" stop-color="#ffd400"/>
-              </linearGradient>
-            </defs>
+            <defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6b1a"/><stop offset="100%" stop-color="#ffd400"/></linearGradient></defs>
             <circle cx="110" cy="110" r="92" class="ring-bg" stroke-width="14" fill="none"/>
-            <circle id="progressRing" cx="110" cy="110" r="92" class="ring-fg" stroke-width="14" fill="none"
-              stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 110 110)"/>
+            <circle id="progressRing" cx="110" cy="110" r="92" class="ring-fg" stroke-width="14" fill="none" stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 110 110)"/>
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
             <div class="text-[10px] md:text-[11px] uppercase tracking-widest text-[var(--muted)]">Terselesaikan</div>
@@ -506,40 +577,25 @@
         </div>
       </div>
       <div class="grid grid-cols-3 gap-2 pt-4 border-t" style="border-color:var(--border)">
-        <div class="text-center">
-          <div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>Planned</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Planned (Rencana)</b><br>Persentase progres yang seharusnya sudah tercapai berdasarkan baseline.</div></div>
-          <div class="mono font-bold text-[14px] md:text-[15px]" id="plannedPercent">52.4%</div>
-        </div>
-        <div class="text-center">
-          <div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>Variance</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Variance (Selisih)</b><br>Selisih antara progres aktual dan rencana. Minus berarti tertinggal.</div></div>
-          <div class="mono font-bold text-[14px] md:text-[15px] text-[var(--danger)]" id="variancePercent">-5.1%</div>
-        </div>
-        <div class="text-center">
-          <div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>SPI</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Schedule Performance Index</b><br>Rasio efisiensi waktu. < 1 terlambat, > 1 lebih cepat.</div></div>
-          <div class="mono font-bold text-[14px] md:text-[15px] text-[var(--warning)]" id="spiVal">0.90</div>
-        </div>
+        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>Planned</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Planned (Rencana)</b><br>Persentase progres yang seharusnya sudah tercapai pada minggu/bulan ini berdasarkan jadwal baseline proyek.</div></div><div class="mono font-bold text-[14px] md:text-[15px]" id="plannedPercent">52.4%</div></div>
+        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>Variance</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Variance (Selisih)</b><br>Selisih antara progres aktual dan rencana. Nilai minus (-) berarti pekerjaan tertinggal dari jadwal.</div></div><div class="mono font-bold text-[14px] md:text-[15px] text-[var(--danger)]" id="variancePercent">-5.1%</div></div>
+        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>SPI</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Schedule Performance Index</b><br>Rasio efisiensi waktu (Actual dibagi Planned). Jika angka < 1 berarti terlambat, > 1 berarti lebih cepat.</div></div><div class="mono font-bold text-[14px] md:text-[15px] text-[var(--warning)]" id="spiVal">0.90</div></div>
       </div>
     </div>
     <div class="card p-5 md:p-6 xl:col-span-2">
-      <div class="flex items-center justify-between mb-4">
-        <div class="section-title">Kurva S — Progress Kumulatif</div>
-        <span class="text-[10px] md:text-[11px] text-[var(--muted)] mono hidden sm:block">Periode: Bulanan</span>
-      </div>
-      <div style="height:260px;position:relative"><canvas id="sCurveChart"></canvas></div>
+      <div class="flex items-center justify-between mb-4"><div class="section-title">Kurva S — Progress Kumulatif</div><span class="text-[10px] md:text-[11px] text-[var(--muted)] mono hidden sm:block">Periode: Bulanan</span></div>
+      <div style="height:260px;md:height:280px;position:relative"><canvas id="sCurveChart"></canvas></div>
       <div class="flex flex-wrap items-center gap-3 md:gap-4 mt-4 pt-4 border-t" style="border-color:var(--border)">
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:#7c8ba1"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Planned</span></div>
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:var(--accent)"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Actual</span></div>
-        <div class="ml-auto text-[10px] md:text-[11px] text-[var(--muted)] mono" id="sCurveUpdate">-</div>
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:#7c8ba1"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Planned (Baseline)</span></div>
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:var(--accent)"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Actual Progress</span></div>
+        <div class="ml-auto text-[10px] md:text-[11px] text-[var(--muted)] mono" id="sCurveUpdate">Last update: --</div>
       </div>
     </div>
   </section>
 
   <section class="grid grid-cols-1 xl:grid-cols-5 gap-4 md:gap-5 mb-4 md:mb-5 reveal">
     <div class="card p-5 md:p-6 xl:col-span-3">
-      <div class="flex items-center justify-between mb-5">
-        <div class="section-title">Progress per Disiplin</div>
-        <div class="text-[10px] md:text-[11px] text-[var(--muted)] mono">Bobot dalam %</div>
-      </div>
+      <div class="flex items-center justify-between mb-5"><div class="section-title">Progress per Disiplin</div><div class="text-[10px] md:text-[11px] text-[var(--muted)] mono">Bobot dalam %</div></div>
       <div class="space-y-4" id="disciplineList"></div>
     </div>
     <div class="card p-5 md:p-6 xl:col-span-2">
@@ -561,9 +617,9 @@
   </section>
 
   <section class="card p-5 md:p-6 mb-4 md:mb-5 reveal">
-    <div class="flex items-center justify-between mb-5"><div><div class="section-title mb-1">Dokumentasi Lapangan</div><div class="text-[11px] md:text-[12px] text-[var(--fg-dim)]" id="photoUpdate">-</div></div></div>
+    <div class="flex items-center justify-between mb-5"><div><div class="section-title mb-1">Dokumentasi Lapangan</div><div class="text-[11px] md:text-[12px] text-[var(--fg-dim)]" id="photoUpdate">Pembaruan terakhir: -</div></div></div>
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-      <div class="photo-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdM2hPYzurMuelkWqSuMVRj1l9IoxVoEfmxIqKK0bLLw&s=10" alt=""><div class="badge">Bongkaran</div><a href="https://drive.google.com/drive/folders/1fJ94zslHBSC2PDB4blDDGal6_TFIv9aA?usp=sharing"><div class="overlay"><div class="text-[11px] font-semibold">Bongkaran</div><div class="text-[9px] text-[var(--muted)] mono">Persiapan</div></div></a></div>
+      <div class="photo-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdM2hPYzurMuelkWqSuMVRj1l9IoxVoEfmxIqKK0bLLw&s=10" alt=""><div class="badge">Bongkaran</div><a href="https://drive.google.com/drive/folders/1fJ94zslHBSC2PDB4blDDGal6_TFIv9aA?usp=sharing"><div class="overlay"><div class="text-[11px] font-semibold">Bongkaran </div><div class="text-[9px] text-[var(--muted)] mono">Persiapan</div></div></a></div>
       <div class="photo-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzU0jDV0YjGwq7_DxavA8P7iet6cAhmsSA87VwFUS6Ig&s=10"><div class="badge">Galian/Urug</div><a href="https://drive.google.com/drive/folders/1rvb_bogpHWWyTMpWy_uJ0RqvSi3tURhN?usp=sharing"><div class="overlay"><div class="text-[11px] font-semibold">Pek. Tanah</div><div class="text-[9px] text-[var(--muted)] mono">Persiapan</div></div></a></div>
       <div class="photo-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfrmXJM00tVO9qgIrbzVy4RpLn-o5c1b3uK0iBMY7Cjg&s"><div class="badge">Septic Tank</div><a href="https://drive.google.com/drive/folders/1m65shgSIZoNrlh1qBcLoPKsGdjjwtJsR?usp=drive_link"><div class="overlay"><div class="text-[11px] font-semibold">Septic Tank</div><div class="text-[9px] text-[var(--muted)] mono">Galian</div></div></a></div>
       <div class="photo-card"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4OixgJ9OUa59ukzyczxdmJ2PIgsG4i33mIvJrHGtxTg&s=10"><div class="badge">Pondasi</div><a href="https://drive.google.com/drive/folders/1EnRBkTDffdtmWK0hYYC-smSu575kziEB?usp=drive_link"><div class="overlay"><div class="text-[11px] font-semibold">Pondasi Tapak</div><div class="text-[9px] text-[var(--muted)] mono">Struktur</div></div></a></div>
@@ -583,6 +639,31 @@
      ===================================================================== -->
 <script>
   // =====================================================================
+  // 8.0 POPUP TAGIHAN TERMIN — LOGIKA BUKA/TUTUP
+  // =====================================================================
+  (function() {
+    const overlay = document.getElementById('terminOverlay');
+    const closeX = document.getElementById('terminCloseX');
+    const closeBtn = document.getElementById('terminCloseBtn');
+
+    function closePopup() {
+      overlay.classList.remove('show');
+      setTimeout(() => { overlay.style.display = 'none'; }, 400);
+    }
+
+    setTimeout(() => { overlay.classList.add('show'); }, 600);
+
+    closeX.addEventListener('click', closePopup);
+    closeBtn.addEventListener('click', closePopup);
+    overlay.addEventListener('click', function(e) {
+      if (e.target === overlay) closePopup();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && overlay.classList.contains('show')) closePopup();
+    });
+  })();
+
+  // =====================================================================
   // 8.1 INPUT DATA LAPANGAN
   // =====================================================================
   const dataDisiplin = [
@@ -594,28 +675,10 @@
     { nama: "Finishing", bobot: 4.38, progress: 0.00, status: "UPCOMING" },
   ];
 
-  // =====================================================================
-  // 8.2 DATA TAGIHAN TERMIN (DEFAULT & LOCAL STORAGE)
-  // =====================================================================
-  const defaultTerminData = [
-    { no: 1, nama: "Down Payment (Tahap 1)", pct: 25, nominal: 397750000, range: "0% - 25%",  status: "lunas" },
-    { no: 2, nama: "Pembayaran Tahap 2",     pct: 25, nominal: 397750000, range: "25% - 50%", status: "belum" },
-    { no: 3, nama: "Pembayaran Tahap 3",     pct: 25, nominal: 397750000, range: "50% - 75%", status: "belum" },
-    { no: 4, nama: "Pembayaran Tahap 4",     pct: 10, nominal: 159100000, range: "75% - 85%", status: "belum" },
-    { no: 5, nama: "Pembayaran Tahap 5",     pct: 10, nominal: 159100000, range: "85% - 100%",status: "belum" },
-    { no: 6, nama: "Masa Garansi (Tahap 6)", pct: 5,  nominal: 79550000,  range: "Pasca Garansi", status: "belum" },
-  ];
-
-  // Muat data dari localStorage jika ada, jika tidak pakai default
-  let dataTermin = JSON.parse(localStorage.getItem('terminData_077')) || JSON.parse(JSON.stringify(defaultTerminData));
-  let nilaiKontrak = dataTermin.reduce((sum, t) => sum + t.nominal, 0);
-  let isEditMode = false;
-
-  // =====================================================================
-  // 8.3 FUNGSI BANTU
-  // =====================================================================
+  // ===== 8.2 FUNGSI BANTU TANGGAL & WAKTU WIB =====
   const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
   const monthNamesLong = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
   function pad(n) { return n < 10 ? '0' + n : n; }
   function formatDateShort(d) { return `${d.getDate()} ${monthNamesShort[d.getMonth()]} ${d.getFullYear()}`; }
   function formatDateLong(d) { return `${d.getDate()} ${monthNamesLong[d.getMonth()]} ${d.getFullYear()}`; }
@@ -623,39 +686,81 @@
   function addDays(date, val) { const d = new Date(date); d.setDate(d.getDate() + val); return d; }
   function diffDays(d1, d2) { return Math.round((d1 - d2) / (1000 * 60 * 60 * 24)); }
   function getTimeStr(d) { return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
-  function getWIBNow() { const now = new Date(); const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000); return new Date(utcMs + (7 * 3600000)); }
-  function getWIBDateOnly() { const wib = getWIBNow(); if (wib.getHours() === 0 && wib.getMinutes() === 0) return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate() - 1); return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate()); }
-  function formatRupiah(num) { return new Intl.NumberFormat('id-ID').format(num); }
 
-  // =====================================================================
-  // 8.4 KALKULASI PROGRES DASBOR
-  // =====================================================================
+  function getWIBNow() {
+    const now = new Date();
+    const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+    return new Date(utcMs + (7 * 3600000));
+  }
+
+  function getWIBDateOnly() {
+    const wib = getWIBNow();
+    if (wib.getHours() === 0 && wib.getMinutes() === 0) {
+      return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate() - 1);
+    }
+    return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate());
+  }
+
+  // ===== 8.3 SETINGAN TANGGAL KONTRAK =====
   const today = getWIBDateOnly();
   const projectStart = new Date(2026, 5, 17);
-  const contractDuration = 8;
+  const contractDuration = 8; 
   const projectEnd = new Date(2027, 1, 17);
+  
   let monthsPassed = (today.getFullYear() - projectStart.getFullYear()) * 12 + (today.getMonth() - projectStart.getMonth());
   let reportDate = today;
-  if (monthsPassed < 0) { monthsPassed = 0; reportDate = projectStart; }
+  
+  if (monthsPassed < 0) { monthsPassed = 0; reportDate = projectStart; } 
   else if (monthsPassed > contractDuration) { monthsPassed = contractDuration; reportDate = projectEnd; }
+  
   const daysLeft = diffDays(projectEnd, reportDate);
 
-  let totalProgressVal = 0, totalBobot = 0;
+  // ===== 8.4 KALKULASI PROGRES OTOMATUS =====
+  let totalProgressVal = 0;
+  let totalBobot = 0;
   const discList = document.getElementById('disciplineList');
   discList.innerHTML = '';
+
   dataDisiplin.forEach(d => {
-    totalProgressVal += (d.progress * d.bobot / 100); totalBobot += d.bobot;
-    let pillClass = 'pill'; if(d.status==='SELESAI') pillClass+=' pill-success'; else if(d.status==='ON-GOING') pillClass+=' pill-accent';
-    let barColor = 'var(--accent)'; if(d.status==='SELESAI') barColor='linear-gradient(90deg,#5fd07e,#3da55c)'; else if(d.status==='ON-GOING') barColor='var(--accent)'; else barColor='linear-gradient(90deg,#7c8ba1,#5a6678)';
-    discList.innerHTML += `<div><div class="flex items-center justify-between mb-2"><div class="flex items-center gap-2 md:gap-3 min-w-0 flex-1"><span class="text-[12px] md:text-[13px] font-semibold truncate">${d.nama}</span><span class="${pillClass} hidden md:inline-flex" style="padding:2px 8px;font-size:9px">${d.status}</span></div><div class="flex items-center gap-2 md:gap-4 flex-shrink-0 ml-2"><span class="text-[10px] md:text-[11px] text-[var(--muted)] mono hidden sm:inline">Bobot ${d.bobot}%</span><span class="mono font-bold text-[13px] md:text-[14px] w-10 md:w-12 text-right">${d.progress}%</span></div></div><div class="bar-track"><div class="bar-fill" style="width:${d.progress}%;background:${barColor}"></div></div></div>`;
+    totalProgressVal += (d.progress * d.bobot / 100);
+    totalBobot += d.bobot;
+
+    let pillClass = 'pill';
+    if(d.status === 'SELESAI') pillClass += ' pill-success';
+    else if(d.status === 'ON-GOING') pillClass += ' pill-accent';
+
+    let barColor = 'var(--accent)';
+    if(d.status === 'SELESAI') barColor = 'linear-gradient(90deg,#5fd07e,#3da55c)';
+    else if(d.status === 'ON-GOING') barColor = 'var(--accent)';
+    else barColor = 'linear-gradient(90deg,#7c8ba1,#5a6678)';
+
+    const html = `
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+            <span class="text-[12px] md:text-[13px] font-semibold truncate">${d.nama}</span>
+            <span class="${pillClass} hidden md:inline-flex" style="padding:2px 8px;font-size:9px">${d.status}</span>
+          </div>
+          <div class="flex items-center gap-2 md:gap-4 flex-shrink-0 ml-2">
+            <span class="text-[10px] md:text-[11px] text-[var(--muted)] mono hidden sm:inline">Bobot ${d.bobot}%</span>
+            <span class="mono font-bold text-[13px] md:text-[14px] w-10 md:w-12 text-right">${d.progress}%</span>
+          </div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${d.progress}%;background:${barColor}"></div></div>
+      </div>
+    `;
+    discList.innerHTML += html;
   });
 
   const progressVal = +(totalProgressVal / (totalBobot / 100)).toFixed(1);
+  
   let plannedVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / contractDuration) - 0.5))) * 100).toFixed(1);
   if (monthsPassed >= contractDuration) plannedVal = 100.0;
+  
   const varianceVal = (progressVal - plannedVal).toFixed(1);
   const spiVal = (progressVal / plannedVal).toFixed(2);
 
+  // ===== 8.5 UPDATE UI DASBOR & POPUP HEADER =====
   document.getElementById('contractProgress').textContent = `Bulan Ke-${monthsPassed + 1} / ${contractDuration}`;
   document.getElementById('endInfo').textContent = `${daysLeft > 0 ? daysLeft + ' hari lagi' : 'Selesai'}`;
   document.getElementById('plannedPercent').textContent = plannedVal + '%';
@@ -663,180 +768,197 @@
   document.getElementById('variancePercent').style.color = varianceVal < 0 ? 'var(--danger)' : 'var(--success)';
   document.getElementById('spiVal').textContent = spiVal;
 
+  // Update Progress Aktual di Header Popup
+  document.getElementById('terminHeaderProgVal').textContent = progressVal + '%';
+  document.getElementById('terminHeaderProgFill').style.width = progressVal + '%';
+
+  // ===== 8.6 UPDATE STATUS TERMIN OTOMATIS =====
+  (function updateTerminStatuses() {
+    const p = progressVal; 
+    
+    const getDisciplinesHTML = (indices) => {
+      return indices.map(idx => {
+        const d = dataDisiplin[idx];
+        const color = d.progress > 0 ? 'var(--warning)' : 'var(--muted)';
+        return `<span style="color:${color}">• ${d.nama}: <strong>${d.progress}%</strong></span>`;
+      }).join('<br>');
+    };
+
+    const el1 = document.getElementById('statusTermin1');
+    if(el1) {
+      el1.innerHTML = `
+        <span style="color:var(--success); font-weight:700;">✓ Pembayaran Lunas</span><br>
+        <span style="color:var(--fg-dim);">Progress aktual saat ini berada di tahap ini (Keseluruhan: ${p}%):</span><br>
+        ${getDisciplinesHTML([0, 1])}
+      `;
+      el1.style.borderColor = 'rgba(95,208,126,0.2)';
+      el1.style.background = 'rgba(95,208,126,0.03)';
+    }
+
+    const el2 = document.getElementById('statusTermin2');
+    if(el2) {
+      if (p < 25) {
+        el2.innerHTML = `<span style="color:var(--muted)">Menunggu progress keseluruhan mencapai 25% (Saat ini: ${p}%)</span>`;
+      } else {
+        el2.innerHTML = `<span style="color:var(--warning); font-weight:700;">⏳ Dapat Ditagih / Sedang Dikerjakan</span><br><span style="color:var(--fg-dim)">Progress keseluruhan sudah ${p}%</span>`;
+        el2.style.borderColor = 'rgba(255,181,71,0.2)';
+        el2.style.background = 'rgba(255,181,71,0.03)';
+      }
+    }
+
+    const el3 = document.getElementById('statusTermin3');
+    if(el3) {
+      if (p < 50) {
+        el3.innerHTML = `<span style="color:var(--muted)">Menunggu progress keseluruhan mencapai 50% (Saat ini: ${p}%)</span>`;
+      } else {
+        el3.innerHTML = `<span style="color:var(--warning); font-weight:700;">⏳ Dapat Ditagih / Sedang Dikerjakan</span><br><span style="color:var(--fg-dim)">Progress keseluruhan sudah ${p}%</span>`;
+        el3.style.borderColor = 'rgba(255,181,71,0.2)';
+        el3.style.background = 'rgba(255,181,71,0.03)';
+      }
+    }
+
+    const el4 = document.getElementById('statusTermin4');
+    if(el4) {
+      if (p < 75) {
+        el4.innerHTML = `<span style="color:var(--muted)">Menunggu progress keseluruhan mencapai 75% (Saat ini: ${p}%)</span>`;
+      } else {
+        el4.innerHTML = `<span style="color:var(--warning); font-weight:700;">⏳ Dapat Ditagih / Sedang Dikerjakan</span>`;
+        el4.style.borderColor = 'rgba(255,181,71,0.2)';
+        el4.style.background = 'rgba(255,181,71,0.03)';
+      }
+    }
+
+    const el5 = document.getElementById('statusTermin5');
+    if(el5) {
+      if (p < 85) {
+        el5.innerHTML = `<span style="color:var(--muted)">Menunggu progress keseluruhan mencapai 85% (Saat ini: ${p}%)</span>`;
+      } else {
+        el5.innerHTML = `<span style="color:var(--warning); font-weight:700;">⏳ Dapat Ditagih / Sedang Dikerjakan</span>`;
+        el5.style.borderColor = 'rgba(255,181,71,0.2)';
+        el5.style.background = 'rgba(255,181,71,0.03)';
+      }
+    }
+
+    const el6 = document.getElementById('statusTermin6');
+    if(el6) {
+      if (p < 100) {
+        el6.innerHTML = `<span style="color:var(--muted)">Menunggu proyek selesai 100% dan berakhirnya masa garansi</span>`;
+      } else {
+        el6.innerHTML = `<span style="color:var(--warning); font-weight:700;">⏳ Masa Garansi Berjalan</span>`;
+        el6.style.borderColor = 'rgba(255,181,71,0.2)';
+        el6.style.background = 'rgba(255,181,71,0.03)';
+      }
+    }
+  })();
+
+  // ===== 8.7 JAM REAL-TIME (WIB) =====
   let lastKnownWIBDate = getWIBDateOnly().getTime();
+
   function updateClock() {
-    const nowWIB = getWIBNow(); const wibDateOnly = getWIBDateOnly();
+    const nowWIB = getWIBNow();
+    const wibDateOnly = getWIBDateOnly();
     document.getElementById('liveClock').textContent = getTimeStr(nowWIB);
     document.getElementById('footerSync').textContent = `${formatDateShort(wibDateOnly)}, ${getTimeStr(nowWIB)} WIB`;
     document.getElementById('sCurveUpdate').textContent = `Last update: ${formatDateShort(wibDateOnly)} · ${getTimeStr(nowWIB)} WIB`;
     document.getElementById('photoUpdate').textContent = `Pembaruan terakhir: ${formatDateLong(wibDateOnly)} · ${getTimeStr(nowWIB)} WIB`;
-    if (wibDateOnly.getTime() !== lastKnownWIBDate) { lastKnownWIBDate = wibDateOnly.getTime(); location.reload(); }
+    const currentDateMs = wibDateOnly.getTime();
+    if (currentDateMs !== lastKnownWIBDate) { lastKnownWIBDate = currentDateMs; location.reload(); }
   }
-  updateClock(); setInterval(updateClock, 1000);
+  updateClock();
+  setInterval(updateClock, 1000);
 
-  const l10Done=addMonths(projectStart,2),l16Active=addMonths(projectStart,2),topOff=addMonths(projectStart,2),mepTesting=addMonths(projectStart,7);
-  document.getElementById('msL10').textContent=`Target: ${formatDateShort(l10Done)}`;document.getElementById('msL16').textContent=`Target: ${formatDateShort(l16Active)}`;document.getElementById('msTopOff').textContent=`Target: ${formatDateShort(topOff)}`;document.getElementById('msMEP').textContent=`Target: ${formatDateShort(mepTesting)}`;document.getElementById('msTopOffDays').textContent=`+${diffDays(topOff,reportDate)} hari`;document.getElementById('msMEPDays').textContent=`+${diffDays(mepTesting,reportDate)} hari`;
-  [projectStart,addMonths(projectStart,1),addMonths(projectStart,3),addMonths(projectStart,4),addMonths(projectStart,6),addMonths(projectStart,7),projectEnd].forEach((d,i)=>{const el=document.getElementById(`tl${i+1}`);if(el)el.textContent=`${monthNamesShort[d.getMonth()]} ${String(d.getFullYear()).substring(2)}`});
-  document.getElementById('msProgressBar').style.width=progressVal+'%';
+  // ===== 8.8 KALKULASI MILESTONE DINAMIS =====
+  const l10Done = addMonths(projectStart, 2);  
+  const l16Active = addMonths(projectStart, 2);    
+  const topOff = addMonths(projectStart, 2);   
+  const mepTesting = addMonths(projectStart, 7); 
+  document.getElementById('msL10').textContent = `Target: ${formatDateShort(l10Done)}`;
+  document.getElementById('msL16').textContent = `Target: ${formatDateShort(l16Active)}`;
+  document.getElementById('msTopOff').textContent = `Target: ${formatDateShort(topOff)}`;
+  document.getElementById('msMEP').textContent = `Target: ${formatDateShort(mepTesting)}`;
+  document.getElementById('msTopOffDays').textContent = `+${diffDays(topOff, reportDate)} hari`;
+  document.getElementById('msMEPDays').textContent = `+${diffDays(mepTesting, reportDate)} hari`;
 
-  function animateRing(){const ring=document.getElementById('progressRing'),num=document.getElementById('progressNum'),target=progressVal,circ=578,dur=1800,start=performance.now();function step(now){const e=Math.min((now-start)/dur,1),ease=1-Math.pow(1-e,3),val=target*ease;ring.style.strokeDashoffset=circ-(val/100)*circ;num.innerHTML=val.toFixed(1)+'<span style="color:var(--accent);font-size:32px">%</span>';if(e<1)requestAnimationFrame(step)}requestAnimationFrame(step)}
-  setTimeout(animateRing,300);
+  const tlDates = [ projectStart, addMonths(projectStart, 1), addMonths(projectStart, 3), addMonths(projectStart, 4), addMonths(projectStart, 6), addMonths(projectStart, 7), projectEnd ];
+  tlDates.forEach((d, i) => {
+    const el = document.getElementById(`tl${i+1}`);
+    if(el) el.textContent = `${monthNamesShort[d.getMonth()]} ${String(d.getFullYear()).substring(2)}`;
+  });
+  document.getElementById('msProgressBar').style.width = progressVal + '%';
 
-  const ctx=document.getElementById('sCurveChart').getContext('2d');const mLbl=[];for(let i=0;i<=contractDuration;i++){let d=addMonths(projectStart,i);mLbl.push(`${monthNamesShort[d.getMonth()]} ${String(d.getFullYear()).substring(2)}`)}
-  const tM=mLbl.length,plnd=mLbl.map((_,i)=>{if(i===tM-1)return 100.0;const x=i/(tM-1);return +(1/(1+Math.exp(-7*(x-0.5)))*100).toFixed(1)}),actl=mLbl.map((_,i)=>{if(i>monthsPassed)return null;if(i===monthsPassed)return progressVal;const x=i/(tM-1);return +((1/(1+Math.exp(-7*(x-0.5)))*100)*0.92).toFixed(1)});
-  if(history.scrollRestoration)history.scrollRestoration='manual';window.scrollTo(0,0);
-  new Chart(ctx,{type:'line',data:{labels:mLbl,datasets:[{label:'Planned',data:plnd,borderColor:'#7c8ba1',borderWidth:2,borderDash:[4,4],pointRadius:0,tension:0.4,fill:false},{label:'Actual',data:actl,borderColor:'#ff6b1a',backgroundColor:'rgba(255,107,26,0.15)',borderWidth:3,pointRadius:0,pointHoverRadius:6,tension:0.4,fill:true}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(10,12,15,0.95)',borderColor:'rgba(255,107,26,0.3)',borderWidth:1,padding:12,titleColor:'#ecebe6',bodyColor:'#a8aebb',callbacks:{label:c=>c.parsed.y===null?'':`${c.dataset.label}: ${c.parsed.y}%`}}},scales:{x:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#6b7382',font:{family:'JetBrains Mono',size:10},maxRotation:0,autoSkip:true,maxTicksLimit:6}},y:{min:0,max:100,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#6b7382',font:{family:'JetBrains Mono',size:10},callback:v=>v+'%'}}}}});
-
-  // =====================================================================
-  // 8.5 POPUP TAGIHAN TERMIN — LOGIKA EDIT & RENDER
-  // =====================================================================
-  function renderTerminTable() {
-    const tbody = document.getElementById('terminTableBody');
-    tbody.innerHTML = '';
-    
-    let totalDibayar = 0;
-    nilaiKontrak = 0;
-
-    dataTermin.forEach((t, idx) => {
-      nilaiKontrak += t.nominal;
-      if (t.status === 'lunas') totalDibayar += t.nominal;
-
-      const row = document.createElement('tr');
-      let rowStyle = '';
-      if (!isEditMode) {
-        if (t.status === 'lunas') rowStyle = 'background:rgba(95,208,126,0.05);';
-        else if (t.status === 'jatuh-tempo') rowStyle = 'background:rgba(255,181,71,0.04);';
-      }
-      row.style.cssText = rowStyle;
-
-      if (isEditMode) {
-        row.innerHTML = `
-          <td style="text-align:center;font-weight:700;color:var(--fg)">${idx+1}</td>
-          <td><input class="termin-input" data-idx="${idx}" data-field="nama" value="${t.nama}"></td>
-          <td><input class="termin-input col-pct-input" data-idx="${idx}" data-field="pct" type="number" value="${t.pct}"></td>
-          <td><input class="termin-input" style="text-align:right" data-idx="${idx}" data-field="nominal" type="number" value="${t.nominal}"></td>
-          <td style="text-align:center">
-            <select class="termin-select" data-idx="${idx}" data-field="status">
-              <option value="lunas" ${t.status==='lunas'?'selected':''}>Lunas</option>
-              <option value="jatuh-tempo" ${t.status==='jatuh-tempo'?'selected':''}>Jatuh Tempo</option>
-              <option value="belum" ${t.status==='belum'?'selected':''}>Belum</option>
-            </select>
-          </td>
-        `;
-      } else {
-        const checkIcon = t.status === 'lunas' ? '<span style="color:var(--success);margin-right:4px;font-size:13px">&#10003;</span>' : '';
-        const badgeClass = t.status;
-        const badgeLabel = t.status === 'lunas' ? 'Lunas' : t.status === 'jatuh-tempo' ? 'Jatuh Tempo' : 'Belum';
-        row.innerHTML = `
-          <td style="font-weight:700;color:var(--fg);text-align:center">${t.no}</td>
-          <td>
-            <div style="font-weight:600;color:var(--fg);font-size:11px;line-height:1.4">${checkIcon}${t.nama}</div>
-            <div class="mono" style="font-size:9px;color:var(--muted);margin-top:3px">Progress: ${t.range}</div>
-          </td>
-          <td class="col-pct" style="color:var(--hi-vis)">${t.pct}%</td>
-          <td class="col-nominal">${formatRupiah(t.nominal)}</td>
-          <td style="text-align:center"><span class="termin-badge ${badgeClass}">${badgeLabel}</span></td>
-        `;
-      }
-      tbody.appendChild(row);
-    });
-
-    // Baris total
-    const totalRow = document.createElement('tr');
-    totalRow.innerHTML = `
-      <td colspan="2" style="font-weight:800;color:var(--fg);text-align:right;padding-right:12px;border-top:2px solid var(--border-bright);font-size:12px">TOTAL KONTRAK</td>
-      <td class="col-pct" style="color:var(--hi-vis);font-weight:800;border-top:2px solid var(--border-bright)">${dataTermin.reduce((s,t)=>s+t.pct,0)}%</td>
-      <td class="col-nominal" style="color:var(--fg);font-weight:800;border-top:2px solid var(--border-bright)">${formatRupiah(nilaiKontrak)}</td>
-      <td style="border-top:2px solid var(--border-bright)"></td>
-    `;
-    tbody.appendChild(totalRow);
-
-    // Update ringkasan keuangan
-    const sisa = nilaiKontrak - totalDibayar;
-    document.getElementById('nilaiKontrakDisplay').textContent = formatRupiah(nilaiKontrak);
-    document.getElementById('totalDibayar').textContent = `Rp ${formatRupiah(totalDibayar)}`;
-    document.getElementById('sisaTagihan').textContent = `Rp ${formatRupiah(sisa)}`;
-
-    const pctDibayar = nilaiKontrak > 0 ? Math.round((totalDibayar / nilaiKontrak) * 100) : 0;
-    document.getElementById('terminProgressFill').style.width = pctDibayar + '%';
-    document.getElementById('terminPctText').textContent = pctDibayar + '% Dibayar';
-  }
-
-  function toggleEditMode(editing) {
-    isEditMode = editing;
-    document.getElementById('editTerminBtn').classList.toggle('hidden', editing);
-    document.getElementById('saveTerminBtn').classList.toggle('hidden', !editing);
-    document.getElementById('cancelTerminBtn').classList.toggle('hidden', !editing);
-    document.getElementById('resetTerminBtn').classList.toggle('hidden', !editing);
-    renderTerminTable();
-  }
-
-  function saveTerminData() {
-    const inputs = document.querySelectorAll('.termin-input, .termin-select');
-    inputs.forEach(input => {
-      const idx = parseInt(input.dataset.idx);
-      const field = input.dataset.field;
-      let val = input.value;
-      if (field === 'pct') val = parseFloat(val) || 0;
-      if (field === 'nominal') val = parseFloat(val) || 0;
-      dataTermin[idx][field] = val;
-    });
-    // Update 'no' field index
-    dataTermin.forEach((t, i) => t.no = i + 1);
-    
-    localStorage.setItem('terminData_077', JSON.stringify(dataTermin));
-    toggleEditMode(false);
-  }
-
-  function resetTerminData() {
-    if(confirm('Reset data tagihan ke skema awal kontrak?')) {
-      dataTermin = JSON.parse(JSON.stringify(defaultTerminData));
-      localStorage.removeItem('terminData_077');
-      toggleEditMode(false);
+  // ===== 8.9 ANIMASI RING PROGRES =====
+  function animateRing() {
+    const ring = document.getElementById('progressRing');
+    const num = document.getElementById('progressNum');
+    const target = progressVal;
+    const circumference = 578;
+    const duration = 1800;
+    const start = performance.now();
+    function step(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const val = target * eased;
+      ring.style.strokeDashoffset = circumference - (val / 100) * circumference;
+      num.innerHTML = val.toFixed(1) + '<span style="color:var(--accent);font-size:32px">%</span>';
+      if(progress < 1) requestAnimationFrame(step);
     }
+    requestAnimationFrame(step);
   }
+  setTimeout(animateRing, 300);
 
-  // =====================================================================
-  // 8.6 INISIALISASI POPUP
-  // =====================================================================
-  function initTerminPopup() {
-    const overlay = document.getElementById('terminPopup');
-    const closeBtn = document.getElementById('popupCloseBtn');
-    const refDateEl = document.getElementById('terminRefDate');
-    const currentProgressMarkerEl = document.getElementById('currentProgressMarker');
+  // ===== 8.10 GRAFIK KURVA S =====
+  const ctx = document.getElementById('sCurveChart').getContext('2d');
+  const monthLabels = [];
+  for(let i = 0; i <= contractDuration; i++) {
+    let d = addMonths(projectStart, i);
+    monthLabels.push(`${monthNamesShort[d.getMonth()]} ${String(d.getFullYear()).substring(2)}`);
+  }
+  const totalMonths = monthLabels.length; 
+  const planned = monthLabels.map((_, i) => {
+    if (i === totalMonths - 1) return 100.0; 
+    const x = i / (totalMonths - 1);
+    return +(1 / (1 + Math.exp(-7 * (x - 0.5))) * 100).toFixed(1);
+  });
+  const actual = monthLabels.map((_, i) => {
+    if(i > monthsPassed) return null;
+    if(i === monthsPassed) return progressVal;
+    const x = i / (totalMonths - 1);
+    const base = 1 / (1 + Math.exp(-7 * (x - 0.5))) * 100;
+    return +(base * 0.92).toFixed(1);
+  });
 
-    const wibNow = getWIBNow();
-    refDateEl.textContent = `${formatDateShort(getWIBDateOnly())}, ${getTimeStr(wibNow)} WIB`;
-    currentProgressMarkerEl.textContent = `${progressVal}% Actual`;
-
-    // Tombol Edit, Save, Cancel, Reset
-    document.getElementById('editTerminBtn').addEventListener('click', () => toggleEditMode(true));
-    document.getElementById('saveTerminBtn').addEventListener('click', saveTerminData);
-    document.getElementById('cancelTerminBtn').addEventListener('click', () => toggleEditMode(false));
-    document.getElementById('resetTerminBtn').addEventListener('click', resetTerminData);
-
-    // Render tabel pertama kali
-    renderTerminTable();
-
-    // Tampilkan popup
-    setTimeout(() => {
-      overlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }, 900);
-
-    // Fungsi tutup popup
-    function closePopup() {
-      // Jika sedang edit, batalkan dulu
-      if (isEditMode) toggleEditMode(false);
-      overlay.classList.remove('active');
-      document.body.style.overflow = '';
+  if (history.scrollRestoration) { history.scrollRestoration = 'manual'; } 
+  else { window.onbeforeunload = function () { window.scrollTo(0, 0); }; }
+  window.scrollTo(0, 0);
+  
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: monthLabels,
+      datasets: [
+        { label: 'Planned', data: planned, borderColor: '#7c8ba1', borderWidth: 2, borderDash: [4, 4], pointRadius: 0, tension: 0.4, fill: false },
+        { label: 'Actual', data: actual, borderColor: '#ff6b1a', backgroundColor: 'rgba(255,107,26,0.15)', borderWidth: 3, pointRadius: 0, pointHoverRadius: 6, tension: 0.4, fill: true }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: 'rgba(10,12,15,0.95)', borderColor: 'rgba(255,107,26,0.3)', borderWidth: 1, padding: 12,
+          titleColor: '#ecebe6', bodyColor: '#a8aebb',
+          callbacks: { label: (c) => c.parsed.y === null ? '' : `${c.dataset.label}: ${c.parsed.y}%` }
+        }
+      },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 6 } },
+        y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' } }
+      }
     }
-    closeBtn.addEventListener('click', closePopup);
-    overlay.addEventListener('click', e => { if (e.target === overlay) closePopup(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('active')) closePopup(); });
-  }
-
-  initTerminPopup();
+  });
 </script>
+
 </body>
 </html>
