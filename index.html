@@ -198,10 +198,9 @@
     box-shadow: 0 0 16px var(--accent-glow);
   }
   
-  /* CSS Progress Aktual di Header Popup */
   .termin-header-progress {
     display: flex; align-items: center; gap: 10px; 
-    margin-left: auto; /* Dorong ke tengah/tengah kanan */
+    margin-left: auto;
     padding: 6px 14px; border-radius: 8px;
     background: rgba(255,255,255,0.03); border: 1px solid var(--border);
   }
@@ -262,7 +261,7 @@
   .termin-desc strong { color: var(--fg); font-weight: 700; }
   .termin-amount {
     font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
-    color: var(--hi-vis); margin-top: 6px; display: inline-flex; align-items: center; gap: 6px;
+    color: var(--hi-vis); margin-top: 6px; display: inline-block;
     background: rgba(255,212,0,0.06); padding: 4px 10px; border-radius: 6px;
     border: 1px solid rgba(255,212,0,0.15);
   }
@@ -310,7 +309,6 @@
     .termin-row { gap: 10px; }
     .termin-desc { font-size: 11px; }
     .termin-amount { font-size: 11px; }
-    /* Responsive header popup */
     .termin-header-progress { width: 100%; order: 3; margin-left: 0; justify-content: space-between; }
   }
   @media (min-width:641px) and (max-width:768px){
@@ -325,7 +323,7 @@
 <body>
 
 <!-- =====================================================================
-     POPUP TAGIHAN TERMIN — ★ RUBAH VALUE DI SINI
+     POPUP TAGIHAN TERMIN — ★ RUBAH VALUE DI SINI (Lambang $ dihilangkan)
      ===================================================================== -->
 <div class="termin-overlay" id="terminOverlay">
 
@@ -372,11 +370,8 @@
           <div class="termin-desc">
             Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>0%</strong> (nol persen) dan akan dilaksanakan sampai dengan <strong>25%</strong> (dua puluh lima persen).
           </div>
-          <div class="termin-amount done">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-            Rp. 397.750.000
-          </div>
+          <!-- ★ RUBAH VALUE DI SINI: Nominal (Lambang $ sudah dihilangkan) -->
+          <div class="termin-amount done">Rp. 397.750.000</div>
           <div style="font-size:10px;color:var(--success);margin-top:3px;font-style:italic">Tiga ratus sembilan puluh tujuh juta tujuh ratus lima puluh ribu rupiah</div>
           <div class="termin-status" id="statusTermin1">Memuat progress...</div>
         </div>
@@ -390,17 +385,14 @@
           <div class="termin-desc">
             Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>25%</strong> (dua puluh lima persen) dan akan dilaksanakan sampai dengan <strong>50%</strong> (lima puluh persen).
           </div>
-          <div class="termin-amount">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-            Rp. 397.750.000
-          </div>
+          <!-- ★ RUBAH VALUE DI SINI: Nominal (Lambang $ sudah dihilangkan) -->
+          <div class="termin-amount">Rp. 397.750.000</div>
           <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Tiga ratus sembilan puluh tujuh juta tujuh ratus lima puluh ribu rupiah</div>
           <div class="termin-status" id="statusTermin2">Memuat progress...</div>
         </div>
       </div>
 
-      <!-- ===== TERMIN 3 ===== -->
+      <!-- ===== TERMIN 3 ===== 
       <div class="termin-row">
         <div class="termin-num">3</div>
         <div class="termin-info">
@@ -408,17 +400,14 @@
           <div class="termin-desc">
             Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>50%</strong> (lima puluh persen) dan akan dilaksanakan sampai dengan <strong>75%</strong> (tujuh puluh lima persen).
           </div>
-          <div class="termin-amount">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-            Rp. 397.750.000
-          </div>
+          <!-- ★ RUBAH VALUE DI SINI: Nominal (Lambang $ sudah dihilangkan) 
+          <div class="termin-amount">Rp. 397.750.000</div>
           <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Tiga ratus sembilan puluh tujuh juta tujuh ratus lima puluh ribu rupiah</div>
           <div class="termin-status" id="statusTermin3">Memuat progress...</div>
         </div>
-      </div>
+      </div> -->
 
-      <!-- ===== TERMIN 4 ===== -->
+      <!-- ===== TERMIN 4 ===== 
       <div class="termin-row">
         <div class="termin-num">4</div>
         <div class="termin-info">
@@ -426,17 +415,14 @@
           <div class="termin-desc">
             Pembayaran sebesar <strong>10%</strong> (sepuluh persen), pembayaran dilakukan saat progress pekerjaan <strong>75%</strong> (tujuh puluh lima persen) dan akan dilaksanakan sampai dengan <strong>85%</strong> (delapan puluh lima persen).
           </div>
-          <div class="termin-amount">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-            Rp. 159.100.000
-          </div>
+          <!-- ★ RUBAH VALUE DI SINI: Nominal (Lambang $ sudah dihilangkan) 
+          <div class="termin-amount">Rp. 159.100.000</div>
           <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Seratus lima puluh sembilan juta seratus ribu rupiah</div>
           <div class="termin-status" id="statusTermin4">Memuat progress...</div>
         </div>
-      </div>
+      </div> -->
 
-      <!-- ===== TERMIN 5 ===== -->
+      <!-- ===== TERMIN 5 ===== 
       <div class="termin-row">
         <div class="termin-num">5</div>
         <div class="termin-info">
@@ -444,17 +430,14 @@
           <div class="termin-desc">
             Pembayaran sebesar <strong>10%</strong> (sepuluh persen), pembayaran dilakukan saat progress pekerjaan <strong>85%</strong> (delapan puluh lima persen) dan akan dilaksanakan sampai dengan <strong>100%</strong> (seratus persen).
           </div>
-          <div class="termin-amount">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-            Rp. 159.100.000
-          </div>
+          <!-- ★ RUBAH VALUE DI SINI: Nominal (Lambang $ sudah dihilangkan) 
+          <div class="termin-amount">Rp. 159.100.000</div>
           <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Seratus lima puluh sembilan juta seratus ribu rupiah</div>
           <div class="termin-status" id="statusTermin5">Memuat progress...</div>
         </div>
-      </div>
+      </div> -->
 
-      <!-- ===== TERMIN 6 ===== -->
+      <!-- ===== TERMIN 6 ===== 
       <div class="termin-row">
         <div class="termin-num">6</div>
         <div class="termin-info">
@@ -462,15 +445,12 @@
           <div class="termin-desc">
             Pembayaran sebesar <strong>5%</strong> (lima persen), pembayaran dilakukan setelah berakhirnya masa garansi bangunan.
           </div>
-          <div class="termin-amount">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-            <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-            Rp. 79.550.000
-          </div>
+          <!-- ★ RUBAH VALUE DI SINI: Nominal (Lambang $ sudah dihilangkan) 
+          <div class="termin-amount">Rp. 79.550.000</div>
           <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Tujuh puluh sembilan juta lima ratus lima puluh ribu rupiah</div>
           <div class="termin-status" id="statusTermin6">Memuat progress...</div>
         </div>
-      </div>
+      </div> -->
 
     </div>
 
@@ -497,65 +477,39 @@
         <img src="https://scontent.cdninstagram.com/v/t51.75761-19/508657461_18356396173197992_6603124816640980486_n.jpg?stp=dst-jpg_s150x150_tt6&_nc_cat=104&ccb=7-5&_nc_sid=f7ccc5&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLnd3dy4xMDgwLkMzIn0%3D&_nc_ohc=VB3SvgW01lUQ7kNvwGiysTV&_nc_oc=AdpnSLxbDHKeQbsJNf2XXZswL-TMG4P41mMyViQyTTbYNbcp1oq_NTrvg9IbztmTeG0&_nc_zt=24&_nc_ht=scontent.cdninstagram.com&_nc_gid=k497DYnOYN0QvjlOy5M9Vw&_nc_ss=7ba8c&oh=00_AQATEnGyf9VxPfBV842pHZP8crZFiWCS6W6_Fke9J-K68g&oe=6A6111A8" alt="Logo" class="w-full h-full object-cover">
       </div>
       <div>
-        <div class="flex items-center gap-2">
-          <span class="text-[13px] font-bold tracking-wide">ABDI CONSTRUCTION</span>
-        </div>
+        <div class="flex items-center gap-2"><span class="text-[13px] font-bold tracking-wide">ABDI CONSTRUCTION</span></div>
         <div class="text-[9px] md:text-[10px] text-[var(--muted)] mono uppercase tracking-widest hidden sm:block">Construction Progress Center</div>
       </div>
     </div>
 
     <div class="hidden lg:flex items-center gap-3 px-4 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
       <div class="w-2 h-2 rounded-full" style="background:var(--accent)"></div>
-      <div>
-        <div class="text-[13px] font-semibold">INDEPENDENCE Co-Living Space</div>
-        <div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: 077/SPK-BLD/VI/2026</div>
-      </div>
+      <div><div class="text-[13px] font-semibold">INDEPENDENCE Co-Living Space</div><div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: 077/SPK-BLD/VI/2026</div></div>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--muted)]"><path d="M6 9l6 6 6-6"/></svg>
     </div>
 
     <div class="flex items-center gap-2 md:gap-3">
       <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
-        <span class="live-dot"></span>
-        <span class="text-[11px] mono text-[var(--fg-dim)]">LIVE</span>
-        <span class="text-[11px] mono text-[var(--muted)]">·</span>
-        <span class="text-[11px] mono" id="liveClock">--:--:--</span>
-        <span class="text-[10px] mono text-[var(--accent)]" style="font-weight:700">WIB</span>
+        <span class="live-dot"></span><span class="text-[11px] mono text-[var(--fg-dim)]">LIVE</span><span class="text-[11px] mono text-[var(--muted)]">·</span><span class="text-[11px] mono" id="liveClock">--:--:--</span><span class="text-[10px] mono text-[var(--accent)]" style="font-weight:700">WIB</span>
       </div>
-         <a href="https://docs.google.com/spreadsheets/d/119fpSfex4x3vyISvYN-HCs45KvnJz334/edit?usp=sharing&ouid=115632378833006552819&rtpof=true&sd=true">
-      <div class="px-3 md:px-4 py-2 rounded-lg flex items-center justify-center font-bold text-[11px] md:text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">Excel File</div></a>
+      <a href="https://docs.google.com/spreadsheets/d/119fpSfex4x3vyISvYN-HCs45KvnJz334/edit?usp=sharing&ouid=115632378833006552819&rtpof=true&sd=true"><div class="px-3 md:px-4 py-2 rounded-lg flex items-center justify-center font-bold text-[11px] md:text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">Excel File</div></a>
     </div>
   </div>
   <div class="stripe"></div>
 </header>
 
-<!-- BAGIAN 3 s/d 7 tetap sama persis seperti sebelumnya -->
+<!-- BAGIAN 3 s/d 7 tetap sama persis -->
 <main class="max-w-[1600px] mx-auto px-4 md:px-6 py-6 md:py-8 layer">
   <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-6 mb-8 reveal">
     <div>
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        <span class="pill pill-success"><span class="live-dot"></span> On Track</span>
-        <span class="pill" id="contractProgress">Bulan Ke-6 / 8</span>
-        <span class="pill">Kontrak: 10 Bulan</span>
-      </div>
+      <div class="flex flex-wrap items-center gap-2 mb-3"><span class="pill pill-success"><span class="live-dot"></span> On Track</span><span class="pill" id="contractProgress">Bulan Ke-6 / 8</span><span class="pill">Kontrak: 10 Bulan</span></div>
       <h1 class="display display-xl text-[40px] sm:text-[56px] xl:text-[64px]" style="line-height:0.95">INDEPENDENCE<br>Co-Living <span style="color:var(--accent)">Space.</span></h1>
       <p class="text-[var(--fg-dim)] mt-3 text-[13px] md:text-[14px] max-w-xl">Pembangunan rumah KOS 2 lantai. Jl. Lincar II No.17, Tegal Gundil, Kota Bogor, Jawa Barat 16152.</p>
     </div>
     <div class="grid grid-cols-3 gap-2 md:gap-3 w-full xl:w-auto xl:min-w-[440px]">
-      <div class="card p-3 md:p-4 flex flex-col justify-center">
-        <div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Pekerja</div>
-        <div class="mono text-[16px] md:text-[18px] font-bold">8 <span style="color:var(--accent)">Orang</span></div>
-        <div class="text-[10px] text-[var(--muted)] mt-1">Aktif</div>
-      </div>
-      <div class="card p-3 md:p-4 flex flex-col justify-center">
-        <div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Mulai</div>
-        <div class="mono text-[16px] md:text-[18px] font-bold">17 Jun</div>
-        <div class="text-[10px] text-[var(--muted)] mt-1">2026</div>
-      </div>
-      <div class="card p-3 md:p-4 flex flex-col justify-center">
-        <div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Selesai</div>
-        <div class="mono text-[16px] md:text-[18px] font-bold">17 Feb</div>
-        <div class="text-[10px] text-[var(--warning)] mt-1" id="endInfo">2027 · 0 hari lagi</div>
-      </div>
+      <div class="card p-3 md:p-4 flex flex-col justify-center"><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Pekerja</div><div class="mono text-[16px] md:text-[18px] font-bold">8 <span style="color:var(--accent)">Orang</span></div><div class="text-[10px] text-[var(--muted)] mt-1">Aktif</div></div>
+      <div class="card p-3 md:p-4 flex flex-col justify-center"><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Mulai</div><div class="mono text-[16px] md:text-[18px] font-bold">17 Jun</div><div class="text-[10px] text-[var(--muted)] mt-1">2026</div></div>
+      <div class="card p-3 md:p-4 flex flex-col justify-center"><div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Selesai</div><div class="mono text-[16px] md:text-[18px] font-bold">17 Feb</div><div class="text-[10px] text-[var(--warning)] mt-1" id="endInfo">2027 · 0 hari lagi</div></div>
     </div>
   </div>
 
@@ -564,49 +518,28 @@
       <div class="section-title mb-4">Progress Keseluruhan</div>
       <div class="flex-1 flex items-center justify-center py-4">
         <div class="ring-wrap">
-          <svg viewBox="0 0 220 220" width="100%" height="100%">
-            <defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6b1a"/><stop offset="100%" stop-color="#ffd400"/></linearGradient></defs>
-            <circle cx="110" cy="110" r="92" class="ring-bg" stroke-width="14" fill="none"/>
-            <circle id="progressRing" cx="110" cy="110" r="92" class="ring-fg" stroke-width="14" fill="none" stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 110 110)"/>
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <div class="text-[10px] md:text-[11px] uppercase tracking-widest text-[var(--muted)]">Terselesaikan</div>
-            <div class="display mono" style="font-size:48px;md:font-size:56px;line-height:1" id="progressNum">0.0<span style="color:var(--accent);font-size:32px">%</span></div>
-            <div class="text-[11px] text-[var(--fg-dim)] mt-1">Dari 100% Target</div>
-          </div>
+          <svg viewBox="0 0 220 220" width="100%" height="100%"><defs><linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff6b1a"/><stop offset="100%" stop-color="#ffd400"/></linearGradient></defs><circle cx="110" cy="110" r="92" class="ring-bg" stroke-width="14" fill="none"/><circle id="progressRing" cx="110" cy="110" r="92" class="ring-fg" stroke-width="14" fill="none" stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 110 110)"/></svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center"><div class="text-[10px] md:text-[11px] uppercase tracking-widest text-[var(--muted)]">Terselesaikan</div><div class="display mono" style="font-size:48px;md:font-size:56px;line-height:1" id="progressNum">0.0<span style="color:var(--accent);font-size:32px">%</span></div><div class="text-[11px] text-[var(--fg-dim)] mt-1">Dari 100% Target</div></div>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-2 pt-4 border-t" style="border-color:var(--border)">
-        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>Planned</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Planned (Rencana)</b><br>Persentase progres yang seharusnya sudah tercapai pada minggu/bulan ini berdasarkan jadwal baseline proyek.</div></div><div class="mono font-bold text-[14px] md:text-[15px]" id="plannedPercent">52.4%</div></div>
-        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>Variance</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Variance (Selisih)</b><br>Selisih antara progres aktual dan rencana. Nilai minus (-) berarti pekerjaan tertinggal dari jadwal.</div></div><div class="mono font-bold text-[14px] md:text-[15px] text-[var(--danger)]" id="variancePercent">-5.1%</div></div>
-        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>SPI</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Schedule Performance Index</b><br>Rasio efisiensi waktu (Actual dibagi Planned). Jika angka < 1 berarti terlambat, > 1 berarti lebih cepat.</div></div><div class="mono font-bold text-[14px] md:text-[15px] text-[var(--warning)]" id="spiVal">0.90</div></div>
+        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>Planned</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Planned (Rencana)</b><br>Persentase progres yang seharusnya sudah tercapai.</div></div><div class="mono font-bold text-[14px] md:text-[15px]" id="plannedPercent">52.4%</div></div>
+        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>Variance</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Variance (Selisih)</b><br>Selisih antara progres aktual dan rencana.</div></div><div class="mono font-bold text-[14px] md:text-[15px] text-[var(--danger)]" id="variancePercent">-5.1%</div></div>
+        <div class="text-center"><div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]"><span>SPI</span><button class="info-btn" tabindex="0">?</button><div class="info-box"><b>Schedule Performance Index</b><br>Rasio efisiensi waktu.</div></div><div class="mono font-bold text-[14px] md:text-[15px] text-[var(--warning)]" id="spiVal">0.90</div></div>
       </div>
     </div>
     <div class="card p-5 md:p-6 xl:col-span-2">
       <div class="flex items-center justify-between mb-4"><div class="section-title">Kurva S — Progress Kumulatif</div><span class="text-[10px] md:text-[11px] text-[var(--muted)] mono hidden sm:block">Periode: Bulanan</span></div>
       <div style="height:260px;md:height:280px;position:relative"><canvas id="sCurveChart"></canvas></div>
-      <div class="flex flex-wrap items-center gap-3 md:gap-4 mt-4 pt-4 border-t" style="border-color:var(--border)">
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:#7c8ba1"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Planned (Baseline)</span></div>
-        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:var(--accent)"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Actual Progress</span></div>
-        <div class="ml-auto text-[10px] md:text-[11px] text-[var(--muted)] mono" id="sCurveUpdate">Last update: --</div>
-      </div>
+      <div class="flex flex-wrap items-center gap-3 md:gap-4 mt-4 pt-4 border-t" style="border-color:var(--border)"><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:#7c8ba1"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Planned (Baseline)</span></div><div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:var(--accent)"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Actual Progress</span></div><div class="ml-auto text-[10px] md:text-[11px] text-[var(--muted)] mono" id="sCurveUpdate">Last update: --</div></div>
     </div>
   </section>
 
   <section class="grid grid-cols-1 xl:grid-cols-5 gap-4 md:gap-5 mb-4 md:mb-5 reveal">
-    <div class="card p-5 md:p-6 xl:col-span-3">
-      <div class="flex items-center justify-between mb-5"><div class="section-title">Progress per Disiplin</div><div class="text-[10px] md:text-[11px] text-[var(--muted)] mono">Bobot dalam %</div></div>
-      <div class="space-y-4" id="disciplineList"></div>
-    </div>
+    <div class="card p-5 md:p-6 xl:col-span-3"><div class="flex items-center justify-between mb-5"><div class="section-title">Progress per Disiplin</div><div class="text-[10px] md:text-[11px] text-[var(--muted)] mono">Bobot dalam %</div></div><div class="space-y-4" id="disciplineList"></div></div>
     <div class="card p-5 md:p-6 xl:col-span-2">
       <div class="flex items-center justify-between mb-5"><div class="section-title">Milestone Timeline</div><span class="text-[10px] md:text-[11px] text-[var(--muted)] mono">2 dari 9</span></div>
-      <div class="relative mb-8 mt-8">
-        <div class="ms-track">
-          <div class="ms-progress" id="msProgressBar" style="width:52%"></div>
-          <div class="ms-dot done" style="left:5%" title="Mobilisasi"></div><div class="ms-dot done" style="left:15%" title="Pondasi Selesai"></div><div class="ms-dot active" style="left:28%" title="Basement"></div><div class="ms-dot upcoming" style="left:40%" title="Struktur L10"></div><div class="ms-dot upcoming" style="left:52%" title="Struktur L16"></div><div class="ms-dot upcoming" style="left:68%" title="Top-Off"></div><div class="ms-dot upcoming" style="left:82%" title="MEP Testing"></div><div class="ms-dot upcoming" style="left:92%" title="Finishing"></div><div class="ms-dot upcoming" style="left:98%" title="Handover"></div>
-        </div>
-        <div class="flex justify-between mt-3 text-[8px] md:text-[9px] text-[var(--muted)] mono uppercase"><span id="tl1">-</span><span id="tl2">-</span><span id="tl3">-</span><span id="tl4">-</span><span id="tl5">-</span><span id="tl6">-</span><span id="tl7">-</span></div>
-      </div>
+      <div class="relative mb-8 mt-8"><div class="ms-track"><div class="ms-progress" id="msProgressBar" style="width:52%"></div><div class="ms-dot done" style="left:5%" title="Mobilisasi"></div><div class="ms-dot done" style="left:15%" title="Pondasi Selesai"></div><div class="ms-dot active" style="left:28%" title="Basement"></div><div class="ms-dot upcoming" style="left:40%" title="Struktur L10"></div><div class="ms-dot upcoming" style="left:52%" title="Struktur L16"></div><div class="ms-dot upcoming" style="left:68%" title="Top-Off"></div><div class="ms-dot upcoming" style="left:82%" title="MEP Testing"></div><div class="ms-dot upcoming" style="left:92%" title="Finishing"></div><div class="ms-dot upcoming" style="left:98%" title="Handover"></div></div><div class="flex justify-between mt-3 text-[8px] md:text-[9px] text-[var(--muted)] mono uppercase"><span id="tl1">-</span><span id="tl2">-</span><span id="tl3">-</span><span id="tl4">-</span><span id="tl5">-</span><span id="tl6">-</span><span id="tl7">-</span></div></div>
       <div class="space-y-2.5">
         <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]"><div class="flex items-center gap-3 min-w-0"><div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--success)"></div><div class="min-w-0"><div class="text-[12px] font-semibold truncate">Persiapan, Bongkaran, Galian & Urug</div><div class="text-[10px] text-[var(--muted)] mono" id="msL10">Target: -</div></div></div><span class="pill pill-warning flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">AKTIF</span></div>
         <div class="flex items-center justify-between py-2 px-3 rounded-lg" style="background:rgba(255,107,26,0.06);border:1px solid rgba(255,107,26,0.2)"><div class="flex items-center gap-3 min-w-0"><div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--accent);box-shadow:0 0 8px var(--accent-glow)"></div><div class="min-w-0"><div class="text-[12px] font-semibold truncate">Pondasi & Struktur Bawah</div><div class="text-[10px] text-[var(--muted)] mono" id="msL16">Target: -</div></div></div><span class="pill pill-warning flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">AKTIF</span></div>
@@ -853,7 +786,6 @@
 
   // ===== 8.7 JAM REAL-TIME (WIB) =====
   let lastKnownWIBDate = getWIBDateOnly().getTime();
-
   function updateClock() {
     const nowWIB = getWIBNow();
     const wibDateOnly = getWIBDateOnly();
@@ -944,18 +876,8 @@
     options: {
       responsive: true, maintainAspectRatio: false,
       interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: 'rgba(10,12,15,0.95)', borderColor: 'rgba(255,107,26,0.3)', borderWidth: 1, padding: 12,
-          titleColor: '#ecebe6', bodyColor: '#a8aebb',
-          callbacks: { label: (c) => c.parsed.y === null ? '' : `${c.dataset.label}: ${c.parsed.y}%` }
-        }
-      },
-      scales: {
-        x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 6 } },
-        y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' } }
-      }
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(10,12,15,0.95)', borderColor: 'rgba(255,107,26,0.3)', borderWidth: 1, padding: 12, titleColor: '#ecebe6', bodyColor: '#a8aebb', callbacks: { label: (c) => c.parsed.y === null ? '' : `${c.dataset.label}: ${c.parsed.y}%` } } },
+      scales: { x: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 6 } }, y: { min: 0, max: 100, grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, callback: v => v + '%' } } }
     }
   });
 </script>
