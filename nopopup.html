@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Progres Konstruksi</title>
+
+<!-- =====================================================================
+     BAGIAN 1: SETINGAN DASAR & CSS
+     ===================================================================== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+  :root{
+    --bg:#0a0c0f; --surface:#11151b; --surface-2:#171c24; --surface-3:#1e242e;
+    --border:#262d38; --border-bright:#38414f; --fg:#ecebe6; --fg-dim:#a8aebb;
+    --muted:#6b7382; --accent:#ff6b1a; --accent-glow:rgba(255,107,26,0.35);
+    --hi-vis:#ffd400; --steel:#7c8ba1; --success:#5fd07e; --warning:#ffb547;
+    --danger:#ff5252; --info:#5ab4e0;
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .display{font-family:'Archivo';font-weight:900;letter-spacing:-0.04em}
+
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 1200px 600px at 80% -10%, rgba(255,107,26,0.10), transparent 60%),
+      radial-gradient(ellipse 900px 500px at -10% 110%, rgba(122,139,161,0.08), transparent 60%),
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px,
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .layer{position:relative;z-index:1}
+
+  .card{
+    background:linear-gradient(180deg, rgba(23,28,36,0.92), rgba(17,21,27,0.92));
+    border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(8px);
+    position:relative;overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
+  }
+
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
+    font-size:11px;font-weight:600;letter-spacing:0.04em;border:1px solid var(--border-bright);
+    background:rgba(255,255,255,0.02);color:var(--fg-dim);text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .pill-accent{color:var(--accent);border-color:rgba(255,107,26,0.35);background:rgba(255,107,26,0.08)}
+  .pill-success{color:var(--success);border-color:rgba(95,208,126,0.3);background:rgba(95,208,126,0.07)}
+  .pill-warning{color:var(--warning);border-color:rgba(255,181,71,0.3);background:rgba(255,181,71,0.07)}
+
+  .live-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--success);
+    box-shadow:0 0 0 0 rgba(95,208,126,0.7);animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(95,208,126,0.7)}
+    70%{box-shadow:0 0 0 8px rgba(95,208,126,0)}
+    100%{box-shadow:0 0 0 0 rgba(95,208,126,0)}
+  }
+
+  .bar-track{background:rgba(255,255,255,0.05);border-radius:6px;overflow:hidden;height:8px;position:relative}
+  .bar-fill{height:100%;border-radius:6px;position:relative;transition:width 1.2s cubic-bezier(.2,.8,.2,1)}
+  .bar-fill::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
+    animation:shimmer 2.5s infinite;
+  }
+  @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+  .ring-wrap{position:relative;width:220px;height:220px}
+  .ring-bg{stroke:rgba(255,255,255,0.06)}
+  .ring-fg{
+    stroke:url(#ringGrad);filter:drop-shadow(0 0 14px var(--accent-glow));
+    transition:stroke-dashoffset 1.6s cubic-bezier(.2,.8,.2,1);
+  }
+
+  .ms-track{position:relative;height:8px;background:rgba(255,255,255,0.05);border-radius:6px}
+  .ms-progress{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--hi-vis));border-radius:6px;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
+  .ms-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid var(--border-bright);z-index:2}
+  .ms-dot.done{border-color:var(--success);background:var(--success)}
+  .ms-dot.active{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 6px rgba(255,107,26,0.18),0 0 14px var(--accent-glow)}
+  .ms-dot.upcoming{border-color:var(--steel);background:var(--surface-3)}
+
+  .photo-card{
+    position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border);
+    background:#000;aspect-ratio:4/3;
+  }
+  .photo-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease, filter .4s ease}
+  .photo-card:hover img{transform:scale(1.06);filter:saturate(1.1)}
+  .photo-card .overlay{
+    position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.85));
+    padding:12px;display:flex;flex-direction:column;justify-content:flex-end;
+  }
+  .photo-card .badge{
+    position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+    border:1px solid var(--border-bright);border-radius:6px;padding:4px 8px;
+    font-size:10px;font-weight:600;letter-spacing:0.04em;color:var(--hi-vis);text-transform:uppercase;
+  }
+
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:var(--surface)}
+  ::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--steel)}
+
+  .header-glow{
+    background:linear-gradient(180deg,rgba(17,21,27,0.95),rgba(10,12,15,0.85));
+    border-bottom:1px solid var(--border);backdrop-filter:blur(20px);
+  }
+
+  .reveal{opacity:0;transform:translateY(16px);animation:reveal .8s ease forwards}
+  .reveal:nth-child(1){animation-delay:.05s}
+  .reveal:nth-child(2){animation-delay:.1s}
+  .reveal:nth-child(3){animation-delay:.15s}
+  .reveal:nth-child(4){animation-delay:.2s}
+  @keyframes reveal{to{opacity:1;transform:translateY(0)}}
+
+  .section-title{
+    display:flex;align-items:center;gap:10px;font-size:11px;text-transform:uppercase;
+    letter-spacing:0.12em;color:var(--muted);font-weight:700;
+  }
+  .section-title::before{content:"";width:14px;height:2px;background:var(--accent)}
+
+  .stripe{
+    background:repeating-linear-gradient(45deg, var(--hi-vis), var(--hi-vis) 10px, #1a1300 10px, #1a1300 20px);
+    height:6px;
+  }
+
+  .info-wrap { position: relative; display: inline-flex; align-items: center; gap: 4px; }
+  .info-btn {
+    width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--border-bright);
+    background: var(--surface-3); color: var(--muted); font-size: 9px; font-weight: bold;
+    display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;
+  }
+  .info-btn:hover, .info-btn:focus { background: var(--accent); color: #1a1300; border-color: var(--accent); outline: none; }
+  .info-box {
+    position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+    background: var(--surface-3); border: 1px solid var(--border-bright);
+    color: var(--fg-dim); padding: 10px 12px; border-radius: 8px; font-size: 10px; line-height: 1.5;
+    width: 180px; text-align: left; z-index: 20; opacity: 0; visibility: hidden; transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5); text-transform: none; font-weight: normal; letter-spacing: 0;
+    pointer-events: none;
+  }
+  .info-box::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 6px solid transparent; border-top-color: var(--border-bright);
+  }
+  .info-wrap:hover .info-box, .info-wrap:focus-within .info-box { opacity: 1; visibility: visible; bottom: 135%; }
+
+  /* Responsive Typography & Sizing */
+  @media (max-width:640px){
+    .display-xl{font-size:40px !important;line-height:1 !important}
+    .ring-wrap{width:180px;height:180px}
+    .ring-wrap svg{width:180px;height:180px}
+    #progressNum{font-size:42px !important}
+  }
+  @media (min-width:641px) and (max-width:768px){
+    .display-xl{font-size:40px !important;line-height:1 !important}
+    .ring-wrap{width:180px;height:180px}
+    .ring-wrap svg{width:180px;height:180px}
+    #progressNum{font-size:42px !important}
+  }
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================================
+     BAGIAN 2: HEADER ATAS
+     ===================================================================== -->
+<header class="header-glow sticky top-0 z-50 layer">
+  <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background:linear-gradient(135deg,var(--accent),#cc4d0a);box-shadow:0 0 20px var(--accent-glow)">
+        <img src="https://raw.githubusercontent.com/abdiconstruct-rgb/BuildProgres/refs/heads/main/logo.jpg" alt="Logo" class="w-full h-full object-cover">
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[13px] font-bold tracking-wide">ABDI CONSTRUCTION</span>
+        </div>
+        <div class="text-[9px] md:text-[10px] text-[var(--muted)] mono uppercase tracking-widest hidden sm:block">Construction Progress Center</div>
+      </div>
+    </div>
+
+    <div class="hidden lg:flex items-center gap-3 px-4 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
+      <div class="w-2 h-2 rounded-full" style="background:var(--accent)"></div>
+      <div>
+        <div class="text-[13px] font-semibold">INDEPENDENCE Co-Living Space</div>
+        <div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: 077/SPK-BLD/VI/2026</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--muted)]"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-3">
+      <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
+        <span class="live-dot"></span>
+        <span class="text-[11px] mono text-[var(--fg-dim)]">LIVE</span>
+        <span class="text-[11px] mono text-[var(--muted)]">·</span>
+        <span class="text-[11px] mono" id="liveClock">--:--:--</span>
+        <span class="text-[10px] mono text-[var(--accent)]" style="font-weight:700">WIB</span>
+      </div>
+      <a href="https://docs.google.com/spreadsheets/d/119fpSfex4x3vyISvYN-HCs45KvnJz334/edit?usp=sharing&ouid=115632378833006552819&rtpof=true&sd=true">
+        <div class="px-3 md:px-4 py-2 rounded-lg flex items-center justify-center font-bold text-[11px] md:text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">Excel File</div>
+      </a>
+    </div>
+  </div>
+  <div class="stripe"></div>
+</header>
+
+<!-- =====================================================================
+     BAGIAN 3: INFO PROYEK
+     ===================================================================== -->
+<main class="max-w-[1600px] mx-auto px-4 md:px-6 py-6 md:py-8 layer">
+
+  <div class="flex flex-col xl:flex-row xl:items-end xl:justify-between gap-6 mb-8 reveal">
+    <div>
+      <div class="flex flex-wrap items-center gap-2 mb-3">
+        <span class="pill pill-success"><span class="live-dot"></span> On Track</span>
+        <span class="pill" id="contractProgress">Bulan Ke-1 / 8</span>
+        <span class="pill" id="contractDurationPill">Kontrak: 8 Bulan</span>
+      </div>
+      <h1 class="display display-xl text-[40px] sm:text-[56px] xl:text-[64px]" style="line-height:0.95">INDEPENDENCE<br>Co-Living <span style="color:var(--accent)">Space.</span></h1>
+      <p class="text-[var(--fg-dim)] mt-3 text-[13px] md:text-[14px] max-w-xl">Pembangunan rumah KOS 2 lantai. Jl. Lincar II No.17, Tegal Gundil, Kota Bogor, Jawa Barat 16152.</p>
+    </div>
+    <div class="grid grid-cols-3 gap-2 md:gap-3 w-full xl:w-auto xl:min-w-[440px]">
+      <div class="card p-3 md:p-4 flex flex-col justify-center">
+        <div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Pekerja</div>
+        <div class="mono text-[16px] md:text-[18px] font-bold">8 <span style="color:var(--accent)">Orang</span></div>
+        <div class="text-[10px] text-[var(--muted)] mt-1">Aktif</div>
+      </div>
+      <div class="card p-3 md:p-4 flex flex-col justify-center">
+        <div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Mulai</div>
+        <div class="mono text-[16px] md:text-[18px] font-bold">17 Jun</div>
+        <div class="text-[10px] text-[var(--muted)] mt-1">2026</div>
+      </div>
+      <div class="card p-3 md:p-4 flex flex-col justify-center">
+        <div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Selesai</div>
+        <div class="mono text-[16px] md:text-[18px] font-bold">17 Feb</div>
+        <div class="text-[10px] text-[var(--warning)] mt-1" id="endInfo">2027 · 0 hari lagi</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       BAGIAN 4: RING PROGRES & KURVA S
+       ===================================================================== -->
+  <section class="grid grid-cols-1 xl:grid-cols-3 gap-4 md:gap-5 mb-4 md:mb-5 reveal">
+
+    <div class="card p-5 md:p-6 flex flex-col">
+      <div class="section-title mb-4">Progress Keseluruhan</div>
+      <div class="flex-1 flex items-center justify-center py-4">
+        <div class="ring-wrap">
+          <svg viewBox="0 0 220 220" width="100%" height="100%">
+            <defs>
+              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ff6b1a"/>
+                <stop offset="100%" stop-color="#ffd400"/>
+              </linearGradient>
+            </defs>
+            <circle cx="110" cy="110" r="92" class="ring-bg" stroke-width="14" fill="none"/>
+            <circle id="progressRing" cx="110" cy="110" r="92" class="ring-fg" stroke-width="14" fill="none"
+              stroke-linecap="round" stroke-dasharray="578" stroke-dashoffset="578" transform="rotate(-90 110 110)"/>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <div class="text-[10px] md:text-[11px] uppercase tracking-widest text-[var(--muted)]">Terselesaikan</div>
+            <div class="display mono text-[48px] md:text-[56px] leading-none" id="progressNum">0.0<span style="color:var(--accent);font-size:32px">%</span></div>
+            <div class="text-[11px] text-[var(--fg-dim)] mt-1">Dari 100% Target</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2 pt-4 border-t" style="border-color:var(--border)">
+        <div class="text-center">
+          <div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]">
+            <span>Planned</span>
+            <button class="info-btn" tabindex="0">?</button>
+            <div class="info-box">
+              <b>Planned (Rencana)</b><br>Persentase progres yang seharusnya sudah tercapai pada minggu/bulan ini berdasarkan jadwal baseline proyek.
+            </div>
+          </div>
+          <div class="mono font-bold text-[14px] md:text-[15px]" id="plannedPercent">0%</div>
+        </div>
+        <div class="text-center">
+          <div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]">
+            <span>Variance</span>
+            <button class="info-btn" tabindex="0">?</button>
+            <div class="info-box">
+              <b>Variance (Selisih)</b><br>Selisih antara progres aktual dan rencana. Nilai minus (-) berarti pekerjaan tertinggal dari jadwal.
+            </div>
+          </div>
+          <div class="mono font-bold text-[14px] md:text-[15px] text-[var(--danger)]" id="variancePercent">0%</div>
+        </div>
+        <div class="text-center">
+          <div class="info-wrap text-[9px] md:text-[10px] uppercase text-[var(--muted)]">
+            <span>SPI</span>
+            <button class="info-btn" tabindex="0">?</button>
+            <div class="info-box">
+              <b>Schedule Performance Index</b><br>Rasio efisiensi waktu (Actual dibagi Planned). Jika angka &lt; 1 berarti terlambat, &gt; 1 berarti lebih cepat.
+            </div>
+          </div>
+          <div class="mono font-bold text-[14px] md:text-[15px] text-[var(--warning)]" id="spiVal">0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-5 md:p-6 xl:col-span-2">
+      <div class="flex items-center justify-between mb-4">
+        <div class="section-title">Kurva S — Progress Kumulatif</div>
+        <span class="text-[10px] md:text-[11px] text-[var(--muted)] mono hidden sm:block">Periode: Bulanan</span>
+      </div>
+      <div class="h-[260px] md:h-[280px] relative">
+        <canvas id="sCurveChart"></canvas>
+      </div>
+      <div class="flex flex-wrap items-center gap-3 md:gap-4 mt-4 pt-4 border-t" style="border-color:var(--border)">
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:#7c8ba1"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Planned (Baseline)</span></div>
+        <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-sm" style="background:var(--accent)"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Actual Progress</span></div>
+        <div class="flex items-center gap-2"><span class="w-3 h-0.5" style="background:var(--hi-vis)"></span><span class="text-[10px] md:text-[11px] text-[var(--fg-dim)]">Hari Ini</span></div>
+        <div class="ml-auto text-[10px] md:text-[11px] text-[var(--muted)] mono" id="sCurveUpdate">Last update: --</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       BAGIAN 5: PROGRES PEKERJAAN
+       ===================================================================== -->
+  <section class="grid grid-cols-1 xl:grid-cols-5 gap-4 md:gap-5 mb-4 md:mb-5 reveal">
+
+    <div class="card p-5 md:p-6 xl:col-span-3">
+      <div class="flex items-center justify-between mb-5">
+        <div class="section-title">Progress per Disiplin</div>
+        <div class="text-[10px] md:text-[11px] text-[var(--muted)] mono">Bobot dalam %</div>
+      </div>
+      <div class="space-y-4" id="disciplineList"></div>
+    </div>
+
+    <div class="card p-5 md:p-6 xl:col-span-2">
+      <div class="flex items-center justify-between mb-5">
+        <div class="section-title">Milestone Timeline</div>
+        <span class="text-[10px] md:text-[11px] text-[var(--muted)] mono">3 dari 8</span>
+      </div>
+
+      <div class="relative mb-8 mt-8">
+        <div class="ms-track">
+          <div class="ms-progress" id="msProgressBar" style="width:0%"></div>
+          <div class="ms-dot done" style="left:5%" title="Mobilisasi"></div>
+          <div class="ms-dot done" style="left:15%" title="Pondasi Selesai"></div>
+          <div class="ms-dot active" style="left:28%" title="Basement"></div>
+          <div class="ms-dot upcoming" style="left:40%" title="Struktur L10"></div>
+          <div class="ms-dot upcoming" style="left:52%" title="Struktur L16"></div>
+          <div class="ms-dot upcoming" style="left:60%" title="Pekerjaan Arsitektur"></div>
+          <div class="ms-dot upcoming" style="left:68%" title="Top-Off"></div>
+          <div class="ms-dot upcoming" style="left:82%" title="MEP Testing"></div>
+          <div class="ms-dot upcoming" style="left:92%" title="Finishing"></div>
+          <div class="ms-dot upcoming" style="left:98%" title="Handover"></div>
+        </div>
+        <div class="flex justify-between mt-3 text-[8px] md:text-[9px] text-[var(--muted)] mono uppercase">
+          <span id="tl1">-</span><span id="tl2">-</span><span id="tl3">-</span><span id="tl4">-</span><span id="tl5">-</span><span id="tl6">-</span><span id="tl7">-</span>
+        </div>
+      </div>
+
+      <div class="space-y-2.5" id="milestoneList">
+
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--success)"></div>
+            <div class="min-w-0">
+              <div class="text-[12px] font-semibold truncate">Persiapan, Bongkaran, Galian &amp; Urug</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msL10">Target: -</div>
+            </div>
+          </div>
+          <span class="pill pill-success flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">DONE</span>
+        </div>
+
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg" style="background:rgba(255,107,26,0.06);border:1px solid rgba(255,107,26,0.2)">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--accent);box-shadow:0 0 8px var(--accent-glow)"></div>
+            <div class="min-w-0">
+              <div class="text-[12px] font-semibold truncate">Pondasi &amp; Struktur Bawah</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msL16">Target: -</div>
+            </div>
+          </div>
+          <span class="pill pill-warning flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">AKTIF</span>
+        </div>
+
+        <!-- Titik AKTIF berwarna ORANGE -->
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--success)"></div> 
+            <div class="min-w-0">
+              <div class="text-[12px] font-semibold truncate">Struktur Top-Off (L2)</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msTopOff">Target: -</div>
+            </div>
+          </div>
+          <span class="pill pill-success flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">DONE</span> 
+        </div>
+
+        <!-- Titik AKTIF berwarna ORANGE -->
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--accent);box-shadow:0 0 8px var(--accent-glow)"></div>
+            <div class="min-w-0">
+              <div class="text-[12px] font-semibold truncate">Pekerjaan Arsitektur</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msArsitektur">Target: -</div>
+            </div>
+          </div>
+          <span class="pill pill-warning flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">AKTIF</span>
+        </div>
+
+        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
+          <div class="flex items-center gap-3 min-w-0">
+            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--steel)"></div>
+            <div class="min-w-0">
+              <div class="text-[12px] font-semibold truncate">MEP Testing &amp; Commissioning</div>
+              <div class="text-[10px] text-[var(--muted)] mono" id="msMEP">Target: -</div>
+            </div>
+          </div>
+          <span class="text-[10px] mono text-[var(--muted)] flex-shrink-0 ml-2" id="msMEPDays">- hari</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       BAGIAN 6: DOKUMENTASI FOTO
+       ===================================================================== -->
+  <section class="card p-5 md:p-6 mb-4 md:mb-5 reveal">
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <div class="section-title mb-1">Dokumentasi Lapangan</div>
+        <div class="text-[11px] md:text-[12px] text-[var(--fg-dim)]" id="photoUpdate">Pembaruan terakhir: -</div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div class="photo-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdM2hPYzurMuelkWqSuMVRj1l9IoxVoEfmxIqKK0bLLw&s=10" alt="">
+        <div class="badge">Bongkaran</div>
+        <a href="https://drive.google.com/drive/folders/1fJ94zslHBSC2PDB4blDDGal6_TFIv9aA?usp=sharing">
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Bongkaran </div>
+          <div class="text-[9px] text-[var(--muted)] mono">Persiapan</div>
+        </div></a>
+      </div>
+      <div class="photo-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzU0jDV0YjGwq7_DxavA8P7iet6cAhmsSA87VwFUS6Ig&s=10">
+        <div class="badge">Galian/Urug</div>
+           <a href="https://drive.google.com/drive/folders/1rvb_bogpHWWyTMpWy_uJ0RqvSi3tURhN?usp=sharing">
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Pek. Tanah</div>
+          <div class="text-[9px] text-[var(--muted)] mono">Persiapan</div>
+        </div></a>
+      </div>
+      <div class="photo-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfrmXJM00tVO9qgIrbzVy4RpLn-o5c1b3uK0iBMY7Cjg&s">
+        <div class="badge">Septic Tank</div>
+        <a href="https://drive.google.com/drive/folders/1m65shgSIZoNrlh1qBcLoPKsGdjjwtJsR?usp=drive_link">
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Septic Tank</div>
+          <div class="text-[9px] text-[var(--muted)] mono">Galian</div>
+        </div></a>
+      </div>
+      <div class="photo-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4OixgJ9OUa59ukzyczxdmJ2PIgsG4i33mIvJrHGtxTg&s=10">
+        <div class="badge">Pondasi</div>
+        <a href="https://drive.google.com/drive/folders/1EnRBkTDffdtmWK0hYYC-smSu575kziEB?usp=drive_link">
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Pondasi Tapak</div>
+          <div class="text-[9px] text-[var(--muted)] mono">Struktur</div>
+        </div></a>
+      </div>
+      <div class="photo-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY_cZT5TcnsIhr61d1jZoUKw4uOlB1Uq7q9WtW_zlSpg&s=10">
+        <div class="badge">Pondasi</div>
+        <a href="https://drive.google.com/drive/folders/1Bj9LykPdGdbsEd9D7P9tGiav9XaMe2jW?usp=drive_link">
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Pondasi Slof</div>
+          <div class="text-[9px] text-[var(--muted)] mono">Struktur</div>
+        </div></a>
+      </div>
+      <div class="photo-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWf8aDYyua_qSEnsGU_aBt9_sjzj0Wl-CYlRPCe2IcRg&s=10">
+        <div class="badge">Kolom</div>
+        <a href="https://drive.google.com/drive/folders/1sAVpBSWNGHdBaAl_fDKoAPNS6h1jULlQ?usp=drive_link">
+        <div class="overlay">
+          <div class="text-[11px] font-semibold">Tiang Bangunan</div>
+          <div class="text-[9px] text-[var(--muted)] mono">Struktur</div>
+        </div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       BAGIAN 7: FOOTER
+       ===================================================================== -->
+  <footer class="mt-8 pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-4" style="border-color:var(--border)">
+    <div class="flex items-center gap-3 text-[11px] text-[var(--muted)]">
+      <span class="mono">PROGRESS DASHBOARD · v2.4.1</span>
+      <span>·</span>
+      <span>Powered by ARTHA BANGUN DIMENSI</span>
+    </div>
+    <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-[11px] text-[var(--muted)]">
+      <span>Last sync: <span class="mono text-[var(--fg-dim)]" id="footerSync">-</span></span>
+      <span class="flex items-center gap-1.5"><span class="live-dot"></span> All systems operational</span>
+    </div>
+  </footer>
+
+</main>
+
+<!-- =====================================================================
+     BAGIAN 8: JAVASCRIPT (LOGIKA DASBOR)
+     ===================================================================== -->
+<script>
+  // 8.0 (DIHAPUS) — Logika Popup Tagihan Termin sudah tidak dipakai
+
+  // 8.1 INPUT DATA LAPANGAN — ★ RUBAH DATA PROGRES DI SINI
+  const dataDisiplin = [
+    { nama: "Persiapan, Bongkaran, Galian dan Urug", bobot: 5.00, progress: 100.00, status: "ON-GOING" },
+    { nama: "Pondasi & Struktur (Bawah)", bobot: 18.07, progress: 88.32, status: "ON-GOING" },
+    { nama: "Struktur Atas (L2)", bobot: 13.16, progress: 100.00, status: "ON-GOING" },
+    { nama: "MEP (Mechanical, Electrical, Plumbing)", bobot: 19.90, progress: 12.36, status: "ON-GOING" },
+    { nama: "Pekerjaan Arsitektur", bobot: 39.50, progress: 28.96, status: "ON-GOING" },
+    { nama: "Finishing", bobot: 4.38, progress: 0.00, status: "UPCOMING" },
+  ];
+
+  // 8.2 FUNGSI BANTU TANGGAL & WAKTU WIB
+  const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  const monthNamesLong = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+  function pad(n) { return n < 10 ? '0' + n : n; }
+  function formatDateShort(d) { return d.getDate() + ' ' + monthNamesShort[d.getMonth()] + ' ' + d.getFullYear(); }
+  function formatDateLong(d) { return d.getDate() + ' ' + monthNamesLong[d.getMonth()] + ' ' + d.getFullYear(); }
+  function addMonths(date, val) { const d = new Date(date); d.setMonth(d.getMonth() + val); return d; }
+  function addDays(date, val) { const d = new Date(date); d.setDate(d.getDate() + val); return d; }
+  function diffDays(d1, d2) { return Math.round((d1 - d2) / (1000 * 60 * 60 * 24)); }
+  function getTimeStr(d) { return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); }
+
+  function getWIBNow() {
+    const now = new Date();
+    const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+    return new Date(utcMs + (7 * 3600000));
+  }
+
+  function getWIBDateOnly() {
+    const wib = getWIBNow();
+    if (wib.getHours() === 0 && wib.getMinutes() === 0) {
+      return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate() - 1);
+    }
+    return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate());
+  }
+
+  // 8.3 SETINGAN TANGGAL KONTRAK
+  const today = getWIBDateOnly();
+  const projectStart = new Date(2026, 5, 17);
+  const contractDuration = 8;
+  const projectEnd = new Date(2027, 1, 17);
+
+  let monthsPassed = (today.getFullYear() - projectStart.getFullYear()) * 12 + (today.getMonth() - projectStart.getMonth());
+  let reportDate = today;
+
+  if (monthsPassed < 0) { monthsPassed = 0; reportDate = projectStart; }
+  else if (monthsPassed > contractDuration) { monthsPassed = contractDuration; reportDate = projectEnd; }
+
+  const daysLeft = diffDays(projectEnd, reportDate);
+
+  // 8.4 KALKULASI PROGRES OTOMATIS + RENDER DAFTAR DISIPLIN
+  let totalProgressVal = 0;
+  let totalBobot = 0;
+  const discList = document.getElementById('disciplineList');
+  discList.innerHTML = '';
+
+  dataDisiplin.forEach(d => {
+    totalProgressVal += (d.progress * d.bobot / 100);
+    totalBobot += d.bobot;
+
+    let currentStatus = d.status;
+    if (d.progress >= 100) {
+      currentStatus = "DONE";
+    }
+
+    let pillClass = 'pill';
+    if (currentStatus === 'DONE' || currentStatus === 'SELESAI') pillClass += ' pill-success';
+    else if (currentStatus === 'ON-GOING' || currentStatus === 'AKTIF') pillClass += ' pill-accent';
+
+    let barColor = 'var(--accent)';
+    if (currentStatus === 'DONE' || currentStatus === 'SELESAI') barColor = 'linear-gradient(90deg,#5fd07e,#3da55c)';
+    else if (currentStatus === 'ON-GOING' || currentStatus === 'AKTIF') barColor = 'var(--accent)';
+    else barColor = 'linear-gradient(90deg,#7c8ba1,#5a6678)';
+
+    const html = `
+      <div>
+        <div class="flex items-center justify-between mb-2">
+          <div class="flex items-center gap-2 md:gap-3 min-w-0 flex-1">
+            <span class="text-[12px] md:text-[13px] font-semibold truncate">${d.nama}</span>
+            <span class="${pillClass} hidden md:inline-flex" style="padding:2px 8px;font-size:9px">${currentStatus}</span>
+          </div>
+          <div class="flex items-center gap-2 md:gap-4 flex-shrink-0 ml-2">
+            <span class="text-[10px] md:text-[11px] text-[var(--muted)] mono hidden sm:inline">Bobot ${d.bobot}%</span>
+            <span class="mono font-bold text-[13px] md:text-[14px] w-10 md:w-12 text-right">${d.progress}%</span>
+          </div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:0%;background:${barColor}" data-w="${d.progress}"></div></div>
+      </div>
+    `;
+    discList.innerHTML += html;
+  });
+
+  // Animasi bar progres disiplin (berjalan berurutan)
+  setTimeout(() => {
+    discList.querySelectorAll('.bar-fill').forEach((el, i) => {
+      setTimeout(() => { el.style.width = el.getAttribute('data-w') + '%'; }, i * 90);
+    });
+  }, 300);
+
+  const progressVal = +(totalProgressVal / (totalBobot / 100)).toFixed(1);
+
+  let plannedVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / contractDuration) - 0.5))) * 100).toFixed(1);
+  if (monthsPassed >= contractDuration) plannedVal = 100.0;
+
+  const varianceVal = (progressVal - plannedVal).toFixed(1);
+  const spiVal = (progressVal / plannedVal).toFixed(2);
+
+  // 8.5 UPDATE UI DASBOR
+  document.getElementById('contractProgress').textContent = 'Bulan Ke-' + (monthsPassed + 1) + ' / ' + contractDuration;
+  document.getElementById('contractDurationPill').textContent = 'Kontrak: ' + contractDuration + ' Bulan';
+  document.getElementById('endInfo').textContent = (daysLeft > 0 ? daysLeft + ' hari lagi' : 'Selesai');
+  document.getElementById('plannedPercent').textContent = plannedVal + '%';
+  document.getElementById('variancePercent').textContent = varianceVal + '%';
+  document.getElementById('spiVal').textContent = spiVal;
+
+  // Animasi ring progres keseluruhan
+  const ringEl = document.getElementById('progressRing');
+  setTimeout(() => {
+    ringEl.style.strokeDashoffset = 578 - (578 * progressVal / 100);
+  }, 300);
+
+  // Animasi angka progres (count-up)
+  const progressNumEl = document.getElementById('progressNum');
+  let numAnimStart = null;
+  function animateProgressNum(ts) {
+    if (numAnimStart === null) numAnimStart = ts;
+    const t = Math.min((ts - numAnimStart) / 1600, 1);
+    const eased = 1 - Math.pow(1 - t, 3);
+    progressNumEl.innerHTML = (progressVal * eased).toFixed(1) + '<span style="color:var(--accent);font-size:32px">%</span>';
+    if (t < 1) requestAnimationFrame(animateProgressNum);
+  }
+  requestAnimationFrame(animateProgressNum);
+
+  // 8.6 MILESTONE TIMELINE
+  setTimeout(() => {
+    document.getElementById('msProgressBar').style.width = progressVal + '%';
+  }, 300);
+
+  // Label bulan pada timeline
+  const tlIds = ['tl1', 'tl2', 'tl3', 'tl4', 'tl5', 'tl6', 'tl7'];
+  tlIds.forEach((id, i) => {
+    const d = addMonths(projectStart, Math.round(i * contractDuration / (tlIds.length - 1)));
+    document.getElementById(id).textContent = monthNamesShort[d.getMonth()] + ' ' + String(d.getFullYear()).slice(-2);
+  });
+
+  // Target milestone (dihitung dari tanggal mulai kontrak)
+  const targetPersiapan  = addMonths(projectStart, 1);
+  const targetPondasi    = addMonths(projectStart, 3);
+  const targetTopOff     = addMonths(projectStart, 5);
+  const targetArsitektur = addMonths(projectStart, 6);
+  const targetMEP        = addMonths(projectStart, 7);
+
+  document.getElementById('msL10').textContent = 'Target: ' + formatDateShort(targetPersiapan);
+  document.getElementById('msL16').textContent = 'Target: ' + formatDateShort(targetPondasi);
+  document.getElementById('msTopOff').textContent = 'Target: ' + formatDateShort(targetTopOff);
+  document.getElementById('msArsitektur').textContent = 'Target: ' + formatDateShort(targetArsitektur);
+  document.getElementById('msMEP').textContent = 'Target: ' + formatDateShort(targetMEP);
+  document.getElementById('msMEPDays').textContent = Math.max(diffDays(targetMEP, reportDate), 0) + ' hari';
+
+  // 8.7 KURVA S — PROGRESS KUMULATIF (CHART.JS)
+  const chartLabels = [];
+  const plannedData = [];
+  for (let i = 0; i <= contractDuration; i++) {
+    const d = addMonths(projectStart, i);
+    chartLabels.push(monthNamesShort[d.getMonth()] + ' ' + String(d.getFullYear()).slice(-2));
+    let pVal = +(1 / (1 + Math.exp(-7 * ((i / contractDuration) - 0.5))) * 100).toFixed(1);
+    if (i >= contractDuration) pVal = 100.0;
+    plannedData.push(pVal);
+  }
+
+  const actualData = plannedData.map((p, i) => {
+    if (i > monthsPassed) return null;
+    if (i === monthsPassed) return progressVal;
+    return +(p * (progressVal / plannedData[monthsPassed])).toFixed(1);
+  });
+
+  // Garis vertikal "Hari Ini"
+  const todayLinePlugin = {
+    id: 'todayLine',
+    afterDatasetsDraw(chart) {
+      const x = chart.scales.x.getPixelForValue(monthsPassed);
+      const { top, bottom } = chart.chartArea;
+      const ctx = chart.ctx;
+      ctx.save();
+      ctx.strokeStyle = '#ffd400';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, bottom);
+      ctx.stroke();
+      ctx.restore();
+    }
+  };
+
+  new Chart(document.getElementById('sCurveChart'), {
+    type: 'line',
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: 'Planned',
+          data: plannedData,
+          borderColor: '#7c8ba1',
+          backgroundColor: 'rgba(124,139,161,0.06)',
+          borderWidth: 2,
+          borderDash: [6, 4],
+          pointRadius: 2.5,
+          pointBackgroundColor: '#7c8ba1',
+          pointBorderColor: 'transparent',
+          fill: true,
+          tension: 0.4
+        },
+        {
+          label: 'Actual',
+          data: actualData,
+          borderColor: '#ff6b1a',
+          backgroundColor: 'rgba(255,107,26,0.10)',
+          borderWidth: 2.5,
+          pointRadius: 3.5,
+          pointBackgroundColor: '#ff6b1a',
+          pointBorderColor: 'transparent',
+          pointHoverRadius: 5,
+          fill: true,
+          tension: 0.4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#171c24',
+          borderColor: '#38414f',
+          borderWidth: 1,
+          titleColor: '#ecebe6',
+          bodyColor: '#a8aebb',
+          padding: 10,
+          filter: function(item) { return item.parsed.y !== null; },
+          callbacks: {
+            label: function(context) {
+              return ' ' + context.dataset.label + ': ' + context.parsed.y + '%';
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: { color: '#6b7382', font: { family: 'JetBrains Mono', size: 10 }, maxRotation: 0 }
+        },
+        y: {
+          min: 0,
+          max: 100,
+          grid: { color: 'rgba(255,255,255,0.04)' },
+          ticks: {
+            color: '#6b7382',
+            font: { family: 'JetBrains Mono', size: 10 },
+            stepSize: 25,
+            callback: function(value) { return value + '%'; }
+          }
+        }
+      }
+    },
+    plugins: [todayLinePlugin]
+  });
+
+  document.getElementById('sCurveUpdate').textContent = 'Last update: ' + formatDateShort(reportDate);
+
+  // 8.8 JAM LIVE WIB
+  const liveClockEl = document.getElementById('liveClock');
+  function updateLiveClock() {
+    liveClockEl.textContent = getTimeStr(getWIBNow());
+  }
+  updateLiveClock();
+  setInterval(updateLiveClock, 1000);
+
+  // 8.9 STATUS SYNC
+  document.getElementById('footerSync').textContent = formatDateShort(reportDate) + ' ' + getTimeStr(getWIBNow()) + ' WIB';
+  document.getElementById('photoUpdate').textContent = 'Pembaruan terakhir: ' + formatDateLong(reportDate);
+</script>
+
+</body>
+</html>
