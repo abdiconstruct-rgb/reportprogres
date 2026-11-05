@@ -160,167 +160,12 @@
   }
   .info-wrap:hover .info-box, .info-wrap:focus-within .info-box { opacity: 1; visibility: visible; bottom: 135%; }
 
-  /* ===== CSS POPUP TAGIHAN TERMIN ===== */
-  .termin-overlay {
-    position: fixed; inset: 0; z-index: 9999;
-    background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease;
-    padding: 16px;
-  }
-  .termin-overlay.show { opacity: 1; visibility: visible; }
-
-  .termin-modal {
-    background: linear-gradient(180deg, #151a22, #0e1218);
-    border: 1px solid var(--border-bright); border-radius: 16px;
-    width: 100%; max-width: 680px; max-height: 90vh;
-    display: flex; flex-direction: column;
-    box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,107,26,0.08);
-    transform: translateY(24px) scale(0.97); transition: transform 0.35s cubic-bezier(.2,.8,.2,1);
-    overflow: hidden;
-  }
-  .termin-overlay.show .termin-modal { transform: translateY(0) scale(1); }
-
-  .termin-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 22px; border-bottom: 1px solid var(--border);
-    background: linear-gradient(180deg, rgba(255,107,26,0.06), transparent);
-    flex-shrink: 0; flex-wrap: wrap; gap: 12px;
-  }
-  .termin-header-title {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 15px; font-weight: 800; letter-spacing: -0.01em; color: var(--fg);
-  }
-  .termin-header-icon {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: linear-gradient(135deg, var(--accent), #cc4d0a);
-    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-    box-shadow: 0 0 16px var(--accent-glow);
-  }
-
-  .termin-header-progress {
-    display: flex; align-items: center; gap: 10px;
-    margin-left: auto;
-    padding: 6px 14px; border-radius: 8px;
-    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-  }
-  .termin-header-prog-label {
-    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em;
-    color: var(--fg-dim); font-weight: 600;
-  }
-  .termin-header-prog-bar {
-    width: 80px; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;
-  }
-  .termin-header-prog-fill {
-    height: 100%; background: linear-gradient(90deg, var(--accent), var(--hi-vis)); border-radius: 3px;
-    transition: width 0.8s ease; box-shadow: 0 0 8px var(--accent-glow);
-  }
-  .termin-header-prog-val {
-    font-size: 14px; font-weight: 800; color: var(--hi-vis); letter-spacing: -0.02em;
-  }
-
-  .termin-close-x {
-    width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border-bright);
-    background: var(--surface-3); color: var(--muted); font-size: 18px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center; cursor: pointer;
-    transition: all 0.2s; line-height: 1; flex-shrink: 0;
-  }
-  .termin-close-x:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
-
-  .termin-body {
-    padding: 18px 22px; overflow-y: auto; flex: 1;
-  }
-  .termin-body::-webkit-scrollbar { width: 5px; }
-  .termin-body::-webkit-scrollbar-track { background: transparent; }
-  .termin-body::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
-
-  .termin-row {
-    display: flex; gap: 14px; padding: 14px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-  }
-  .termin-row:last-child { border-bottom: none; }
-
-  .termin-num {
-    width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 800; letter-spacing: -0.02em;
-    border: 1px solid var(--border-bright); background: var(--surface-3); color: var(--fg-dim);
-  }
-  .termin-num.dp { background: linear-gradient(135deg, var(--accent), #cc4d0a); color: #1a1300; border-color: var(--accent); }
-  .termin-num.done { background: linear-gradient(135deg, #5fd07e, #3da55c); color: #0a2e16; border-color: var(--success); }
-  .termin-num.active { background: var(--accent); color: #1a1300; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(255,107,26,0.2); }
-
-  .termin-info { flex: 1; min-width: 0; }
-  .termin-label {
-    font-size: 11px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 0.06em; color: var(--accent); margin-bottom: 4px;
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-  }
-  .termin-desc {
-    font-size: 12px; line-height: 1.65; color: var(--fg-dim);
-  }
-  .termin-desc strong { color: var(--fg); font-weight: 700; }
-  .termin-amount {
-    font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;
-    color: var(--hi-vis); margin-top: 6px; display: inline-block;
-    background: rgba(255,212,0,0.06); padding: 4px 10px; border-radius: 6px;
-    border: 1px solid rgba(255,212,0,0.15);
-  }
-  .termin-amount.done { color: var(--success); background: rgba(95,208,126,0.06); border-color: rgba(95,208,126,0.15); }
-
-  .termin-view-btn {
-    padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-dim);
-    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-    text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;
-  }
-  .termin-view-btn:hover { background: var(--accent); color: #1a1300; border-color: var(--accent); }
-  .termin-view-btn svg { width: 10px; height: 10px; }
-
-  .termin-status {
-    margin-top: 8px; padding: 8px 12px; border-radius: 8px; font-size: 11px; line-height: 1.5;
-    border: 1px solid var(--border); background: rgba(255,255,255,0.02);
-  }
-
-  .pill-lunas {
-    display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 999px;
-    font-size: 9px; font-weight: 700; letter-spacing: 0.04em;
-    background: rgba(95,208,126,0.1); color: var(--success); border: 1px solid rgba(95,208,126,0.3);
-    text-transform: uppercase;
-  }
-
-  .termin-footer {
-    padding: 16px 22px; border-top: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    background: rgba(0,0,0,0.25); flex-shrink: 0;
-  }
-  .termin-total {
-    font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;
-  }
-  .termin-total-val {
-    font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--fg);
-    margin-top: 2px;
-  }
-  .termin-close-btn {
-    padding: 10px 32px; border-radius: 10px; border: none; cursor: pointer;
-    font-family: 'Archivo', system-ui, sans-serif; font-size: 13px; font-weight: 700;
-    letter-spacing: 0.02em; transition: all 0.2s;
-    background: linear-gradient(135deg, var(--accent), #cc4d0a); color: #1a1300;
-    box-shadow: 0 0 20px var(--accent-glow);
-  }
-  .termin-close-btn:hover { transform: translateY(-1px); box-shadow: 0 0 30px var(--accent-glow); filter: brightness(1.1); }
-
   /* Responsive Typography & Sizing */
   @media (max-width:640px){
     .display-xl{font-size:40px !important;line-height:1 !important}
     .ring-wrap{width:180px;height:180px}
     .ring-wrap svg{width:180px;height:180px}
     #progressNum{font-size:42px !important}
-    .termin-modal { max-width: 100%; }
-    .termin-row { gap: 10px; }
-    .termin-desc { font-size: 11px; }
-    .termin-amount { font-size: 11px; }
-    .termin-header-progress { width: 100%; order: 3; margin-left: 0; justify-content: space-between; }
   }
   @media (min-width:641px) and (max-width:768px){
     .display-xl{font-size:40px !important;line-height:1 !important}
@@ -332,118 +177,6 @@
 </head>
 
 <body>
-
-<!-- =====================================================================
-     POPUP TAGIHAN TERMIN — ★ RUBAH VALUE DI SINI
-     ===================================================================== -->
-<div class="termin-overlay" id="terminOverlay">
-
-  <div class="termin-modal">
-
-    <!-- HEADER dengan Progress Aktual & tombol X -->
-    <div class="termin-header">
-      <div class="termin-header-title">
-        <div class="termin-header-icon">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a1300" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-        </div>
-        <span>Tagihan Termin Pembayaran</span>
-      </div>
-
-      <!-- PROGRESS AKTUAL DI HEADER -->
-      <div class="termin-header-progress">
-        <span class="termin-header-prog-label">Progress Aktual</span>
-        <div class="termin-header-prog-bar">
-          <div class="termin-header-prog-fill" id="terminHeaderProgFill" style="width: 0%"></div>
-        </div>
-        <span class="termin-header-prog-val mono" id="terminHeaderProgVal">0%</span>
-      </div>
-
-      <button class="termin-close-x" id="terminCloseX" aria-label="Tutup">&times;</button>
-    </div>
-
-    <!-- BODY daftar termin -->
-    <div class="termin-body">
-
-      <!-- ===== TERMIN 1 (Down Payment) - LUNAS ===== -->
-      <div class="termin-row">
-        <div class="termin-num done">1</div>
-        <div class="termin-info">
-          <div class="termin-label">
-            Down Payment (Tahap 1)
-            <span class="pill-lunas">✓ Lunas</span>
-          </div>
-          <div class="termin-desc">
-            Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>0%</strong> (nol persen) dan akan dilaksanakan sampai dengan <strong>25%</strong> (dua puluh lima persen).
-          </div>
-          <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-          <div style="font-size:12px"><span style="margin-left: 15px" class="termin-amount done">Rp. 397.750.000</span>
-          <a href="https://raw.githubusercontent.com/abdiconstruct-rgb/reportprogres/refs/heads/main/Paymen%20DP.jpeg" class="termin-view-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              VIEW
-            </a></div>
-        </div>
-      </div>
-
-      <!-- ===== TERMIN 2 ===== -->
-      <div class="termin-row">
-        <div class="termin-num done">2</div>
-        <div class="termin-info">
-          <div class="termin-label">Tahap 2
-          <span class="pill-lunas">✓ Lunas</span>
-          </div>
-          <div class="termin-desc">
-            Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>25%</strong> (dua puluh lima persen) dan akan dilaksanakan sampai dengan <strong>50%</strong> (lima puluh persen).
-          </div>
-          <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-          <div style="font-size:12px">Termin Ke-2 <span style="margin-left: 15px" class="termin-amount done">404.160.744</span>
-          <a href="#" class="termin-view-btn">
-             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              VIEW
-            </a>
-          </div>
-        </div>
-      </div>
-
-    <!-- ===== TERMIN 3 ===== -->
-      <div class="termin-row">
-        <div class="termin-num active">3</div>
-        <div class="termin-info">
-          <div class="termin-label">Tahap 3</div>
-          <div class="termin-desc">
-            Pembayaran sebesar <strong>25%</strong> (dua puluh lima persen), pembayaran dilakukan saat progress pekerjaan <strong>50%</strong> (lima Puluh persen) dan akan dilaksanakan sampai dengan <strong>75%</strong> (tujuh puluh lima persen).
-          </div>
-          <!-- ★ RUBAH VALUE DI SINI: Nominal -->
-          <div style="font-size:12px">Termin-3 <span style="margin-left: 15px" class="termin-amount">Rp. 397.750.000</span>
-          <a href="https://raw.githubusercontent.com/abdiconstruct-rgb/BuildProgres/refs/heads/main/Termin1.png" class="termin-view-btn">
-             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              VIEW
-            </a>
-          </div>
-          
-             <div style="font-size:12px">Token Listrik <span style="margin-left: 15px" class="termin-amount">Rp. 203.500</span>
-              <a href="https://raw.githubusercontent.com/abdiconstruct-rgb/reportprogres/refs/heads/main/Token%20Listrik%201.jpeg" class="termin-view-btn">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              VIEW
-            </a></div>
-             <div class="termin-status" id="statusTermin2">Memuat progress...</div>
-        </div>
-      </div>
-
-    </div>   
-
-    <!-- FOOTER dengan tombol Close -->
-    <div class="termin-footer">
-      <div>
-        <div class="termin-total">Total Tagihan</div>
-        <!-- ★ RUBAH VALUE DI SINI: Total keseluruhan -->
-        <div class="termin-total-val">Rp. 397.953.500</div>
-        <div style="font-size:10px;color:var(--muted);margin-top:3px;font-style:italic">Tiga Ratus Sembilan Puluh Tujuh Juta Sembilan Ratus Lima Puluh Tiga Ribu Lima Ratus Rupiah</div>
-      </div>
-      <button class="termin-close-btn" id="terminCloseBtn">CLOSE</button>
-    </div>
-
-  </div>
-</div>
 
 <!-- =====================================================================
      BAGIAN 2: HEADER ATAS
@@ -465,8 +198,8 @@
     <div class="hidden lg:flex items-center gap-3 px-4 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
       <div class="w-2 h-2 rounded-full" style="background:var(--accent)"></div>
       <div>
-        <div class="text-[13px] font-semibold">INDEPENDENCE Co-Living Space</div>
-        <div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: 077/SPK-BLD/VI/2026</div>
+        <div class="text-[13px] font-semibold">RENOVASI RUMAH Ibu Dian</div>
+        <div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: 078/ SPK-RNV/XI/2026</div>
       </div>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--muted)]"><path d="M6 9l6 6 6-6"/></svg>
     </div>
@@ -496,8 +229,8 @@
     <div>
       <div class="flex flex-wrap items-center gap-2 mb-3">
         <span class="pill pill-success"><span class="live-dot"></span> On Track</span>
-        <span class="pill" id="contractProgress">Bulan Ke-1 / 8</span>
-        <span class="pill" id="contractDurationPill">Kontrak: 8 Bulan</span>
+        <span class="pill" id="contractProgress">Bulan Ke-1 / 3</span>
+        <span class="pill" id="contractDurationPill">Kontrak: 3 Bulan</span>
       </div>
       <h1 class="display display-xl text-[40px] sm:text-[56px] xl:text-[64px]" style="line-height:0.95">INDEPENDENCE<br>Co-Living <span style="color:var(--accent)">Space.</span></h1>
       <p class="text-[var(--fg-dim)] mt-3 text-[13px] md:text-[14px] max-w-xl">Pembangunan rumah KOS 2 lantai. Jl. Lincar II No.17, Tegal Gundil, Kota Bogor, Jawa Barat 16152.</p>
@@ -790,29 +523,6 @@
      BAGIAN 8: JAVASCRIPT (LOGIKA DASBOR)
      ===================================================================== -->
 <script>
-  // 8.0 POPUP TAGIHAN TERMIN — LOGIKA BUKA/TUTUP
-  (function() {
-    const overlay = document.getElementById('terminOverlay');
-    const closeX = document.getElementById('terminCloseX');
-    const closeBtn = document.getElementById('terminCloseBtn');
-
-    function closePopup() {
-      overlay.classList.remove('show');
-      setTimeout(() => { overlay.style.display = 'none'; }, 400);
-    }
-
-    setTimeout(() => { overlay.classList.add('show'); }, 600);
-
-    closeX.addEventListener('click', closePopup);
-    closeBtn.addEventListener('click', closePopup);
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) closePopup();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape' && overlay.classList.contains('show')) closePopup();
-    });
-  })();
-
   // 8.1 INPUT DATA LAPANGAN — ★ RUBAH DATA PROGRES DI SINI
   const dataDisiplin = [
     { nama: "Persiapan, Bongkaran, Galian dan Urug", bobot: 5.00, progress: 100.00, status: "ON-GOING" },
@@ -929,39 +639,6 @@
   document.getElementById('variancePercent').style.color = varianceVal < 0 ? 'var(--danger)' : 'var(--success)';
   document.getElementById('spiVal').textContent = spiVal;
 
-  // Update Progress Aktual di Header Popup
-  document.getElementById('terminHeaderProgVal').textContent = progressVal + '%';
-  document.getElementById('terminHeaderProgFill').style.width = progressVal + '%';
-
-  // 8.5.1 UPDATE STATUS TERMIN OTOMATIS
-  // (RINCIAN PROGRES PER DISIPLIN SUDAH DIHILANGKAN — HANYA TAMPIL PERSENTASE KESELURUHAN)
-  (function updateTerminStatuses() {
-    const p = progressVal;
-
-    const el1 = document.getElementById('statusTermin1');
-    if (el1) {
-      el1.innerHTML = `
-        <span style="color:var(--success); font-weight:700;">✓ Pembayaran Lunas</span><br>
-        <span style="color:var(--fg-dim);">Progress aktual keseluruhan saat ini: <strong style="color:var(--fg)">${p}%</strong></span>
-      `;
-      el1.style.borderColor = 'rgba(95,208,126,0.2)';
-      el1.style.background = 'rgba(95,208,126,0.03)';
-    }
-
-    const el2 = document.getElementById('statusTermin2');
-    if (el2) {
-      if (p < 25) {
-        el2.innerHTML = `<span style="color:var(--muted)">Menunggu progress keseluruhan mencapai 25% (Saat ini: ${p}%)</span>`;
-      } else {
-        el2.innerHTML = `
-          <span style="color:var(--warning); font-weight:700;">⏳ Awaiting Payment</span><br>
-          <span style="color:var(--fg-dim);">Progress aktual keseluruhan saat ini: <strong style="color:var(--fg)">${p}%</strong></span>
-        `;
-        el2.style.borderColor = 'rgba(255,181,71,0.2)';
-        el2.style.background = 'rgba(255,181,71,0.03)';
-      }
-    }
-  })();
 
   // 8.6 JAM REAL-TIME (WIB)
   let lastKnownWIBDate = getWIBDateOnly().getTime();
