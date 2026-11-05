@@ -243,13 +243,13 @@
       </div>
       <div class="card p-3 md:p-4 flex flex-col justify-center">
         <div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Mulai</div>
-        <div class="mono text-[16px] md:text-[18px] font-bold">17 Jun</div>
+        <div class="mono text-[16px] md:text-[18px] font-bold">5 Nov</div>
         <div class="text-[10px] text-[var(--muted)] mt-1">2026</div>
       </div>
       <div class="card p-3 md:p-4 flex flex-col justify-center">
         <div class="text-[9px] md:text-[10px] uppercase tracking-widest text-[var(--muted)] mb-1">Selesai</div>
-        <div class="mono text-[16px] md:text-[18px] font-bold">17 Feb</div>
-        <div class="text-[10px] text-[var(--warning)] mt-1" id="endInfo">2027 · 0 hari lagi</div>
+        <div class="mono text-[16px] md:text-[18px] font-bold">5 Feb</div>
+        <div class="text-[10px] text-[var(--warning)] mt-1" id="endInfo">2027 · 92 hari lagi</div>
       </div>
     </div>
   </div>
@@ -338,99 +338,12 @@
        ===================================================================== -->
   <section class="grid grid-cols-1 xl:grid-cols-5 gap-4 md:gap-5 mb-4 md:mb-5 reveal">
 
-    <div class="card p-5 md:p-6 xl:col-span-3">
+    <div class="card p-5 md:p-6 xl:col-span-5">
       <div class="flex items-center justify-between mb-5">
         <div class="section-title">Progress per Disiplin</div>
         <div class="text-[10px] md:text-[11px] text-[var(--muted)] mono">Bobot dalam %</div>
       </div>
       <div class="space-y-4" id="disciplineList"></div>
-    </div>
-
-    <div class="card p-5 md:p-6 xl:col-span-2">
-      <div class="flex items-center justify-between mb-5">
-        <div class="section-title">Milestone Timeline</div>
-        <span class="text-[10px] md:text-[11px] text-[var(--muted)] mono">3 dari 8</span>
-      </div>
-
-      <div class="relative mb-8 mt-8">
-        <div class="ms-track">
-          <div class="ms-progress" id="msProgressBar" style="width:0%"></div>
-          <div class="ms-dot done" style="left:5%" title="Mobilisasi"></div>
-          <div class="ms-dot done" style="left:15%" title="Pondasi Selesai"></div>
-          <div class="ms-dot active" style="left:28%" title="Basement"></div>
-          <div class="ms-dot upcoming" style="left:40%" title="Struktur L10"></div>
-          <div class="ms-dot upcoming" style="left:52%" title="Struktur L16"></div>
-          <div class="ms-dot upcoming" style="left:60%" title="Pekerjaan Arsitektur"></div>
-          <div class="ms-dot upcoming" style="left:68%" title="Top-Off"></div>
-          <div class="ms-dot upcoming" style="left:82%" title="MEP Testing"></div>
-          <div class="ms-dot upcoming" style="left:92%" title="Finishing"></div>
-          <div class="ms-dot upcoming" style="left:98%" title="Handover"></div>
-        </div>
-        <div class="flex justify-between mt-3 text-[8px] md:text-[9px] text-[var(--muted)] mono uppercase">
-          <span id="tl1">-</span><span id="tl2">-</span><span id="tl3">-</span><span id="tl4">-</span><span id="tl5">-</span><span id="tl6">-</span><span id="tl7">-</span>
-        </div>
-      </div>
-
-      <div class="space-y-2.5" id="milestoneList">
-
-        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
-          <div class="flex items-center gap-3 min-w-0">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--success)"></div>
-            <div class="min-w-0">
-              <div class="text-[12px] font-semibold truncate">Persiapan, Bongkaran, Galian &amp; Urug</div>
-              <div class="text-[10px] text-[var(--muted)] mono" id="msL10">Target: -</div>
-            </div>
-          </div>
-          <span class="pill pill-success flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">DONE</span>
-        </div>
-
-        <div class="flex items-center justify-between py-2 px-3 rounded-lg" style="background:rgba(255,107,26,0.06);border:1px solid rgba(255,107,26,0.2)">
-          <div class="flex items-center gap-3 min-w-0">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--accent);box-shadow:0 0 8px var(--accent-glow)"></div>
-            <div class="min-w-0">
-              <div class="text-[12px] font-semibold truncate">Pondasi &amp; Struktur Bawah</div>
-              <div class="text-[10px] text-[var(--muted)] mono" id="msL16">Target: -</div>
-            </div>
-          </div>
-          <span class="pill pill-warning flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">AKTIF</span>
-        </div>
-
-        <!-- Titik AKTIF berwarna ORANGE -->
-        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
-          <div class="flex items-center gap-3 min-w-0">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--success)"></div> 
-            <div class="min-w-0">
-              <div class="text-[12px] font-semibold truncate">Struktur Top-Off (L2)</div>
-              <div class="text-[10px] text-[var(--muted)] mono" id="msTopOff">Target: -</div>
-            </div>
-          </div>
-          <span class="pill pill-success flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">DONE</span> 
-        </div>
-
-        <!-- Titik AKTIF berwarna ORANGE -->
-        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
-          <div class="flex items-center gap-3 min-w-0">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--accent);box-shadow:0 0 8px var(--accent-glow)"></div>
-            <div class="min-w-0">
-              <div class="text-[12px] font-semibold truncate">Pekerjaan Arsitektur</div>
-              <div class="text-[10px] text-[var(--muted)] mono" id="msArsitektur">Target: -</div>
-            </div>
-          </div>
-          <span class="pill pill-warning flex-shrink-0 ml-2" style="padding:2px 8px;font-size:9px">AKTIF</span>
-        </div>
-
-        <div class="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.02]">
-          <div class="flex items-center gap-3 min-w-0">
-            <div class="w-2 h-2 rounded-full flex-shrink-0" style="background:var(--steel)"></div>
-            <div class="min-w-0">
-              <div class="text-[12px] font-semibold truncate">MEP Testing &amp; Commissioning</div>
-              <div class="text-[10px] text-[var(--muted)] mono" id="msMEP">Target: -</div>
-            </div>
-          </div>
-          <span class="text-[10px] mono text-[var(--muted)] flex-shrink-0 ml-2" id="msMEPDays">- hari</span>
-        </div>
-
-      </div>
     </div>
   </section>
 
@@ -524,13 +437,13 @@
      ===================================================================== -->
 <script>
   // 8.1 INPUT DATA LAPANGAN — ★ RUBAH DATA PROGRES DI SINI
+  // Total bobot harus = 100.00
   const dataDisiplin = [
-    { nama: "Persiapan, Bongkaran, Galian dan Urug", bobot: 5.00, progress: 100.00, status: "ON-GOING" },
-    { nama: "Pondasi & Struktur (Bawah)", bobot: 18.07, progress: 88.32, status: "ON-GOING" },
-    { nama: "Struktur Atas (L2)", bobot: 13.16, progress: 100.00, status: "ON-GOING" },
-    { nama: "MEP (Mechanical, Electrical, Plumbing)", bobot: 19.90, progress: 12.36, status: "ON-GOING" },
-    { nama: "Pekerjaan Arsitektur", bobot: 39.50, progress: 28.96, status: "ON-GOING" },
-    { nama: "Finishing", bobot: 4.38, progress: 0.00, status: "UPCOMING" },
+    { nama: "Persiapan",                              bobot: 5.00,  progress: 100.00, status: "DONE" },
+    { nama: "Pekerjaan Struktur",                     bobot: 35.00, progress: 85.00,  status: "ON-GOING" },
+    { nama: "Pekerjaan Pasangan Dinding & Plester",   bobot: 25.00, progress: 30.00,  status: "ON-GOING" },
+    { nama: "Pekerjaan Penutup Atap",                 bobot: 15.00, progress: 35.00,  status: "ON-GOING" },
+    { nama: "Pekerjaan Plumbing (Pipa Air)",          bobot: 20.00, progress: 15.00,  status: "ON-GOING" },
   ];
 
   // 8.2 FUNGSI BANTU TANGGAL & WAKTU WIB
@@ -561,9 +474,9 @@
 
   // 8.3 SETINGAN TANGGAL KONTRAK
   const today = getWIBDateOnly();
-  const projectStart = new Date(2026, 5, 17);
-  const contractDuration = 8;
-  const projectEnd = new Date(2027, 1, 17);
+  const projectStart = new Date(2026, 10, 5);   // 5 November 2026 (mulai hari ini)
+  const contractDuration = 3;                   // Durasi kontrak 3 bulan
+  const projectEnd   = new Date(2027, 1, 5);    // 5 Februari 2027 (selesai)
 
   let monthsPassed = (today.getFullYear() - projectStart.getFullYear()) * 12 + (today.getMonth() - projectStart.getMonth());
   let reportDate = today;
@@ -839,50 +752,6 @@
       },
       plugins: [todayLine]
     });
-  })();
-
-  // 8.9 MILESTONE TIMELINE — LABEL BULAN & TARGET TANGGAL
-  (function updateMilestones() {
-    // Label bulan pada track timeline (7 titik tersebar merata)
-    const tlIds = ['tl1', 'tl2', 'tl3', 'tl4', 'tl5', 'tl6', 'tl7'];
-    tlIds.forEach((id, idx) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const mi = Math.round(idx * contractDuration / 6);
-      const d = addMonths(projectStart, mi);
-      el.textContent = monthNamesShort[d.getMonth()] + " '" + String(d.getFullYear()).slice(-2);
-    });
-
-    // ★ RUBAH TARGET MILESTONE DI SINI (angka = bulan ke- dari mulai proyek)
-    const mPersiapan  = addMonths(projectStart, 1); // 17 Jul 2026
-    const mPondasi    = addMonths(projectStart, 5); // 17 Nov 2026
-    const mTopOff     = addMonths(projectStart, 3); // 17 Sep 2026
-    const mArsitektur = addMonths(projectStart, 6); // 17 Des 2026
-    const mMEP        = addMonths(projectStart, 7); // 17 Jan 2027
-
-    const setTarget = (id, date, done) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.textContent = (done ? '✓ Selesai: ' : 'Target: ') + formatDateShort(date);
-      if (done) el.style.color = 'var(--success)';
-    };
-
-    setTarget('msL10', mPersiapan, true);   // Persiapan (sudah DONE)
-    setTarget('msL16', mPondasi, false);    // Pondasi & Struktur Bawah
-    setTarget('msTopOff', mTopOff, true);  // Struktur Top-Off (L2)
-    setTarget('msArsitektur', mArsitektur, false); // Pekerjaan Arsitektur
-    setTarget('msMEP', mMEP, false);        // MEP Testing
-
-    const mepDaysEl = document.getElementById('msMEPDays');
-    if (mepDaysEl) {
-      const dd = diffDays(mMEP, reportDate);
-      mepDaysEl.textContent = dd > 0 ? dd + ' hari lagi' : 'Sekarang';
-      mepDaysEl.style.color = dd > 0 ? 'var(--muted)' : 'var(--success)';
-    }
-
-    // Progress bar timeline mengikuti progres aktual
-    const bar = document.getElementById('msProgressBar');
-    if (bar) setTimeout(() => { bar.style.width = Math.min(progressVal, 100) + '%'; }, 400);
   })();
 
   // 8.10 INFO PEMBARUAN
