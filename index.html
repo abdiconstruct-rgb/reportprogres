@@ -17,10 +17,10 @@
 
 <style>
   :root{
-    --bg:#0a0c0f; --surface:#11151b; --surface-2:#171c24; --surface-3:#1e242e;
-    --border:#262d38; --border-bright:#38414f; --fg:#ecebe6; --fg-dim:#a8aebb;
-    --muted:#6b7382; --accent:#ff6b1a; --accent-glow:rgba(255,107,26,0.35);
-    --hi-vis:#ffd400; --steel:#7c8ba1; --success:#5fd07e; --warning:#ffb547;
+    --bg:#070d1f; --surface:#0d1530; --surface-2:#13203f; --surface-3:#1a2a52;
+    --border:#1f3060; --border-bright:#2f4a8a; --fg:#e8edf7; --fg-dim:#a8b5d0;
+    --muted:#6b7ba3; --accent:#3b82f6; --accent-glow:rgba(59,130,246,0.35);
+    --hi-vis:#38bdf8; --steel:#7c8ba1; --success:#5fd07e; --warning:#ffb547;
     --danger:#ff5252; --info:#5ab4e0;
   }
   *{box-sizing:border-box}
@@ -31,8 +31,8 @@
   body::before{
     content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     background:
-      radial-gradient(ellipse 1200px 600px at 80% -10%, rgba(255,107,26,0.10), transparent 60%),
-      radial-gradient(ellipse 900px 500px at -10% 110%, rgba(122,139,161,0.08), transparent 60%),
+      radial-gradient(ellipse 1200px 600px at 80% -10%, rgba(59,130,246,0.12), transparent 60%),
+      radial-gradient(ellipse 900px 500px at -10% 110%, rgba(56,189,248,0.08), transparent 60%),
       linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px,
       linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px;
   }
@@ -43,7 +43,7 @@
   .layer{position:relative;z-index:1}
 
   .card{
-    background:linear-gradient(180deg, rgba(23,28,36,0.92), rgba(17,21,27,0.92));
+    background:linear-gradient(180deg, rgba(19,32,63,0.92), rgba(13,21,48,0.92));
     border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(8px);
     position:relative;overflow:hidden;
   }
@@ -58,7 +58,7 @@
     background:rgba(255,255,255,0.02);color:var(--fg-dim);text-transform:uppercase;
     white-space:nowrap;
   }
-  .pill-accent{color:var(--accent);border-color:rgba(255,107,26,0.35);background:rgba(255,107,26,0.08)}
+  .pill-accent{color:var(--accent);border-color:rgba(59,130,246,0.35);background:rgba(59,130,246,0.08)}
   .pill-success{color:var(--success);border-color:rgba(95,208,126,0.3);background:rgba(95,208,126,0.07)}
   .pill-warning{color:var(--warning);border-color:rgba(255,181,71,0.3);background:rgba(255,181,71,0.07)}
 
@@ -92,7 +92,7 @@
   .ms-progress{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,var(--accent),var(--hi-vis));border-radius:6px;transition:width 1.4s cubic-bezier(.2,.8,.2,1)}
   .ms-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid var(--border-bright);z-index:2}
   .ms-dot.done{border-color:var(--success);background:var(--success)}
-  .ms-dot.active{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 6px rgba(255,107,26,0.18),0 0 14px var(--accent-glow)}
+  .ms-dot.active{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 6px rgba(59,130,246,0.18),0 0 14px var(--accent-glow)}
   .ms-dot.upcoming{border-color:var(--steel);background:var(--surface-3)}
 
   .photo-card{
@@ -117,7 +117,7 @@
   ::-webkit-scrollbar-thumb:hover{background:var(--steel)}
 
   .header-glow{
-    background:linear-gradient(180deg,rgba(17,21,27,0.95),rgba(10,12,15,0.85));
+    background:linear-gradient(180deg,rgba(13,21,48,0.95),rgba(7,13,31,0.85));
     border-bottom:1px solid var(--border);backdrop-filter:blur(20px);
   }
 
@@ -135,7 +135,7 @@
   .section-title::before{content:"";width:14px;height:2px;background:var(--accent)}
 
   .stripe{
-    background:repeating-linear-gradient(45deg, var(--hi-vis), var(--hi-vis) 10px, #1a1300 10px, #1a1300 20px);
+    background:repeating-linear-gradient(45deg, var(--hi-vis), var(--hi-vis) 10px, #0a1830 10px, #0a1830 20px);
     height:6px;
   }
 
@@ -145,7 +145,7 @@
     background: var(--surface-3); color: var(--muted); font-size: 9px; font-weight: bold;
     display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;
   }
-  .info-btn:hover, .info-btn:focus { background: var(--accent); color: #1a1300; border-color: var(--accent); outline: none; }
+  .info-btn:hover, .info-btn:focus { background: var(--accent); color: #0a1830; border-color: var(--accent); outline: none; }
   .info-box {
     position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
     background: var(--surface-3); border: 1px solid var(--border-bright);
@@ -184,7 +184,7 @@
 <header class="header-glow sticky top-0 z-50 layer">
   <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-4">
     <div class="flex items-center gap-3">
-      <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background:linear-gradient(135deg,var(--accent),#cc4d0a);box-shadow:0 0 20px var(--accent-glow)">
+      <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background:linear-gradient(135deg,var(--accent),#1e3a8a);box-shadow:0 0 20px var(--accent-glow)">
         <img src="https://raw.githubusercontent.com/abdiconstruct-rgb/BuildProgres/refs/heads/main/logo.jpg" alt="Logo" class="w-full h-full object-cover">
       </div>
       <div>
@@ -213,7 +213,7 @@
         <span class="text-[10px] mono text-[var(--accent)]" style="font-weight:700">WIB</span>
       </div>
       <a href="https://docs.google.com/spreadsheets/d/1B3X_WCfo5bBQpIDDkxGHev63tMNO-_es/edit?usp=sharing&ouid=115632378833006552819&rtpof=true&sd=true">
-        <div class="px-3 md:px-4 py-2 rounded-lg flex items-center justify-center font-bold text-[11px] md:text-[12px]" style="background:linear-gradient(135deg,#3a4452,#1e242e);border:1px solid var(--border-bright)">Excel File</div>
+        <div class="px-3 md:px-4 py-2 rounded-lg flex items-center justify-center font-bold text-[11px] md:text-[12px]" style="background:linear-gradient(135deg,#1e3a8a,#0d1530);border:1px solid var(--border-bright)">Excel File</div>
       </a>
     </div>
   </div>
@@ -266,8 +266,8 @@
           <svg viewBox="0 0 220 220" width="100%" height="100%">
             <defs>
               <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ff6b1a"/>
-                <stop offset="100%" stop-color="#ffd400"/>
+                <stop offset="0%" stop-color="#3b82f6"/>
+                <stop offset="100%" stop-color="#38bdf8"/>
               </linearGradient>
             </defs>
             <circle cx="110" cy="110" r="92" class="ring-bg" stroke-width="14" fill="none"/>
@@ -623,8 +623,8 @@
 
     const ctx = canvas.getContext('2d');
     const grad = ctx.createLinearGradient(0, 0, 0, 300);
-    grad.addColorStop(0, 'rgba(255,107,26,0.28)');
-    grad.addColorStop(1, 'rgba(255,107,26,0)');
+    grad.addColorStop(0, 'rgba(59,130,246,0.28)');
+    grad.addColorStop(1, 'rgba(59,130,246,0)');
 
     // Plugin garis penanda "HARI INI"
     const todayLine = {
@@ -635,7 +635,7 @@
         const x = scales.x.getPixelForValue(fracMonth);
         if (isNaN(x)) return;
         ctx.save();
-        ctx.strokeStyle = 'rgba(255,212,0,0.45)';
+        ctx.strokeStyle = 'rgba(56,189,248,0.55)';
         ctx.setLineDash([4, 4]);
         ctx.lineWidth = 1;
         ctx.beginPath();
@@ -643,7 +643,7 @@
         ctx.lineTo(x, chartArea.bottom);
         ctx.stroke();
         ctx.setLineDash([]);
-        ctx.fillStyle = 'rgba(255,212,0,0.9)';
+        ctx.fillStyle = 'rgba(56,189,248,1)';
         ctx.font = "700 9px 'JetBrains Mono', monospace";
         const label = 'HARI INI';
         const w = ctx.measureText(label).width;
@@ -674,13 +674,13 @@
           {
             label: 'Actual',
             data: actualData,
-            borderColor: '#ff6b1a',
+            borderColor: '#3b82f6',
             backgroundColor: grad,
             borderWidth: 2.5,
             pointRadius: 3.5,
             pointHoverRadius: 6,
-            pointBackgroundColor: '#ff6b1a',
-            pointBorderColor: '#0a0c0f',
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#070d1f',
             pointBorderWidth: 2,
             tension: 0.4,
             fill: true,
@@ -695,11 +695,11 @@
         plugins: {
           legend: { display: false },
           tooltip: {
-            backgroundColor: '#171c24',
-            borderColor: '#38414f',
+            backgroundColor: '#13203f',
+            borderColor: '#2f4a8a',
             borderWidth: 1,
-            titleColor: '#ecebe6',
-            bodyColor: '#a8aebb',
+            titleColor: '#e8edf7',
+            bodyColor: '#a8b5d0',
             titleFont: { family: "'JetBrains Mono', monospace", size: 11 },
             bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
             padding: 10,
@@ -717,7 +717,7 @@
             grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
             border: { color: 'rgba(255,255,255,0.08)' },
             ticks: {
-              color: '#6b7382',
+              color: '#6b7ba3',
               font: { family: "'JetBrains Mono', monospace", size: 9 },
               maxRotation: 0, autoSkip: true, maxTicksLimit: 9
             }
@@ -727,7 +727,7 @@
             grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
             border: { color: 'rgba(255,255,255,0.08)' },
             ticks: {
-              color: '#6b7382',
+              color: '#6b7ba3',
               stepSize: 25,
               font: { family: "'JetBrains Mono', monospace", size: 9 },
               callback: function(v) { return v + '%'; }
