@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galeri Dokumentasi Lapangan — Renovasi Rumah Ibu Dian</title>
+
+<!-- =====================================================================
+     BAGIAN 1: SETINGAN DASAR & CSS (sama dengan dashboard utama)
+     ===================================================================== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  :root{
+    --bg:#070d1f; --surface:#0d1530; --surface-2:#13203f; --surface-3:#1a2a52;
+    --border:#1f3060; --border-bright:#2f4a8a; --fg:#e8edf7; --fg-dim:#a8b5d0;
+    --muted:#6b7ba3; --accent:#3b82f6; --accent-glow:rgba(59,130,246,0.35);
+    --hi-vis:#38bdf8; --steel:#7c8ba1; --success:#5fd07e; --warning:#ffb547;
+    --danger:#ff5252; --info:#5ab4e0;
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--bg);color:var(--fg);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .display{font-family:'Archivo';font-weight:900;letter-spacing:-0.04em}
+
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 1200px 600px at 80% -10%, rgba(59,130,246,0.12), transparent 60%),
+      radial-gradient(ellipse 900px 500px at -10% 110%, rgba(56,189,248,0.08), transparent 60%),
+      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px,
+      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px) 0 0/40px 40px;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  .layer{position:relative;z-index:1}
+
+  .card{
+    background:linear-gradient(180deg, rgba(19,32,63,0.92), rgba(13,21,48,0.92));
+    border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(8px);
+    position:relative;overflow:hidden;
+  }
+  .card::before{
+    content:"";position:absolute;left:0;top:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);
+  }
+
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;
+    font-size:11px;font-weight:600;letter-spacing:0.04em;border:1px solid var(--border-bright);
+    background:rgba(255,255,255,0.02);color:var(--fg-dim);text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .pill-accent{color:var(--accent);border-color:rgba(59,130,246,0.35);background:rgba(59,130,246,0.08)}
+  .pill-success{color:var(--success);border-color:rgba(95,208,126,0.3);background:rgba(95,208,126,0.07)}
+  .pill-warning{color:var(--warning);border-color:rgba(255,181,71,0.3);background:rgba(255,181,71,0.07)}
+  .pill-hivis{color:var(--hi-vis);border-color:rgba(56,189,248,0.3);background:rgba(56,189,248,0.07)}
+
+  .live-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--success);
+    box-shadow:0 0 0 0 rgba(95,208,126,0.7);animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(95,208,126,0.7)}
+    70%{box-shadow:0 0 0 8px rgba(95,208,126,0)}
+    100%{box-shadow:0 0 0 0 rgba(95,208,126,0)}
+  }
+
+  .photo-card{
+    position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border);
+    background:#000;aspect-ratio:4/3;cursor:pointer;transition:border-color .3s ease, transform .3s ease;
+  }
+  .photo-card:hover{border-color:var(--border-bright);transform:translateY(-2px)}
+  .photo-card img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease, filter .4s ease}
+  .photo-card:hover img{transform:scale(1.06);filter:saturate(1.1)}
+  .photo-card .overlay{
+    position:absolute;inset:0;background:linear-gradient(180deg,transparent 35%,rgba(0,0,0,0.92));
+    padding:14px;display:flex;flex-direction:column;justify-content:flex-end;
+    pointer-events:none;
+  }
+  .photo-card .badge{
+    position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+    border:1px solid var(--border-bright);border-radius:6px;padding:4px 8px;
+    font-size:10px;font-weight:600;letter-spacing:0.04em;color:var(--hi-vis);text-transform:uppercase;
+  }
+  .photo-card .badge.badge-struktur{color:var(--accent);border-color:rgba(59,130,246,0.4)}
+  .photo-card .badge.badge-persiapan{color:var(--warning);border-color:rgba(255,181,71,0.4)}
+  .photo-card .badge.badge-arsitektur{color:#c084fc;border-color:rgba(192,132,252,0.4)}
+  .photo-card .badge.badge-finishing{color:var(--success);border-color:rgba(95,208,126,0.4)}
+  .photo-card .badge.badge-mep{color:#f59e0b;border-color:rgba(245,158,11,0.4)}
+  .photo-card .date-tag{
+    position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);
+    border:1px solid var(--border);border-radius:6px;padding:4px 8px;
+    font-size:9px;font-weight:600;letter-spacing:0.03em;color:var(--fg-dim);
+  }
+  .photo-card .zoom-icon{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(.6);
+    width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);
+    border:1px solid var(--border-bright);display:flex;align-items:center;justify-content:center;
+    opacity:0;transition:all .35s ease;color:var(--hi-vis);
+  }
+  .photo-card:hover .zoom-icon{opacity:1;transform:translate(-50%,-50%) scale(1)}
+
+  ::-webkit-scrollbar{width:8px;height:8px}
+  ::-webkit-scrollbar-track{background:var(--surface)}
+  ::-webkit-scrollbar-thumb{background:var(--border-bright);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--steel)}
+
+  .header-glow{
+    background:linear-gradient(180deg,rgba(13,21,48,0.95),rgba(7,13,31,0.85));
+    border-bottom:1px solid var(--border);backdrop-filter:blur(20px);
+  }
+
+  .reveal{opacity:0;transform:translateY(16px);animation:reveal .8s ease forwards}
+  .reveal:nth-child(1){animation-delay:.05s}
+  .reveal:nth-child(2){animation-delay:.1s}
+  .reveal:nth-child(3){animation-delay:.15s}
+  .reveal:nth-child(4){animation-delay:.2s}
+  @keyframes reveal{to{opacity:1;transform:translateY(0)}}
+
+  .section-title{
+    display:flex;align-items:center;gap:10px;font-size:11px;text-transform:uppercase;
+    letter-spacing:0.12em;color:var(--muted);font-weight:700;
+  }
+  .section-title::before{content:"";width:14px;height:2px;background:var(--accent)}
+
+  .stripe{
+    background:repeating-linear-gradient(45deg, var(--hi-vis), var(--hi-vis) 10px, #0a1830 10px, #0a1830 20px);
+    height:6px;
+  }
+
+  /* Filter button */
+  .filter-btn{
+    display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;
+    font-size:12px;font-weight:600;letter-spacing:0.02em;border:1px solid var(--border);
+    background:var(--surface-2);color:var(--fg-dim);cursor:pointer;transition:all .25s ease;
+    white-space:nowrap;
+  }
+  .filter-btn:hover{border-color:var(--border-bright);color:var(--fg)}
+  .filter-btn.active{
+    background:linear-gradient(135deg,var(--accent),#1e3a8a);
+    border-color:var(--accent);color:#fff;
+    box-shadow:0 0 18px var(--accent-glow);
+  }
+  .filter-btn .count{
+    background:rgba(255,255,255,0.08);padding:1px 7px;border-radius:999px;
+    font-size:10px;font-family:'JetBrains Mono',monospace;
+  }
+  .filter-btn.active .count{background:rgba(255,255,255,0.18)}
+
+  /* Search box */
+  .search-box{
+    display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:10px;
+    background:var(--surface-2);border:1px solid var(--border);transition:border-color .25s;
+  }
+  .search-box:focus-within{border-color:var(--accent)}
+  .search-box input{
+    background:transparent;border:none;outline:none;color:var(--fg);font-size:13px;
+    font-family:'Archivo',sans-serif;width:100%;
+  }
+  .search-box input::placeholder{color:var(--muted)}
+
+  /* Lightbox */
+  .lightbox{
+    position:fixed;inset:0;z-index:100;background:rgba(7,13,31,0.96);backdrop-filter:blur(12px);
+    display:flex;align-items:center;justify-content:center;padding:24px;
+    opacity:0;visibility:hidden;transition:opacity .3s ease, visibility .3s ease;
+  }
+  .lightbox.open{opacity:1;visibility:visible}
+  .lightbox-content{
+    position:relative;max-width:min(1100px,95vw);max-height:90vh;display:flex;flex-direction:column;
+    transform:scale(.95);transition:transform .3s ease;
+  }
+  .lightbox.open .lightbox-content{transform:scale(1)}
+  .lightbox-img-wrap{
+    background:#000;border:1px solid var(--border-bright);border-radius:14px;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;max-height:75vh;
+  }
+  .lightbox-img-wrap img{max-width:100%;max-height:75vh;object-fit:contain;display:block}
+  .lightbox-caption{
+    margin-top:14px;padding:14px 18px;background:var(--surface-2);border:1px solid var(--border);
+    border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  }
+  .lightbox-nav{
+    position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:50%;
+    background:rgba(13,21,48,0.85);border:1px solid var(--border-bright);color:var(--fg);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;z-index:2;
+  }
+  .lightbox-nav:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+  .lightbox-prev{left:-24px}
+  .lightbox-next{right:-24px}
+  .lightbox-close{
+    position:absolute;top:-48px;right:0;width:40px;height:40px;border-radius:50%;
+    background:var(--surface-3);border:1px solid var(--border-bright);color:var(--fg);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .25s;
+  }
+  .lightbox-close:hover{background:var(--danger);border-color:var(--danger);color:#fff}
+  .lightbox-counter{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.06em;
+  }
+
+  @media (max-width:768px){
+    .lightbox-nav{left:8px;right:auto;width:40px;height:40px}
+    .lightbox-next{right:8px;left:auto}
+    .lightbox-prev{left:8px}
+  }
+
+  /* Empty state */
+  .empty-state{
+    text-align:center;padding:60px 20px;color:var(--muted);
+  }
+  .empty-state svg{margin:0 auto 12px;opacity:.4}
+
+  /* Stat cards hover */
+  .stat-card{
+    transition:transform .3s ease, border-color .3s ease;
+  }
+  .stat-card:hover{transform:translateY(-2px);border-color:var(--border-bright)}
+
+  /* Lazy fade-in for filtered items */
+  .photo-card.fade-in{animation:fadeInUp .5s ease forwards}
+  @keyframes fadeInUp{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  @media (max-width:640px){
+    .display-xl{font-size:36px !important;line-height:1 !important}
+  }
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================================
+     BAGIAN 2: HEADER ATAS
+     ===================================================================== -->
+<header class="header-glow sticky top-0 z-50 layer">
+  <div class="max-w-[1600px] mx-auto px-4 md:px-6 py-3 flex items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 md:w-10 md:h-10 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden" style="background:linear-gradient(135deg,var(--accent),#1e3a8a);box-shadow:0 0 20px var(--accent-glow)">
+        <img src="https://raw.githubusercontent.com/abdiconstruct-rgb/BuildProgres/refs/heads/main/logo.jpg" alt="Logo" class="w-full h-full object-cover">
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-[13px] font-bold tracking-wide">ABDI CONSTRUCTION</span>
+        </div>
+        <div class="text-[9px] md:text-[10px] text-[var(--muted)] mono uppercase tracking-widest hidden sm:block">Field Documentation Gallery</div>
+      </div>
+    </div>
+
+    <div class="hidden lg:flex items-center gap-3 px-4 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
+      <div class="w-2 h-2 rounded-full" style="background:var(--accent)"></div>
+      <div>
+        <div class="text-[13px] font-semibold">RENOVASI RUMAH Ibu Dian</div>
+        <div class="text-[10px] text-[var(--muted)] mono">PROJ-ID: 078/ SPK-RNV/XI/2026</div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 md:gap-3">
+      <a href="#" onclick="history.back();return false;" class="flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg font-bold text-[11px] md:text-[12px]" style="background:var(--surface-2);border:1px solid var(--border-bright)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span class="hidden sm:inline">Dashboard</span>
+      </a>
+      <div class="hidden md:flex items-center gap-2 px-3 py-2 rounded-lg" style="background:var(--surface-2);border:1px solid var(--border)">
+        <span class="live-dot"></span>
+        <span class="text-[11px] mono text-[var(--fg-dim)]">LIVE</span>
+        <span class="text-[11px] mono" id="liveClock">--:--:--</span>
+        <span class="text-[10px] mono text-[var(--accent)]" style="font-weight:700">WIB</span>
+      </div>
+    </div>
+  </div>
+  <div class="stripe"></div>
+</header>
+
+<!-- =====================================================================
+     BAGIAN 3: HERO & INFO GALERI
+     ===================================================================== -->
+<main class="max-w-[1600px] mx-auto px-4 md:px-6 py-6 md:py-8 layer">
+
+  <div class="reveal mb-6">
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+      <span class="pill pill-accent"><span class="live-dot"></span> Galeri Aktif</span>
+      <span class="pill" id="totalPhotoPill">0 Foto</span>
+      <span class="pill">Bulan Ke-1 / 3</span>
+    </div>
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div>
+        <h1 class="display display-xl text-[36px] sm:text-[48px] xl:text-[56px]" style="line-height:0.95">
+          Dokumentasi <span style="color:var(--accent)">Lapangan</span>
+        </h1>
+        <p class="text-[var(--fg-dim)] mt-3 text-[13px] md:text-[14px] max-w-2xl">
+          Kumpulan foto dokumentasi pekerjaan harian proyek Renovasi Rumah Ibu Dian. 
+          Jl. Lincar V No.7, RT.02/RW.10, Tegal Gundil, Kota Bogor, Jawa Barat 16152.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       BAGIAN 4: STAT CARDS
+       ===================================================================== -->
+  <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 reveal">
+    <div class="card stat-card p-4 md:p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)]">Total Foto</div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <div class="mono text-[28px] md:text-[32px] font-bold leading-none" id="statTotal">0</div>
+      <div class="text-[10px] text-[var(--muted)] mt-2">Seluruh kategori</div>
+    </div>
+    <div class="card stat-card p-4 md:p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)]">Persiapan</div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--warning)]"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </div>
+      <div class="mono text-[28px] md:text-[32px] font-bold leading-none" style="color:var(--warning)" id="statPersiapan">0</div>
+      <div class="text-[10px] text-[var(--muted)] mt-2">Bongkaran, Galian, Urug</div>
+    </div>
+    <div class="card stat-card p-4 md:p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)]">Struktur</div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+      </div>
+      <div class="mono text-[28px] md:text-[32px] font-bold leading-none" style="color:var(--accent)" id="statStruktur">0</div>
+      <div class="text-[10px] text-[var(--muted)] mt-2">Pondasi, Kolom, Balok</div>
+    </div>
+    <div class="card stat-card p-4 md:p-5">
+      <div class="flex items-center justify-between mb-2">
+        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)]">Update Terakhir</div>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--success)]"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      </div>
+      <div class="mono text-[16px] md:text-[18px] font-bold leading-none" id="statUpdate">-</div>
+      <div class="text-[10px] text-[var(--muted)] mt-2" id="statUpdateDays">-</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       BAGIAN 5: FILTER & SEARCH
+       ===================================================================== -->
+  <section class="card p-4 md:p-5 mb-6 reveal">
+    <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+      <div class="flex items-center gap-2 flex-shrink-0">
+        <div class="section-title">Filter Kategori</div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 flex-1" id="filterContainer">
+        <button class="filter-btn active" data-filter="all">Semua <span class="count" id="cnt-all">0</span></button>
+        <button class="filter-btn" data-filter="persiapan">Persiapan <span class="count" id="cnt-persiapan">0</span></button>
+        <button class="filter-btn" data-filter="struktur">Struktur <span class="count" id="cnt-struktur">0</span></button>
+        <button class="filter-btn" data-filter="arsitektur">Arsitektur <span class="count" id="cnt-arsitektur">0</span></button>
+        <button class="filter-btn" data-filter="mep">MEP <span class="count" id="cnt-mep">0</span></button>
+        <button class="filter-btn" data-filter="finishing">Finishing <span class="count" id="cnt-finishing">0</span></button>
+      </div>
+      <div class="search-box lg:w-72 flex-shrink-0">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--muted)]"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="searchInput" placeholder="Cari judul / deskripsi foto...">
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       BAGIAN 6: GRID GALERI
+       ===================================================================== -->
+  <section class="reveal">
+    <div class="flex items-center justify-between mb-4">
+      <div class="section-title">Galeri Foto</div>
+      <div class="text-[11px] text-[var(--muted)] mono" id="resultInfo">Menampilkan 0 foto</div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4" id="galleryGrid"></div>
+
+    <div class="empty-state hidden" id="emptyState">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+      <div class="text-[14px] font-semibold mb-1">Tidak ada foto ditemukan</div>
+      <div class="text-[12px]">Coba kata kunci lain atau pilih kategori berbeda.</div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       BAGIAN 7: FOOTER
+       ===================================================================== -->
+  <footer class="mt-10 pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-4" style="border-color:var(--border)">
+    <div class="flex items-center gap-3 text-[11px] text-[var(--muted)]">
+      <span class="mono">GALERI DOKUMENTASI · v1.0.0</span>
+      <span>·</span>
+      <span>Powered by ARTHA BANGUN DIMENSI</span>
+    </div>
+    <div class="flex flex-col md:flex-row items-center gap-2 md:gap-4 text-[11px] text-[var(--muted)]">
+      <span>Last sync: <span class="mono text-[var(--fg-dim)]" id="footerSync">-</span></span>
+      <span class="flex items-center gap-1.5"><span class="live-dot"></span> All systems operational</span>
+    </div>
+  </footer>
+
+</main>
+
+<!-- =====================================================================
+     BAGIAN 8: LIGHTBOX MODAL
+     ===================================================================== -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+  <div class="lightbox-content">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Tutup">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Sebelumnya">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Berikutnya">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="lightbox-img-wrap">
+      <img id="lightboxImg" src="" alt="">
+    </div>
+    <div class="lightbox-caption">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="pill pill-hivis" id="lbBadge">-</span>
+          <span class="text-[10px] text-[var(--muted)] mono" id="lbDate">-</span>
+        </div>
+        <div class="text-[14px] md:text-[16px] font-bold mb-1" id="lbTitle">-</div>
+        <div class="text-[12px] text-[var(--fg-dim)]" id="lbDesc">-</div>
+      </div>
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <a id="lbDriveLink" href="#" target="_blank" class="pill pill-accent hidden">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/></svg>
+          Drive
+        </a>
+        <span class="lightbox-counter" id="lbCounter">0 / 0</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================================
+     BAGIAN 9: JAVASCRIPT (LOGIKA GALERI)
+     ===================================================================== -->
+<script>
+  // 9.1 DATA FOTO LAPANGAN — ★ RUBAH / TAMBAH FOTO DI SINI
+  // Format: { id, src, kategori, badge, judul, deskripsi, tanggal, driveLink }
+  // kategori: "persiapan" | "struktur" | "arsitektur" | "mep" | "finishing"
+  const fotoLapangan = [
+    // ===== PERSIAPAN =====
+    {
+      id: 1,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdM2hPYzurMuelkWqSuMVRj1l9IoxVoEfmxIqKK0bLLw&s=10",
+      kategori: "persiapan",
+      badge: "Bongkaran",
+      judul: "Pekerjaan Bongkaran Interior",
+      deskripsi: "Pembongkaran partisi lama dan elemen interior yang tidak dipertahankan sebagai bagian dari tahap persiapan renovasi.",
+      tanggal: "05 Nov 2026",
+      driveLink: ""
+    },
+    {
+      id: 2,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzU0jDV0YjGwq7_DxavA8P7iet6cAhmsSA87VwFUS6Ig&s=10",
+      kategori: "persiapan",
+      badge: "Galian/Urug",
+      judul: "Pekerjaan Tanah & Galian",
+      deskripsi: "Persiapan lahan untuk pekerjaan pondasi meliputi galian tanah dan urugan pilihan sesuai elevasi rencana.",
+      tanggal: "07 Nov 2026",
+      driveLink: ""
+    },
+    {
+      id: 3,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdM2hPYzurMuelkWqSuMVRj1l9IoxVoEfmxIqKK0bLLw&s=10",
+      kategori: "persiapan",
+      badge: "Bongkaran",
+      judul: "Pembersihan Area Kerja",
+      deskripsi: "Pembersihan sisa bongkaran dan penataan material agar area kerja aman untuk tahap berikutnya.",
+      tanggal: "06 Nov 2026",
+      driveLink: ""
+    },
+
+    // ===== STRUKTUR =====
+    {
+      id: 4,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4OixgJ9OUa59ukzyczxdmJ2PIgsG4i33mIvJrHGtxTg&s=10",
+      kategori: "struktur",
+      badge: "Pondasi",
+      judul: "Pondasi Tapak (Footings)",
+      deskripsi: "Pengecoran pondasi tapak dengan beton K-225 sesuai gambar struktur. Pekerjaan dilanjutkan ke pengikatan tulangan kolom.",
+      tanggal: "08 Nov 2026",
+      driveLink: ""
+    },
+    {
+      id: 5,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWf8aDYyua_qSEnsGU_aBt9_sjzj0Wl-CYlRPCe2IcRg&s=10",
+      kategori: "struktur",
+      badge: "Kolom",
+      judul: "Tiang Bangunan (Kolom Utama)",
+      deskripsi: "Pemasangan bekisting dan pengecoran kolom utama struktural. Tulangan D-13 dengan sengkang Ø8-150.",
+      tanggal: "09 Nov 2026",
+      driveLink: "https://drive.google.com/drive/folders/1sAVpBSWNGHdBaAl_fDKoAPNS6h1jULlQ?usp=drive_link"
+    },
+    {
+      id: 6,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT4OixgJ9OUa59ukzyczxdmJ2PIgsG4i33mIvJrHGtxTg&s=10",
+      kategori: "struktur",
+      badge: "Pondasi",
+      judul: "Pondasi Batu Kali",
+      deskripsi: "Pemasangan pondasi batu kali untuk dinding sebagai dukungan struktur non-kolom.",
+      tanggal: "10 Nov 2026",
+      driveLink: ""
+    },
+    {
+      id: 7,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWf8aDYyua_qSEnsGU_aBt9_sjzj0Wl-CYlRPCe2IcRg&s=10",
+      kategori: "struktur",
+      badge: "Kolom",
+      judul: "Pengecoran Kolom Praktis",
+      deskripsi: "Pengecoran kolom praktis pada titik-titik dinding yang memerlukan perkuatan struktural.",
+      tanggal: "11 Nov 2026",
+      driveLink: ""
+    },
+
+    // ===== ARSITEKTUR (placeholder, upcoming) =====
+    {
+      id: 8,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzU0jDV0YjGwq7_DxavA8P7iet6cAhmsSA87VwFUS6Ig&s=10",
+      kategori: "arsitektur",
+      badge: "Dinding",
+      judul: "Pasangan Dinding Bata",
+      deskripsi: "Pekerjaan pasangan dinding bata merah dengan spesi 1:4 (PC:PP). Direncanakan pada minggu ke-3.",
+      tanggal: "Upcoming",
+      driveLink: ""
+    },
+
+    // ===== MEP (placeholder, upcoming) =====
+    {
+      id: 9,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdM2hPYzurMuelkWqSuMVRj1l9IoxVoEfmxIqKK0bLLw&s=10",
+      kategori: "mep",
+      badge: "Plumbing",
+      judul: "Instalasi Pipa Air Bersih",
+      deskripsi: "Pemasangan instalasi pipa air bersih PPR Ø1/2\" dan Ø3/4\" sesuai layout sanitasi.",
+      tanggal: "Upcoming",
+      driveLink: ""
+    },
+
+    // ===== FINISHING (placeholder, upcoming) =====
+    {
+      id: 10,
+      src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWf8aDYyua_qSEnsGU_aBt9_sjzj0Wl-CYlRPCe2IcRg&s=10",
+      kategori: "finishing",
+      badge: "Cat",
+      judul: "Pekerjaan Cat Dinding",
+      deskripsi: "Pekerjaan pengecatan akhir dengan sistem cat tembok 3x lapis (sealer + cat dasar + cat akhir).",
+      tanggal: "Upcoming",
+      driveLink: ""
+    }
+  ];
+
+  // 9.2 KONFIGURASI BADGE CLASS
+  const badgeClassMap = {
+    persiapan: "badge-persiapan",
+    struktur: "badge-struktur",
+    arsitektur: "badge-arsitektur",
+    mep: "badge-mep",
+    finishing: "badge-finishing"
+  };
+
+  // 9.3 STATE
+  let currentFilter = "all";
+  let currentSearch = "";
+  let lightboxIndex = 0;
+  let filteredPhotos = [];
+
+  // 9.4 FUNGSI BANTU TANGGAL WIB (sama dengan dashboard)
+  const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+  const monthNamesLong = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+  function pad(n) { return n < 10 ? '0' + n : n; }
+  function formatDateShort(d) { return d.getDate() + ' ' + monthNamesShort[d.getMonth()] + ' ' + d.getFullYear(); }
+  function formatDateLong(d) { return d.getDate() + ' ' + monthNamesLong[d.getMonth()] + ' ' + d.getFullYear(); }
+  function getTimeStr(d) { return pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds()); }
+
+  function getWIBNow() {
+    const now = new Date();
+    const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+    return new Date(utcMs + (7 * 3600000));
+  }
+
+  function getWIBDateOnly() {
+    const wib = getWIBNow();
+    if (wib.getHours() === 0 && wib.getMinutes() === 0) {
+      return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate() - 1);
+    }
+    return new Date(wib.getFullYear(), wib.getMonth(), wib.getDate());
+  }
+
+  // 9.5 RENDER STAT CARDS
+  const today = getWIBDateOnly();
+  const counts = {
+    all: fotoLapangan.length,
+    persiapan: fotoLapangan.filter(p => p.kategori === "persiapan").length,
+    struktur: fotoLapangan.filter(p => p.kategori === "struktur").length,
+    arsitektur: fotoLapangan.filter(p => p.kategori === "arsitektur").length,
+    mep: fotoLapangan.filter(p => p.kategori === "mep").length,
+    finishing: fotoLapangan.filter(p => p.kategori === "finishing").length
+  };
+
+  document.getElementById('cnt-all').textContent = counts.all;
+  document.getElementById('cnt-persiapan').textContent = counts.persiapan;
+  document.getElementById('cnt-struktur').textContent = counts.struktur;
+  document.getElementById('cnt-arsitektur').textContent = counts.arsitektur;
+  document.getElementById('cnt-mep').textContent = counts.mep;
+  document.getElementById('cnt-finishing').textContent = counts.finishing;
+
+  document.getElementById('statTotal').textContent = counts.all;
+  document.getElementById('statPersiapan').textContent = counts.persiapan;
+  document.getElementById('statStruktur').textContent = counts.struktur;
+  document.getElementById('totalPhotoPill').textContent = counts.all + ' Foto';
+
+  document.getElementById('statUpdate').textContent = formatDateShort(today);
+  document.getElementById('statUpdateDays').textContent = 'Hari ini · ' + (today.getHours() || 0) + ' update';
+
+  // 9.6 RENDER GALERI
+  const grid = document.getElementById('galleryGrid');
+  const emptyState = document.getElementById('emptyState');
+  const resultInfo = document.getElementById('resultInfo');
+
+  function renderGallery() {
+    filteredPhotos = fotoLapangan.filter(p => {
+      const matchFilter = (currentFilter === "all") || (p.kategori === currentFilter);
+      const q = currentSearch.toLowerCase().trim();
+      const matchSearch = !q ||
+        p.judul.toLowerCase().includes(q) ||
+        p.deskripsi.toLowerCase().includes(q) ||
+        p.badge.toLowerCase().includes(q) ||
+        p.kategori.toLowerCase().includes(q);
+      return matchFilter && matchSearch;
+    });
+
+    grid.innerHTML = '';
+
+    if (filteredPhotos.length === 0) {
+      emptyState.classList.remove('hidden');
+      resultInfo.textContent = 'Menampilkan 0 foto';
+      return;
+    }
+    emptyState.classList.add('hidden');
+    resultInfo.textContent = 'Menampilkan ' + filteredPhotos.length + ' dari ' + fotoLapangan.length + ' foto';
+
+    filteredPhotos.forEach((p, i) => {
+      const card = document.createElement('div');
+      card.className = 'photo-card fade-in';
+      card.style.animationDelay = (i * 0.04) + 's';
+      card.setAttribute('data-id', p.id);
+      card.setAttribute('role', 'button');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', 'Buka foto: ' + p.judul);
+
+      const isUpcoming = p.tanggal === "Upcoming";
+      const dateDisplay = isUpcoming
+        ? '<span style="color:var(--warning)">Upcoming</span>'
+        : p.tanggal;
+
+      card.innerHTML = `
+        <img src="${p.src}" alt="${p.judul}" loading="lazy">
+        <div class="badge ${badgeClassMap[p.kategori] || ''}">${p.badge}</div>
+        <div class="date-tag mono">${dateDisplay}</div>
+        <div class="zoom-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>
+        </div>
+        <div class="overlay">
+          <div class="text-[12px] md:text-[13px] font-semibold leading-tight mb-1">${p.judul}</div>
+          <div class="text-[10px] text-[var(--muted)] mono uppercase tracking-wider">${p.kategori}</div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => openLightbox(i));
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(i);
+        }
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  // 9.7 LIGHTBOX
+  const lightbox = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightboxImg');
+  const lbBadge = document.getElementById('lbBadge');
+  const lbDate = document.getElementById('lbDate');
+  const lbTitle = document.getElementById('lbTitle');
+  const lbDesc = document.getElementById('lbDesc');
+  const lbCounter = document.getElementById('lbCounter');
+  const lbDriveLink = document.getElementById('lbDriveLink');
+
+  function openLightbox(index) {
+    if (filteredPhotos.length === 0) return;
+    lightboxIndex = index;
+    updateLightbox();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function updateLightbox() {
+    const p = filteredPhotos[lightboxIndex];
+    if (!p) return;
+    lbImg.src = p.src;
+    lbImg.alt = p.judul;
+    lbBadge.textContent = p.badge;
+    lbDate.textContent = p.tanggal === "Upcoming" ? "Belum terealisasi" : p.tanggal;
+    lbTitle.textContent = p.judul;
+    lbDesc.textContent = p.deskripsi;
+    lbCounter.textContent = (lightboxIndex + 1) + ' / ' + filteredPhotos.length;
+
+    if (p.driveLink && p.driveLink.length > 0) {
+      lbDriveLink.href = p.driveLink;
+      lbDriveLink.classList.remove('hidden');
+    } else {
+      lbDriveLink.classList.add('hidden');
+    }
+  }
+
+  function navLightbox(dir) {
+    if (filteredPhotos.length === 0) return;
+    lightboxIndex = (lightboxIndex + dir + filteredPhotos.length) % filteredPhotos.length;
+    updateLightbox();
+  }
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightboxPrev').addEventListener('click', () => navLightbox(-1));
+  document.getElementById('lightboxNext').addEventListener('click', () => navLightbox(1));
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowLeft') navLightbox(-1);
+    else if (e.key === 'ArrowRight') navLightbox(1);
+  });
+
+  // 9.8 FILTER & SEARCH INTERAKSI
+  document.getElementById('filterContainer').addEventListener('click', (e) => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.getAttribute('data-filter');
+    renderGallery();
+  });
+
+  document.getElementById('searchInput').addEventListener('input', (e) => {
+    currentSearch = e.target.value;
+    renderGallery();
+  });
+
+  // 9.9 JAM REAL-TIME WIB
+  let lastKnownWIBDate = getWIBDateOnly().getTime();
+  function updateClock() {
+    const nowWIB = getWIBNow();
+    document.getElementById('liveClock').textContent = getTimeStr(nowWIB);
+    document.getElementById('footerSync').textContent = getTimeStr(nowWIB) + ' WIB';
+    if (getWIBDateOnly().getTime() !== lastKnownWIBDate) {
+      lastKnownWIBDate = getWIBDateOnly().getTime();
+      location.reload();
+    }
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // 9.10 RENDER AWAL
+  renderGallery();
+</script>
+
+</body>
+</html>
