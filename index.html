@@ -590,36 +590,43 @@
     const canvas = document.getElementById('sCurveChart');
     if (!canvas || typeof Chart === 'undefined') return;
 
-    const labels = [];
-    const plannedData = [];
-    const actualData = [];
-
-    for (let i = 0; i <= contractDuration; i++) {
-      const d = addMonths(projectStart, i);
-      labels.push(monthNamesShort[d.getMonth()] + " '" + String(d.getFullYear()).slice(-2));
-
-      // Kurva rencana (bentuk S / logistic)
-      let pv = (1 / (1 + Math.exp(-7 * ((i / contractDuration) - 0.5)))) * 100;
-      if (i === 0) pv = 0;
-      if (i === contractDuration) pv = 100;
-      plannedData.push(+pv.toFixed(1));
-
-      // Kurva aktual: hanya sampai bulan berjalan
-      if (i === 0) {
-        actualData.push(monthsPassed === 0 ? progressVal : 0);
-      } else if (monthsPassed > 0 && i <= monthsPassed) {
-        const ratio = i / monthsPassed;
-        let av = (i === monthsPassed) ? progressVal : progressVal * Math.pow(ratio, 1.25);
-        actualData.push(+av.toFixed(1));
-      } else {
-        actualData.push(null);
-      }
-    }
-
-    // Posisi garis "Hari Ini" (indeks bulan, pecahan)
+    // Posisi "Hari Ini" (indeks bulan, pecahan) — dihitung di awal agar dipakai actualData
     const msPerDay = 86400000;
     let fracMonth = (reportDate - projectStart) / (msPerDay * 30.4375);
     fracMonth = Math.max(0, Math.min(contractDuration, fracMonth));
+
+    // Labels bulan untuk display X-axis (digunakan via callback tick)
+    const monthLabels = [];
+    for (let i = 0; i <= contractDuration; i++) {
+      const d = addMonths(projectStart, i);
+      monthLabels.push(monthNamesShort[d.getMonth()] + " '" + String(d.getFullYear()).slice(-2));
+    }
+
+    // Data Planned (kurva S / logistic) — format {x, y} untuk numeric axis
+    const plannedData = [];
+    for (let i = 0; i <= contractDuration; i++) {
+      let pv = (1 / (1 + Math.exp(-7 * ((i / contractDuration) - 0.5)))) * 100;
+      if (i === 0) pv = 0;
+      if (i === contractDuration) pv = 100;
+      plannedData.push({ x: i, y: +pv.toFixed(2) });
+    }
+
+    // Data Actual — mulai dari 0% di awal kontrak, naik smooth ke progressVal di posisi HARI INI
+    // Titik setelah HARI INI = null (belum terjadi)
+    const actualData = [];
+    actualData.push({ x: 0, y: 0 });  // Awal kontrak: 0%
+    if (fracMonth > 0) {
+      // Interpolasi smooth (smoothstep) dari (0,0) ke (fracMonth, progressVal)
+      const steps = Math.max(4, Math.ceil(fracMonth * 6));
+      for (let s = 1; s <= steps; s++) {
+        const ratio = s / steps;
+        const x = +(fracMonth * ratio).toFixed(3);
+        // Smoothstep: 3t² − 2t³ → kurva halus dari 0 ke 1
+        const smooth = ratio * ratio * (3 - 2 * ratio);
+        const y = +(progressVal * smooth).toFixed(2);
+        actualData.push({ x: x, y: y });
+      }
+    }
 
     const ctx = canvas.getContext('2d');
     const grad = ctx.createLinearGradient(0, 0, 0, 300);
@@ -656,7 +663,6 @@
     new Chart(canvas, {
       type: 'line',
       data: {
-        labels: labels,
         datasets: [
           {
             label: 'Planned',
@@ -691,7 +697,7 @@
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        interaction: { mode: 'index', intersect: false },
+        interaction: { mode: 'nearest', intersect: false, axis: 'x' },
         plugins: {
           legend: { display: false },
           tooltip: {
@@ -708,18 +714,38 @@
             boxHeight: 8,
             filter: function(item) { return item.parsed.y !== null; },
             callbacks: {
+              title: function(items) {
+                if (!items.length) return '';
+                const x = items[0].parsed.x;
+                const idx = Math.round(x);
+                if (idx >= 0 && idx < monthLabels.length) {
+                  return monthLabels[idx] + '  ·  Minggu ' + Math.max(1, Math.ceil(x * 4.33));
+                }
+                return '';
+              },
               label: function(c) { return ' ' + c.dataset.label + ': ' + c.parsed.y + '%'; }
             }
           }
         },
         scales: {
           x: {
+            type: 'linear',
+            min: 0,
+            max: contractDuration,
             grid: { color: 'rgba(255,255,255,0.04)', drawTicks: false },
             border: { color: 'rgba(255,255,255,0.08)' },
             ticks: {
               color: '#6b7ba3',
+              stepSize: 1,
               font: { family: "'JetBrains Mono', monospace", size: 9 },
-              maxRotation: 0, autoSkip: true, maxTicksLimit: 9
+              maxRotation: 0, autoSkip: true, maxTicksLimit: 9,
+              callback: function(value) {
+                const idx = Math.round(value);
+                if (idx >= 0 && idx < monthLabels.length && Math.abs(value - idx) < 0.01) {
+                  return monthLabels[idx];
+                }
+                return null;
+              }
             }
           },
           y: {
