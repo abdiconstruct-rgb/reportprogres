@@ -217,12 +217,6 @@
   }
   .empty-state svg{margin:0 auto 12px;opacity:.4}
 
-  /* Stat cards hover */
-  .stat-card{
-    transition:transform .3s ease, border-color .3s ease;
-  }
-  .stat-card:hover{transform:translateY(-2px);border-color:var(--border-bright)}
-
   /* Lazy fade-in for filtered items */
   .photo-card.fade-in{animation:fadeInUp .5s ease forwards}
   @keyframes fadeInUp{
@@ -304,45 +298,7 @@
   </div>
 
   <!-- =====================================================================
-       BAGIAN 4: STAT CARDS
-       ===================================================================== -->
-  <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 reveal">
-    <div class="card stat-card p-4 md:p-5">
-      <div class="flex items-center justify-between mb-2">
-        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)]">Total Foto</div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
-      </div>
-      <div class="mono text-[28px] md:text-[32px] font-bold leading-none" id="statTotal">0</div>
-      <div class="text-[10px] text-[var(--muted)] mt-2">Seluruh kategori</div>
-    </div>
-    <div class="card stat-card p-4 md:p-5">
-      <div class="flex items-center justify-between mb-2">
-        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)]">Persiapan</div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--warning)]"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </div>
-      <div class="mono text-[28px] md:text-[32px] font-bold leading-none" style="color:var(--warning)" id="statPersiapan">0</div>
-      <div class="text-[10px] text-[var(--muted)] mt-2">Bongkaran, Galian, Urug</div>
-    </div>
-    <div class="card stat-card p-4 md:p-5">
-      <div class="flex items-center justify-between mb-2">
-        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)]">Struktur</div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--accent)]"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
-      </div>
-      <div class="mono text-[28px] md:text-[32px] font-bold leading-none" style="color:var(--accent)" id="statStruktur">0</div>
-      <div class="text-[10px] text-[var(--muted)] mt-2">Pondasi, Kolom, Balok</div>
-    </div>
-    <div class="card stat-card p-4 md:p-5">
-      <div class="flex items-center justify-between mb-2">
-        <div class="text-[10px] uppercase tracking-widest text-[var(--muted)]">Update Terakhir</div>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[var(--success)]"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      </div>
-      <div class="mono text-[16px] md:text-[18px] font-bold leading-none" id="statUpdate">-</div>
-      <div class="text-[10px] text-[var(--muted)] mt-2" id="statUpdateDays">-</div>
-    </div>
-  </section>
-
-  <!-- =====================================================================
-       BAGIAN 5: FILTER & SEARCH
+       BAGIAN 4: FILTER & SEARCH
        ===================================================================== -->
   <section class="card p-4 md:p-5 mb-6 reveal">
     <div class="flex flex-col lg:flex-row lg:items-center gap-4">
@@ -365,7 +321,7 @@
   </section>
 
   <!-- =====================================================================
-       BAGIAN 6: GRID GALERI
+       BAGIAN 5: GRID GALERI
        ===================================================================== -->
   <section class="reveal">
     <div class="flex items-center justify-between mb-4">
@@ -383,7 +339,7 @@
   </section>
 
   <!-- =====================================================================
-       BAGIAN 7: FOOTER
+       BAGIAN 6: FOOTER
        ===================================================================== -->
   <footer class="mt-10 pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-4" style="border-color:var(--border)">
     <div class="flex items-center gap-3 text-[11px] text-[var(--muted)]">
@@ -400,7 +356,7 @@
 </main>
 
 <!-- =====================================================================
-     BAGIAN 8: LIGHTBOX MODAL
+     BAGIAN 7: LIGHTBOX MODAL
      ===================================================================== -->
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
   <div class="lightbox-content">
@@ -437,7 +393,7 @@
 </div>
 
 <!-- =====================================================================
-     BAGIAN 9: JAVASCRIPT (LOGIKA GALERI)
+     BAGIAN 8: JAVASCRIPT (LOGIKA GALERI)
      ===================================================================== -->
 <script>
   // 9.1 DATA FOTO LAPANGAN — ★ RUBAH / TAMBAH FOTO DI SINI
@@ -594,7 +550,6 @@
   }
 
   // 9.5 RENDER STAT CARDS
-  const today = getWIBDateOnly();
   const counts = {
     all: fotoLapangan.length,
     persiapan: fotoLapangan.filter(p => p.kategori === "persiapan").length,
@@ -611,13 +566,7 @@
   document.getElementById('cnt-mep').textContent = counts.mep;
   document.getElementById('cnt-finishing').textContent = counts.finishing;
 
-  document.getElementById('statTotal').textContent = counts.all;
-  document.getElementById('statPersiapan').textContent = counts.persiapan;
-  document.getElementById('statStruktur').textContent = counts.struktur;
   document.getElementById('totalPhotoPill').textContent = counts.all + ' Foto';
-
-  document.getElementById('statUpdate').textContent = formatDateShort(today);
-  document.getElementById('statUpdateDays').textContent = 'Hari ini · ' + (today.getHours() || 0) + ' update';
 
   // 9.6 RENDER GALERI
   const grid = document.getElementById('galleryGrid');
