@@ -276,7 +276,7 @@
           </svg>
           <div class="absolute inset-0 flex flex-col items-center justify-center">
             <div class="text-[10px] md:text-[11px] uppercase tracking-widest text-[var(--muted)]">Terselesaikan</div>
-            <div class="display mono text-[48px] md:text-[56px] leading-none" id="progressNum">0.0<span style="color:var(--accent);font-size:32px">%</span></div>
+            <div class="display mono text-[48px] md:text-[56px] leading-none" id="progressNum">0.00<span style="color:var(--accent);font-size:32px">%</span></div>
             <div class="text-[11px] text-[var(--fg-dim)] mt-1">Dari 100% Target</div>
           </div>
         </div>
@@ -478,7 +478,7 @@
   discList.innerHTML = '';
 
   dataDisiplin.forEach(d => {
-    totalProgressVal += (d.progress * d.bobot / 100);
+    totalProgressVal += d.progress;  // SUM: progress tiap disiplin = kontribusi terhadap progres keseluruhan
     totalBobot += d.bobot;
 
     let currentStatus = d.status;
@@ -520,7 +520,7 @@
     });
   }, 300);
 
-  const progressVal = +(totalProgressVal / (totalBobot / 100)).toFixed(1);
+  const progressVal = +totalProgressVal.toFixed(2);  // Sum sederhana: 2.87 + 0.75 + ... = 3.62%
 
   let plannedVal = +(1 / (1 + Math.exp(-7 * ((monthsPassed / contractDuration) - 0.5))) * 100).toFixed(1);
   if (monthsPassed >= contractDuration) plannedVal = 100.0;
@@ -579,7 +579,7 @@
     function tick(now) {
       const t = Math.min((now - t0) / duration, 1);
       const eased = 1 - Math.pow(1 - t, 3);
-      num.innerHTML = (target * eased).toFixed(1) + '<span style="color:var(--accent);font-size:32px">%</span>';
+      num.innerHTML = (target * eased).toFixed(2) + '<span style="color:var(--accent);font-size:32px">%</span>';
       if (t < 1) requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
